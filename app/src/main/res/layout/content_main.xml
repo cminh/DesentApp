@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.example.desent.desent.activities.MainActivity"
+    tools:showIn="@layout/activity_main">
+
+    <TextView android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:id="@+id/caption"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"
+        android:layout_above="@+id/estimationBar" android:padding="10dp"
+        android:id="@+id/body"
+        android:gravity="center"
+        android:layout_below="@+id/caption"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <fragment android:name="com.example.desent.desent.fragments.CircleFragment"
+            android:id="@+id/dailyCarbonFootprint"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            tools:layout="@layout/fragment_circle">
+        </fragment>
+
+        <LinearLayout android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <fragment android:name="com.example.desent.desent.fragments.CategoryFragment"
+                android:id="@+id/housing_dashboard_fragment"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                tools:layout="@layout/fragment_category" />
+
+            <fragment android:name="com.example.desent.desent.fragments.CategoryFragment"
+                android:id="@+id/transportation_dashboard_fragment"
+                android:layout_height="60dp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                tools:layout="@layout/fragment_category" />
+        </LinearLayout>
+
+        <fragment android:name="com.example.desent.desent.fragments.WeekFragment"
+            android:id="@+id/weeklyData"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout="@layout/fragment_week" />
+
+        <fragment android:name="com.example.desent.desent.fragments.MonthFragment"
+            android:id="@+id/monthlyData"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout="@layout/fragment_month" />
+
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/estimationBar"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:gravity="center"
+        android:layout_alignParentBottom="true">
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <com.example.desent.desent.views.EstimationButton
+                android:id="@+id/solarPanelButton"
+                app:name="Solar panel"
+                app:category_index="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/selector_solar_panel"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:padding="0dp"
+                />
+            <com.example.desent.desent.views.EstimationButton
+                android:id="@+id/walkingButton"
+                app:name="Walking"
+                app:category_index="0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/selector_walking"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:padding="0dp"
+                />
+            <com.example.desent.desent.views.EstimationButton
+                android:id="@+id/cyclingButton"
+                app:name="Cycling"
+                app:category_index="0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/selector_cycling"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:padding="0dp"
+                />
+            <com.example.desent.desent.views.EstimationButton
+                android:id="@+id/electricCarButton"
+                app:name="Electric car"
+                app:category_index="0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/selector_electric_car"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:padding="0dp"
+                />
+
+        </LinearLayout>
+    </RelativeLayout>
+
+
+</RelativeLayout>

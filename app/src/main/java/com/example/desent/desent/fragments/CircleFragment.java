@@ -127,8 +127,8 @@ public class CircleFragment extends Fragment {
                 circularIndicator.setValues(indicator.getDailyValues());
 
                 ViewGroup.LayoutParams tempParams = getView().getLayoutParams();
-                tempParams.height = Utility.dpToPx(175);
-                tempParams.width = Utility.dpToPx(175);
+                tempParams.height = Utility.dpToPx(160);
+                tempParams.width = Utility.dpToPx(160);
                 getView().setLayoutParams(tempParams);
                 break;
 
