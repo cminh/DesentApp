@@ -1,4 +1,10 @@
 <resources>
+
+    <string name="estimation_solar_panel_title">Solar panel</string>
+    <string name="estimation_walking_title">Walking</string>
+    <string name="estimation_cycling_title">Cycling</string>
+    <string name="estimation_electric_car_title">Electric car</string>
+
     <string name="app_name">DESENT</string>
     <string-array name="time_spinner_array">
         <item>Today</item>

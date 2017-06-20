@@ -2,6 +2,7 @@ package com.example.desent.desent.activities;
 
 import android.app.FragmentTransaction;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -14,7 +15,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.example.desent.desent.R;
 import com.example.desent.desent.fragments.CategoryFragment;
@@ -23,7 +23,6 @@ import com.example.desent.desent.fragments.MonthFragment;
 import com.example.desent.desent.fragments.WeekFragment;
 import com.example.desent.desent.models.Indicator;
 import com.example.desent.desent.views.CircularIndicator;
-import com.example.desent.desent.views.EstimationButton;
 
 import java.io.InputStream;
 import java.text.ParseException;
@@ -51,14 +50,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected Indicator transportation;
     protected Indicator housing;
 
-    //Buttons
-    EstimationButton solarPanelButton;
-    EstimationButton walkButton;
-    EstimationButton cycleButton;
-    EstimationButton electricCarButton;
-    private TextView captionView;
-    private String captionText = "";
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         return false;
@@ -80,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        //Navigation drawer
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -93,11 +84,47 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //Bottom navigation
+
+        BottomNavigationView bottomNavigationView = (BottomNavigationView)
+                findViewById(R.id.bottom_navigation);
+
+        findViewById(R.id.navigation_none).setVisibility(View.GONE);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.navigation_solar_installation:
+                                enableEstimation(getResources().getString(R.string.estimation_solar_panel_title), 1);
+                                break;
+                            case R.id.navigation_walking:
+                                enableEstimation(getResources().getString(R.string.estimation_walking_title), 0);
+                                break;
+                            case R.id.navigation_cycling:
+                                enableEstimation(getResources().getString(R.string.estimation_cycling_title), 0);
+                                break;
+                            case R.id.navigation_electric_car:
+                                enableEstimation(getResources().getString(R.string.estimation_electric_car_title), 0);
+                                break;
+
+                        }
+                        return true;
+                    }
+                });
+
+        bottomNavigationView.setOnNavigationItemReselectedListener(
+                new BottomNavigationView.OnNavigationItemReselectedListener() {
+                    @Override
+                    public void onNavigationItemReselected(@NonNull MenuItem item) {
+                        findViewById(R.id.navigation_none).performClick();
+                        clearEstimations();
+                        }
+                });
+
+
         setUp();
-        solarPanelButton.setOnClickListener(estimationButtonHandler);
-        walkButton.setOnClickListener(estimationButtonHandler);
-        cycleButton.setOnClickListener(estimationButtonHandler);
-        electricCarButton.setOnClickListener(estimationButtonHandler);
 
         timeSpinner.setOnItemSelectedListener(timeSpinnerActivity);
 
@@ -125,110 +152,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     };
 
-    View.OnClickListener estimationButtonHandler = new View.OnClickListener() {
+    public void enableEstimation(String estimationTitle, int categoryIndex) {
 
-        public void onClick(View v) {
-
-            EstimationButton button = (EstimationButton) v;
-
-            if (button.getId() == R.id.walkingButton) {
-                if (cycleButton.isActivated()) {
-                    disableEstimation(cycleButton);
-                }
-                if (electricCarButton.isActivated()) {
-                    disableEstimation(electricCarButton);
-                }
-            }
-
-            if (button.getId() == R.id.cyclingButton) {
-                if (walkButton.isActivated()) {
-                    disableEstimation(walkButton);
-                }
-                if (electricCarButton.isActivated()) {
-                    disableEstimation(electricCarButton);
-                }
-            }
-
-            if (button.getId() == R.id.electricCarButton) {
-                if (walkButton.isActivated()) {
-                    disableEstimation(walkButton);
-                }
-                if (cycleButton.isActivated()) {
-                    disableEstimation(cycleButton);
-                }
-            }
-
-            if (!button.isActivated()) {
-                enableEstimation(button);
-            } else
-                disableEstimation(button);
-
-            if (!(walkButton.isActivated() || cycleButton.isActivated() || electricCarButton.isActivated())) {
-
-                for (Indicator indicator : indicators) {
-                    indicator.estimateDailyValues(date, "Transportation", 0);
-                    indicator.estimateWeeklyValues(date, "Transportation", 0);
-                    indicator.estimateMonthlyValues(date, "Transportation", 0);
-                }
-
-            }
-
-            if (!(solarPanelButton.isActivated())) {
-
-                for (Indicator indicator : indicators) {
-                    indicator.estimateDailyValues(date, "Housing", 1);
-                    indicator.estimateWeeklyValues(date, "Housing", 1);
-                    indicator.estimateMonthlyValues(date, "Housing", 1);
-                }
-            }
-
-
-            for (CircleFragment circleFragment : circleFragments)
-                circleFragment.refresh();
-
-            transportationDashboardFragment.refresh();
-            housingDashboardFragment.refresh();
-            weekFragment.refresh();
-            monthFragment.refresh();
-        }
-    };
-
-    public void enableEstimation(EstimationButton estimationButton) {
-
-        estimationButton.setActivated(true);
-
-        if (captionText.equals(""))
-            captionText = "Your performance " + estimationButton.getCaption();
-        else
-            captionText = captionText + " and " + estimationButton.getCaption();
+        clearEstimations();
 
         for (Indicator indicator : indicators) {
-            indicator.estimateDailyValues(date, estimationButton);
-            indicator.estimateWeeklyValues(date, estimationButton);
-            indicator.estimateMonthlyValues(date, estimationButton);
+            indicator.estimateValues(date, estimationTitle, categoryIndex);
         }
 
         for (CircleFragment circleFragment : circleFragments) {
             circleFragment.refresh();
         }
 
-        ((TextView) findViewById(R.id.caption)).setText(captionText);
+        housingDashboardFragment.refresh();
+        transportationDashboardFragment.refresh();
         weekFragment.refresh();
         monthFragment.refresh();
 
     }
 
-    public void disableEstimation(EstimationButton estimationButton) {
+    public void clearEstimations() {
 
-        estimationButton.setActivated(false);
+        //TODO: code duplication
+        for (Indicator indicator : indicators) {
+            indicator.readValues(date);
+        }
 
-        captionText = captionText.replace(estimationButton.getCaption(), "");
-        if (captionText.contains("and"))
-            captionText = captionText.replace(" and ", "");
-        else
-            captionText = "";
-        ((TextView) findViewById(R.id.caption)).setText(captionText);
+        for (CircleFragment circleFragment : circleFragments) {
+            circleFragment.refresh();
+        }
 
+        housingDashboardFragment.refresh();
+        transportationDashboardFragment.refresh();
         weekFragment.refresh();
         monthFragment.refresh();
 
@@ -281,7 +236,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 
-        captionView.setVisibility(View.VISIBLE);
         ft.hide(weekFragment);
         ft.hide(monthFragment);
         ft.commit();
@@ -299,7 +253,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 
-        captionView.setVisibility(View.GONE);
         ft.show(weekFragment);
         ft.hide(monthFragment);
         ft.commit();
@@ -318,7 +271,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         //ft.addToBackStack("month");
 
-        captionView.setVisibility(View.GONE);
         ft.hide(weekFragment);
         ft.show(monthFragment);
         ft.commit();
@@ -358,9 +310,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         transportationDashboardFragment = (CategoryFragment) getFragmentManager().findFragmentById(R.id.transportation_dashboard_fragment);
         housingDashboardFragment = (CategoryFragment) getFragmentManager().findFragmentById(R.id.housing_dashboard_fragment);
-
-        captionView = (TextView) findViewById(R.id.caption);
-        captionView.setTextColor(mDarkGrey);
 
         //Date
         InputStream inputStream = getResources().openRawResource(R.raw.data);
@@ -417,16 +366,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         transportation.readDailyValues(date);
         housing.readDailyValues(date);
-
-        //Estimation buttons
-        solarPanelButton = (EstimationButton) findViewById(R.id.solarPanelButton);
-        solarPanelButton.setCaption("with a solar installation");
-        walkButton = (EstimationButton) findViewById(R.id.walkingButton);
-        walkButton.setCaption("walking 5km instead of driving");
-        cycleButton = (EstimationButton) findViewById(R.id.cyclingButton);
-        cycleButton.setCaption("cycling 5km instead of driving");
-        electricCarButton = (EstimationButton) findViewById(R.id.electricCarButton);
-        electricCarButton.setCaption("with the Nissan Leaf");
 
         calories.setMaxValue(targetCalories);
         calories.setLimitValue(targetCalories);

@@ -147,6 +147,18 @@ public class Indicator {
         return calculateAverage(monthlyValues);
     }
 
+    public void estimateValues(Date date, String columnName, int categoryIndex) {
+        estimateDailyValues(date, columnName, categoryIndex);
+        estimateWeeklyValues(date, columnName, categoryIndex);
+        estimateMonthlyValues(date, columnName, categoryIndex);
+    }
+
+    public void readValues(Date date) {
+        readDailyValues(date);
+        readWeeklyValues(date);
+        readMonthlyValues(date);
+    }
+
     public void estimateDailyValues(Date date, EstimationButton estimationButton) {
         estimateDailyValues(date, estimationButton.getName(), estimationButton.getCategoryIndex());
     }

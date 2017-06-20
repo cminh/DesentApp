@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_none"
+        android:text=""
+        android:visible="false"/>
+
+    <item
+        android:id="@+id/navigation_solar_installation"
+        android:icon="@drawable/ic_solar_installation"
+        android:title="@string/estimation_solar_panel_title"/>
+
+    <item
+        android:id="@+id/navigation_walking"
+        android:icon="@drawable/ic_directions_walk_black_24dp"
+        android:title="@string/estimation_walking_title" />
+
+    <item
+        android:id="@+id/navigation_cycling"
+        android:icon="@drawable/ic_directions_bike_black_24dp"
+        android:title="@string/estimation_cycling_title" />
+
+    <item
+        android:id="@+id/navigation_electric_car"
+        android:icon="@drawable/ic_electric_car"
+        android:title="@string/estimation_electric_car_title" />
+
+</menu>
