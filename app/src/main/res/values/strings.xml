@@ -5,6 +5,8 @@
     <string name="estimation_cycling_title">Cycling</string>
     <string name="estimation_electric_car_title">Electric car</string>
 
+    <string name="information_co2_left">You have %1$s kgCO<sub><small>2</small></sub> left!</string>
+
     <string name="app_name">DESENT</string>
     <string-array name="time_spinner_array">
         <item>Today</item>

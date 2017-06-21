@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.example.desent.desent.R;
 import com.example.desent.desent.fragments.CategoryFragment;
@@ -23,6 +24,7 @@ import com.example.desent.desent.fragments.IndicatorsBarFragment;
 import com.example.desent.desent.fragments.MonthFragment;
 import com.example.desent.desent.fragments.WeekFragment;
 import com.example.desent.desent.models.Indicator;
+import com.example.desent.desent.utils.Utility;
 import com.example.desent.desent.views.CircularIndicator;
 
 import java.io.InputStream;
@@ -30,6 +32,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -51,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected Indicator carbonFootprint;
     protected Indicator transportation;
     protected Indicator housing;
+
+    protected View informationCO2left;
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -91,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         BottomNavigationView bottomNavigationView = (BottomNavigationView)
                 findViewById(R.id.bottom_navigation);
 
-        findViewById(R.id.navigation_none).setVisibility(View.GONE);
+        findViewById(R.id.navigation_none).setVisibility(GONE);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -154,6 +161,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     };
 
+    public void updateCO2left(){
+        //TODO: make another message when the amount of CO2 is exceeded?
+        ((TextView) findViewById(R.id.text_view_information_co2_left)).setText(String.format(getResources().getString(R.string.information_co2_left), Utility.floatToStringNDecimals(carbonFootprint.getLimitValue()-carbonFootprint.getDailyValue(), carbonFootprint.getDecimalsNumber())));
+    }
+
     public void enableEstimation(String estimationTitle, int categoryIndex) {
 
         clearEstimations();
@@ -170,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         transportationDashboardFragment.refresh();
         weekFragment.refresh();
         monthFragment.refresh();
+        updateCO2left();
 
     }
 
@@ -188,6 +201,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         transportationDashboardFragment.refresh();
         weekFragment.refresh();
         monthFragment.refresh();
+        updateCO2left();
 
     }
 
@@ -242,6 +256,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ft.hide(monthFragment);
         ft.commit();
 
+        informationCO2left.setVisibility(VISIBLE);
+
         for (CircleFragment circleFragment : circleFragments) {
             circleFragment.setActiveView(ActiveView.DAY);
         }
@@ -258,6 +274,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ft.show(weekFragment);
         ft.hide(monthFragment);
         ft.commit();
+
+        informationCO2left.setVisibility(GONE);
 
         for (CircleFragment circleFragment : circleFragments)
             circleFragment.setActiveView(ActiveView.WEEK);
@@ -277,6 +295,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ft.show(monthFragment);
         ft.commit();
 
+        informationCO2left.setVisibility(GONE);
+
         for (CircleFragment circleFragment : circleFragments)
             circleFragment.setActiveView(ActiveView.MONTH);
 
@@ -286,6 +306,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     protected void setUp() {
+
+        //Text
+        informationCO2left = findViewById(R.id.information_co2_left);
 
         //Colors
         int mRed = ContextCompat.getColor(getApplicationContext(), R.color.red);
@@ -408,5 +431,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         housingDashboardFragment.setUp();
 
         indicatorsBarFragment.setUp();
+
+        updateCO2left();
     }
 }

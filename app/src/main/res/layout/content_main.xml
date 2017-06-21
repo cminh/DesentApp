@@ -42,18 +42,37 @@
 
             <fragment android:name="com.example.desent.desent.fragments.CategoryFragment"
                 android:id="@+id/housing_dashboard_fragment"
-                android:layout_height="60dp"
+                android:layout_height="50dp"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 tools:layout="@layout/fragment_category" />
 
             <fragment android:name="com.example.desent.desent.fragments.CategoryFragment"
                 android:id="@+id/transportation_dashboard_fragment"
-                android:layout_height="60dp"
+                android:layout_height="50dp"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 tools:layout="@layout/fragment_category" />
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/information_co2_left"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:background="@drawable/background_text_view">
+
+            <TextView
+                android:id="@+id/text_view_information_co2_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="#ffffff"
+                android:text="@string/information_co2_left"/>
+        </LinearLayout>
+
 
         <fragment android:name="com.example.desent.desent.fragments.WeekFragment"
             android:id="@+id/weeklyData"
