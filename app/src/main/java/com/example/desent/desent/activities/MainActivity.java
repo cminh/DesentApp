@@ -19,6 +19,7 @@ import android.widget.Spinner;
 import com.example.desent.desent.R;
 import com.example.desent.desent.fragments.CategoryFragment;
 import com.example.desent.desent.fragments.CircleFragment;
+import com.example.desent.desent.fragments.IndicatorsBarFragment;
 import com.example.desent.desent.fragments.MonthFragment;
 import com.example.desent.desent.fragments.WeekFragment;
 import com.example.desent.desent.models.Indicator;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private MonthFragment monthFragment;
     private CategoryFragment transportationDashboardFragment;
     private CategoryFragment housingDashboardFragment;
+    private IndicatorsBarFragment indicatorsBarFragment;
 
     //Indicators
     protected ArrayList<Indicator> indicators = new ArrayList<>();
@@ -311,6 +313,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         transportationDashboardFragment = (CategoryFragment) getFragmentManager().findFragmentById(R.id.transportation_dashboard_fragment);
         housingDashboardFragment = (CategoryFragment) getFragmentManager().findFragmentById(R.id.housing_dashboard_fragment);
 
+        indicatorsBarFragment = (IndicatorsBarFragment) getFragmentManager().findFragmentById(R.id.indicators_bar);
+
         //Date
         InputStream inputStream = getResources().openRawResource(R.raw.data);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -336,6 +340,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         transportation = new Indicator(inputStream, "Transportation", "km", "Distance");
         housing = new Indicator(inputStream, "Housing", "kWh", "Energy consumption");
+
+        indicatorsBarFragment.addIndicator(calories);
+        indicatorsBarFragment.addIndicator(expenses);
+        indicatorsBarFragment.addIndicator(transportation);
+        indicatorsBarFragment.addIndicator(housing);
 
         carbonFootprintCircleFragment.setStartAngle(135);
         carbonFootprintCircleFragment.setSweepAngle(270);
@@ -397,5 +406,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         housingDashboardFragment.setCategoryIndex(1);
         housingDashboardFragment.setIndicator(carbonFootprint);
         housingDashboardFragment.setUp();
+
+        indicatorsBarFragment.setUp();
     }
 }

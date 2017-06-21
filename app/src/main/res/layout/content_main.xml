@@ -8,10 +8,24 @@
     tools:context="com.example.desent.desent.activities.MainActivity"
     tools:showIn="@layout/activity_main">
 
+    <fragment
+        android:name="com.example.desent.desent.fragments.IndicatorsBarFragment"
+        android:layout_height="48dp"
+        android:layout_width="match_parent"
+        android:id="@+id/indicators_bar"
+    />
+
+    <View
+        android:layout_below="@+id/indicators_bar"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+
     <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical"
         android:padding="10dp"
         android:id="@+id/body"
         android:layout_above="@+id/bottom_navigation"
+        android:layout_below="@+id/indicators_bar"
         android:gravity="center">
 
         <fragment android:name="com.example.desent.desent.fragments.CircleFragment"

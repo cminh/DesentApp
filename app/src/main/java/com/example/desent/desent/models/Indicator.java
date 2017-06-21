@@ -445,4 +445,12 @@ public class Indicator {
         return this.monthlyValues;
     }
 
+    public float getDailyValue() {
+        float sum = 0;
+        for (float dailyValue : dailyValues){
+            sum = sum + dailyValue;
+        }
+        return sum;
+    }
+
 }
