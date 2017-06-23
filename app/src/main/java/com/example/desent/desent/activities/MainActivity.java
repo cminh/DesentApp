@@ -169,8 +169,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         // launch new intent instead of loading fragment
                         /*
                         startActivity(new Intent(MainActivity.this, AboutUsActivity.class));
+                         */
                         drawer.closeDrawers();
-                        */
+
                         return true;
                     case R.id.nav_settings:
 
