@@ -61,6 +61,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="left"
         android:fitsSystemWindows="true"
-        app:menu="@menu/activity_main_drawer"/>
+        app:menu="@menu/activity_main_drawer"
+        app:itemIconTint="@color/dark_text_and_icon"
+        app:itemTextColor="@color/dark_text_and_icon"/>
 
 </android.support.v4.widget.DrawerLayout>
