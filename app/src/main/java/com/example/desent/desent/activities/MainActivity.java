@@ -1,7 +1,6 @@
 package com.example.desent.desent.activities;
 
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
@@ -21,6 +20,7 @@ import android.widget.TextView;
 import com.example.desent.desent.R;
 import com.example.desent.desent.fragments.CategoryFragment;
 import com.example.desent.desent.fragments.CircleFragment;
+import com.example.desent.desent.fragments.CyclingDistanceFragment;
 import com.example.desent.desent.fragments.IndicatorsBarFragment;
 import com.example.desent.desent.fragments.MonthFragment;
 import com.example.desent.desent.fragments.WeekFragment;
@@ -50,6 +50,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private CategoryFragment housingDashboardFragment;
     private IndicatorsBarFragment indicatorsBarFragment;
 
+    private View categoriesBar;
+
+    private CyclingDistanceFragment cyclingDistanceFragment;
+
     //Indicators
     protected ArrayList<Indicator> indicators = new ArrayList<>();
     protected Indicator calories;
@@ -58,14 +62,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected Indicator transportation;
     protected Indicator housing;
 
-    protected View informationCO2left;
-
-    // Drawer
-    private DrawerLayout drawer;
-    private  Toolbar toolbar;
-    private NavigationView navigationView;
-
-
+    //Information views
+    protected View informationCO2Left;
+    protected View informationSavings;
+    protected View informationDaysLeftSolarPanel;
+    protected View informationSeparator; //TODO: not treat it in the activity?
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -88,14 +89,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Drawer "hamburger"
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-
         //Navigation drawer
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -115,18 +113,82 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+
                         switch (item.getItemId()) {
+
+                            case R.id.navigation_none:
+
+                                if (timeSpinner.getSelectedItemPosition() == 0) {
+                                    informationCO2Left.setVisibility(View.VISIBLE);
+                                    informationSavings.setVisibility(View.GONE);
+                                    informationDaysLeftSolarPanel.setVisibility(View.GONE);
+                                    informationSeparator.setVisibility(GONE);
+
+                                    ft.hide(cyclingDistanceFragment);
+                                    ft.commit();
+                                }
+
+                                break;
+
                             case R.id.navigation_solar_installation:
+
                                 enableEstimation(getResources().getString(R.string.estimation_solar_panel_title), 1);
+
+                                if (timeSpinner.getSelectedItemPosition() == 0) {
+                                    informationCO2Left.setVisibility(View.GONE);
+                                    informationSavings.setVisibility(View.VISIBLE);
+                                    informationDaysLeftSolarPanel.setVisibility(View.GONE);
+                                    informationSeparator.setVisibility(VISIBLE);
+                                }
+
+                                ft.hide(cyclingDistanceFragment);
+                                ft.commit();
+
                                 break;
                             case R.id.navigation_walking:
                                 enableEstimation(getResources().getString(R.string.estimation_walking_title), 0);
+
+                                if (timeSpinner.getSelectedItemPosition() == 0) {
+                                    informationCO2Left.setVisibility(View.GONE);
+                                    informationSavings.setVisibility(View.VISIBLE);
+                                    informationDaysLeftSolarPanel.setVisibility(View.VISIBLE);
+                                    informationSeparator.setVisibility(VISIBLE);
+                                }
+
+                                ft.hide(cyclingDistanceFragment);
+                                ft.commit();
+
                                 break;
                             case R.id.navigation_cycling:
+
                                 enableEstimation(getResources().getString(R.string.estimation_cycling_title), 0);
+
+                                if (timeSpinner.getSelectedItemPosition() == 0) {
+                                    informationCO2Left.setVisibility(View.GONE);
+                                    informationSavings.setVisibility(View.VISIBLE);
+                                    informationDaysLeftSolarPanel.setVisibility(View.VISIBLE);
+                                    informationSeparator.setVisibility(VISIBLE);
+
+                                    ft.show(cyclingDistanceFragment);
+                                    ft.commit();
+                                }
+
                                 break;
                             case R.id.navigation_electric_car:
                                 enableEstimation(getResources().getString(R.string.estimation_electric_car_title), 0);
+
+                                if (timeSpinner.getSelectedItemPosition() == 0) {
+                                    informationCO2Left.setVisibility(View.GONE);
+                                    informationSavings.setVisibility(View.VISIBLE);
+                                    informationDaysLeftSolarPanel.setVisibility(View.VISIBLE);
+                                    informationSeparator.setVisibility(VISIBLE);
+                                }
+
+                                ft.hide(cyclingDistanceFragment);
+                                ft.commit();
+
                                 break;
 
                         }
@@ -150,82 +212,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         goToDailyView();
 
-    }
-
-    private void setUpNavigationView() {
-        //Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-
-            // This method will trigger on item Click of navigation menu
-            @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
-
-                //Check to see which item was being clicked and perform appropriate action
-                switch (menuItem.getItemId()) {
-                    //Replacing the main content with ContentFragment Which is our Inbox View;
-                    case R.id.nav_home:
-
-
-                        // launch new intent instead of loading fragment
-                        /*
-                        startActivity(new Intent(MainActivity.this, AboutUsActivity.class));
-                         */
-                        drawer.closeDrawers();
-
-                        return true;
-                    case R.id.nav_settings:
-
-
-                        // launch new intent instead of loading fragment
-                        startActivity(new Intent(MainActivity.this, Settings.class));
-                        drawer.closeDrawers();
-                        return true;
-                    case R.id.nav_about_us:
-
-
-                        // launch new intent instead of loading fragment
-                        /*
-                        startActivity(new Intent(MainActivity.this, AboutUsActivity.class));
-                        drawer.closeDrawers();
-                        */
-                        return true;
-                    default:
-
-                }
-
-                //Checking if the item is in checked state or not, if not make it in checked state
-                if (menuItem.isChecked()) {
-                    menuItem.setChecked(false);
-                } else {
-                    menuItem.setChecked(true);
-                }
-                menuItem.setChecked(true);
-
-                return true;
-            }
-        });
-
-
-        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.openDrawer, R.string.closeDrawer) {
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                // Code here will be triggered once the drawer closes as we dont want anything to happen so we leave this blank
-                super.onDrawerClosed(drawerView);
-            }
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
-                super.onDrawerOpened(drawerView);
-            }
-        };
-
-        //Setting the actionbarToggle to drawer layout
-        drawer.setDrawerListener(actionBarDrawerToggle);
-
-        //calling sync state is necessary or else your hamburger icon wont show up
-        actionBarDrawerToggle.syncState();
+        FragmentTransaction ft = getFragmentManager().beginTransaction(); //TODO: move
+        ft.hide(cyclingDistanceFragment);
+        ft.commit();
     }
 
     AdapterView.OnItemSelectedListener timeSpinnerActivity = new AdapterView.OnItemSelectedListener() {
@@ -252,6 +241,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void updateCO2left(){
         //TODO: make another message when the amount of CO2 is exceeded?
         ((TextView) findViewById(R.id.text_view_information_co2_left)).setText(String.format(getResources().getString(R.string.information_co2_left), Utility.floatToStringNDecimals(carbonFootprint.getLimitValue()-carbonFootprint.getDailyValue(), carbonFootprint.getDecimalsNumber())));
+    }
+
+    private void updateSavings() {
+        //TODO: implement
+        ((TextView) findViewById(R.id.text_view_information_daily_savings)).setText(String.format(getResources().getString(R.string.information_savings), "20kr"));
     }
 
     public void enableEstimation(String estimationTitle, int categoryIndex) {
@@ -344,7 +338,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ft.hide(monthFragment);
         ft.commit();
 
-        informationCO2left.setVisibility(VISIBLE);
+        informationCO2Left.setVisibility(VISIBLE);
+        //TODO: treat estimation
 
         for (CircleFragment circleFragment : circleFragments) {
             circleFragment.setActiveView(ActiveView.DAY);
@@ -363,7 +358,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ft.hide(monthFragment);
         ft.commit();
 
-        informationCO2left.setVisibility(GONE);
+        informationCO2Left.setVisibility(GONE);
+        informationSavings.setVisibility(GONE);
+        informationDaysLeftSolarPanel.setVisibility(GONE);
+        informationSeparator.setVisibility(GONE);
 
         for (CircleFragment circleFragment : circleFragments)
             circleFragment.setActiveView(ActiveView.WEEK);
@@ -383,7 +381,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ft.show(monthFragment);
         ft.commit();
 
-        informationCO2left.setVisibility(GONE);
+        informationCO2Left.setVisibility(GONE);
+        informationSavings.setVisibility(GONE);
+        informationDaysLeftSolarPanel.setVisibility(GONE);
+        informationSeparator.setVisibility(GONE);
 
         for (CircleFragment circleFragment : circleFragments)
             circleFragment.setActiveView(ActiveView.MONTH);
@@ -395,8 +396,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     protected void setUp() {
 
-        //Text
-        informationCO2left = findViewById(R.id.information_co2_left);
+        //Information text views
+        informationCO2Left = findViewById(R.id.information_co2_left);
+        informationSavings = findViewById(R.id.information_daily_savings);
+        informationDaysLeftSolarPanel = findViewById(R.id.information_days_left_solar_panel);
+        informationSeparator = findViewById(R.id.separator_information);
+
+        cyclingDistanceFragment = (CyclingDistanceFragment) getFragmentManager().findFragmentById(R.id.cycling_distance);
+
+        categoriesBar = findViewById(R.id.categories_bar);
 
         //Colors
         int mRed = ContextCompat.getColor(getApplicationContext(), R.color.red);
@@ -521,8 +529,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         indicatorsBarFragment.setUp();
 
         updateCO2left();
-
-        // Drawer setup
-        setUpNavigationView();
+        updateSavings();
     }
 }
