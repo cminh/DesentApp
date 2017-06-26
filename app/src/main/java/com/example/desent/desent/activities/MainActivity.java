@@ -22,6 +22,7 @@ import com.example.desent.desent.fragments.CategoryFragment;
 import com.example.desent.desent.fragments.CircleFragment;
 import com.example.desent.desent.fragments.CyclingDistanceFragment;
 import com.example.desent.desent.fragments.IndicatorsBarFragment;
+import com.example.desent.desent.fragments.SolarPanelSizeFragment;
 import com.example.desent.desent.models.Indicator;
 import com.example.desent.desent.utils.Utility;
 
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private View categoriesBar;
 
     private CyclingDistanceFragment cyclingDistanceFragment;
+    private SolarPanelSizeFragment solarPanelSizeFragment;
 
     //Indicators
     protected ArrayList<Indicator> indicators = new ArrayList<>();
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected View informationCO2Left;
     protected View informationSavings;
     protected View informationDaysLeftSolarPanel;
+    protected View informationOwnEnergy;
     protected View informationSeparator; //TODO: not treat it in the activity?
 
     @Override
@@ -122,8 +125,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 informationSavings.setVisibility(View.GONE);
                                 informationDaysLeftSolarPanel.setVisibility(View.GONE);
                                 informationSeparator.setVisibility(GONE);
+                                informationOwnEnergy.setVisibility(GONE);
 
                                 ft.hide(cyclingDistanceFragment);
+                                ft.hide(solarPanelSizeFragment);
                                 ft.commit();
 
 
@@ -137,8 +142,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 informationSavings.setVisibility(View.VISIBLE);
                                 informationDaysLeftSolarPanel.setVisibility(View.GONE);
                                 informationSeparator.setVisibility(VISIBLE);
+                                informationOwnEnergy.setVisibility(VISIBLE);
 
                                 ft.hide(cyclingDistanceFragment);
+                                ft.show(solarPanelSizeFragment);
                                 ft.commit();
 
                                 break;
@@ -148,9 +155,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 informationCO2Left.setVisibility(View.GONE);
                                 informationSavings.setVisibility(View.VISIBLE);
                                 informationDaysLeftSolarPanel.setVisibility(View.VISIBLE);
+                                informationOwnEnergy.setVisibility(GONE);
                                 informationSeparator.setVisibility(VISIBLE);
 
                                 ft.hide(cyclingDistanceFragment);
+                                ft.hide(solarPanelSizeFragment);
                                 ft.commit();
 
                                 break;
@@ -161,9 +170,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 informationCO2Left.setVisibility(View.GONE);
                                 informationSavings.setVisibility(View.VISIBLE);
                                 informationDaysLeftSolarPanel.setVisibility(View.VISIBLE);
+                                informationOwnEnergy.setVisibility(GONE);
                                 informationSeparator.setVisibility(VISIBLE);
 
                                 ft.show(cyclingDistanceFragment);
+                                ft.hide(solarPanelSizeFragment);
                                 ft.commit();
 
                                 break;
@@ -173,9 +184,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 informationCO2Left.setVisibility(View.GONE);
                                 informationSavings.setVisibility(View.VISIBLE);
                                 informationDaysLeftSolarPanel.setVisibility(View.VISIBLE);
+                                informationOwnEnergy.setVisibility(GONE);
                                 informationSeparator.setVisibility(VISIBLE);
 
                                 ft.hide(cyclingDistanceFragment);
+                                ft.hide(solarPanelSizeFragment);
                                 ft.commit();
 
                                 break;
@@ -206,6 +219,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.hide(cyclingDistanceFragment);
+        ft.hide(solarPanelSizeFragment);
         ft.commit();
     }
 
@@ -290,9 +304,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         informationCO2Left = findViewById(R.id.information_co2_left);
         informationSavings = findViewById(R.id.information_daily_savings);
         informationDaysLeftSolarPanel = findViewById(R.id.information_days_left_solar_panel);
+        informationOwnEnergy = findViewById(R.id.information_own_energy);
         informationSeparator = findViewById(R.id.separator_information);
 
         cyclingDistanceFragment = (CyclingDistanceFragment) getFragmentManager().findFragmentById(R.id.cycling_distance);
+        solarPanelSizeFragment = (SolarPanelSizeFragment) getFragmentManager().findFragmentById(R.id.solar_panel_size);
 
         categoriesBar = findViewById(R.id.categories_bar);
 
@@ -405,6 +421,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         indicatorsBarFragment.setUp();
         cyclingDistanceFragment.setUp();
+        solarPanelSizeFragment.setUp();
+
+        //TODO: test
+        solarPanelSizeFragment.addButton("3 kW");
+        solarPanelSizeFragment.addButton("4 kW");
+        solarPanelSizeFragment.addButton("5 kW");
+        solarPanelSizeFragment.addButton("6 kW");
 
         updateCO2left();
         updateSavings();

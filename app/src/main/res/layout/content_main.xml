@@ -41,8 +41,13 @@
                 android:id="@+id/cycling_distance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:layout="@layout/fragment_cycling_distance">
-            </fragment>
+                tools:layout="@layout/fragment_cycling_distance" />
+
+            <fragment android:name="com.example.desent.desent.fragments.SolarPanelSizeFragment"
+                android:id="@+id/solar_panel_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_solar_panel_size" />
 
             <fragment android:name="com.example.desent.desent.fragments.CircleFragment"
                 android:id="@+id/dailyCarbonFootprint"
@@ -147,6 +152,32 @@
                     android:layout_width="wrap_content"
                     android:textSize="16sp"
                     android:text="@string/information_days_left_solar_panel"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/information_own_energy"
+                android:orientation="horizontal"
+                android:layout_width="368dp"
+                android:layout_height="48dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:gravity="center_vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_height="24dp"
+                    android:layout_width="24dp"
+                    android:tint="@color/dark_grey"
+                    android:src="@drawable/ic_wb_incandescent_black_24dp"/>
+
+                <TextView
+                    android:id="@+id/text_view_information_own_energy"
+                    android:paddingLeft="16dp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:textSize="16sp"
+                    android:text="@string/information_own_energy"/>
 
             </LinearLayout>
 
