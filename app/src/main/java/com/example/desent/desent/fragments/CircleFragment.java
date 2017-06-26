@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import com.example.desent.desent.R;
 import com.example.desent.desent.activities.MainActivity;
 import com.example.desent.desent.models.Indicator;
-import com.example.desent.desent.utils.Utility;
 import com.example.desent.desent.views.CircularIndicator;
 
 /**
@@ -30,7 +29,6 @@ public class CircleFragment extends Fragment {
     protected int sweepAngle = 360;
     protected String imgName;
     protected int numberOfStates = 0;
-    protected CircularIndicator.Format format;
     protected int decimalsNumber;
 
     protected MainActivity.ActiveView activeView;
@@ -50,14 +48,6 @@ public class CircleFragment extends Fragment {
 
     public void setDecimalsNumber(int decimalsNumber) {
         this.decimalsNumber = decimalsNumber;
-    }
-
-    public CircularIndicator.Format getFormat() {
-        return format;
-    }
-
-    public void setFormat(CircularIndicator.Format format) {
-        this.format = format;
     }
 
     public void setIndicator(Indicator indicator) {
@@ -107,48 +97,20 @@ public class CircleFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_circle, container, false);
     }
 
-    public void saveInitialHeight(){
-
-        if(!hasBeenMeasured){
-            initialLayoutHeight = getView().getLayoutParams().height;
-            initialLayoutWidth = getView().getLayoutParams().width;
-            hasBeenMeasured = true;
-        }
-    }
-
     public void refresh(){
-
-        circularIndicator.setFormat(format);
 
         switch (activeView){
 
-            case DAY:
-
+            case TODAY:
                 circularIndicator.setValues(indicator.getDailyValues());
-
-                ViewGroup.LayoutParams tempParams = getView().getLayoutParams();
-                tempParams.height = Utility.dpToPx(130);
-                tempParams.width = Utility.dpToPx(130);
-                getView().setLayoutParams(tempParams);
                 break;
 
             case WEEK:
-
                 circularIndicator.setValues(indicator.calculateWeekAverage());
-
                 break;
 
             case MONTH:
-
                 circularIndicator.setValues(indicator.calculateMonthAverage());
-        }
-
-        if ((activeView == MainActivity.ActiveView.WEEK) || (activeView == MainActivity.ActiveView.MONTH)) {
-            circularIndicator.setFormat(CircularIndicator.Format.TEXT_ONLY);
-            ViewGroup.LayoutParams tempParams = getView().getLayoutParams();
-            tempParams.height = Utility.dpToPx(50);
-            tempParams.width = Utility.dpToPx(200);
-            circularIndicator.setLayoutParams(tempParams);
         }
 
         circularIndicator.invalidate();
@@ -166,7 +128,7 @@ public class CircleFragment extends Fragment {
         circularIndicator.setSweepAngle(this.sweepAngle);
         circularIndicator.setImgName(this.imgName);
         circularIndicator.setNumberOfStates(this.numberOfStates);
-        circularIndicator.setFormat(format);
+        circularIndicator.setFormat(CircularIndicator.Format.CIRCLE_IMG_TEXT);
         circularIndicator.setDecimalsNumber(indicator.getDecimalsNumber());
         circularIndicator.setLimitColor(indicator.getLimitColor());
     }

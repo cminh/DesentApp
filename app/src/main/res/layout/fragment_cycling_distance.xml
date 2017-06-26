@@ -17,7 +17,8 @@
         android:gravity="center_vertical">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/layout_cycling_distance"
+            android:layout_width="56dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center">
@@ -29,20 +30,22 @@
                 android:src="@drawable/ic_directions_bike_black_24dp"/>
 
             <TextView
+                android:id="@+id/text_view_cycling_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0km"
                 android:textColor="@color/green"/>
         </LinearLayout>
 
         <SeekBar
+            android:id="@+id/seekbar_cycling_distance"
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:progressBackgroundTint="@color/dark_grey"/>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/layout_driving_distance"
+            android:layout_width="56dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center">
@@ -53,9 +56,9 @@
                 android:tint="@color/dark_grey"
                 android:src="@drawable/ic_directions_car_black_24dp"/>
             <TextView
+                android:id="@+id/text_view_driving_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="200km"
                 android:textColor="@color/dark_grey"/>
 
         </LinearLayout>

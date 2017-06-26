@@ -33,22 +33,6 @@
 
             </android.support.v7.widget.Toolbar>
 
-            <android.support.design.widget.TabLayout
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent">
-
-                <android.support.design.widget.TabItem
-                    android:text="Today"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content" />
-
-                <android.support.design.widget.TabItem
-                    android:text="Last 24 hours"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"/>
-
-            </android.support.design.widget.TabLayout>
-
         </android.support.design.widget.AppBarLayout>
 
         <include layout="@layout/content_main" />

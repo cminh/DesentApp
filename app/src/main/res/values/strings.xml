@@ -11,9 +11,10 @@
 
     <string name="app_name">DESENT</string>
     <string-array name="time_spinner_array">
-        <item>Day</item>
-        <item>Week</item>
-        <item>Month</item>
+        <item>TODAY</item>
+        <item>LAST 24 HOURS</item>
+        <item>THIS WEEK</item>
+        <item>THIS MONTH</item>
     </string-array>
     <string-array name="indicator_spinner_array">
         <item>Dashboard</item>

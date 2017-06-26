@@ -46,8 +46,8 @@
 
             <fragment android:name="com.example.desent.desent.fragments.CircleFragment"
                 android:id="@+id/dailyCarbonFootprint"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
                 tools:layout="@layout/fragment_circle">
             </fragment>
 
@@ -149,22 +149,6 @@
                     android:text="@string/information_days_left_solar_panel"/>
 
             </LinearLayout>
-
-            <fragment android:name="com.example.desent.desent.fragments.WeekFragment"
-                android:id="@+id/weeklyData"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:layout="@layout/fragment_week" />
-
-            <fragment android:name="com.example.desent.desent.fragments.MonthFragment"
-                android:id="@+id/monthlyData"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:layout="@layout/fragment_month" />
 
         </LinearLayout>
 
