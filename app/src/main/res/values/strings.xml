@@ -6,16 +6,12 @@
     <string name="estimation_electric_car_title">Electric car</string>
 
     <string name="information_co2_left">You have %1$s kgCO<sub><small>2</small></sub> left!</string>
-    <string name="information_savings">%1$s daily savings</string>
-    <string name="information_days_left_solar_panel">1253 days to finance your solar roof</string>
-    <string name="information_own_energy">30% your own energy</string>
 
     <string name="app_name">DESENT</string>
     <string-array name="time_spinner_array">
-        <item>TODAY</item>
-        <item>LAST 24 HOURS</item>
-        <item>THIS WEEK</item>
-        <item>THIS MONTH</item>
+        <item>Today</item>
+        <item>This week</item>
+        <item>This month</item>
     </string-array>
     <string-array name="indicator_spinner_array">
         <item>Dashboard</item>
