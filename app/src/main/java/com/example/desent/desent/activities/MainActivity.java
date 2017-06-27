@@ -2,6 +2,7 @@ package com.example.desent.desent.activities;
 
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private View categoriesBar;
 
+    //Estimations parameters
     private CyclingDistanceFragment cyclingDistanceFragment;
     private SolarPanelSizeFragment solarPanelSizeFragment;
 
@@ -110,9 +112,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //Spinners
+        timeSpinner = (Spinner) findViewById(R.id.time_spinner);
+        //timeSpinner = new Spinner(getSupportActionBar().getThemedContext());
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.time_spinner_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        timeSpinner.setAdapter(adapter);
+
         //Bottom navigation
 
-        BottomNavigationView bottomNavigationView = (BottomNavigationView)
+        final BottomNavigationView bottomNavigationView = (BottomNavigationView)
                 findViewById(R.id.bottom_navigation);
 
         findViewById(R.id.navigation_none).setVisibility(GONE);
@@ -145,6 +154,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             case R.id.navigation_solar_installation:
 
+                                bottomNavigationView.setItemTextColor(ContextCompat.getColorStateList(getApplicationContext(),R.color.selector_bottom_navigation_blue));
+                                bottomNavigationView.setItemIconTintList(ContextCompat.getColorStateList(getApplicationContext(),R.color.selector_bottom_navigation_blue));
+
                                 enableEstimation(getResources().getString(R.string.estimation_solar_panel_title), 1);
 
                                 informationCO2Left.setVisibility(View.GONE);
@@ -159,6 +171,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                                 break;
                             case R.id.navigation_walking:
+
+                                bottomNavigationView.setItemTextColor(ContextCompat.getColorStateList(getApplicationContext(),R.color.selector_bottom_navigation_green));
+                                bottomNavigationView.setItemIconTintList(ContextCompat.getColorStateList(getApplicationContext(),R.color.selector_bottom_navigation_green));
+
                                 enableEstimation(getResources().getString(R.string.estimation_walking_title), 0);
 
                                 informationCO2Left.setVisibility(View.GONE);
@@ -174,6 +190,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 break;
                             case R.id.navigation_cycling:
 
+                                bottomNavigationView.setItemTextColor(ContextCompat.getColorStateList(getApplicationContext(),R.color.selector_bottom_navigation_green));
+                                bottomNavigationView.setItemIconTintList(ContextCompat.getColorStateList(getApplicationContext(),R.color.selector_bottom_navigation_green));
+
                                 enableEstimation(getResources().getString(R.string.estimation_cycling_title), 0);
 
                                 informationCO2Left.setVisibility(View.GONE);
@@ -188,6 +207,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                                 break;
                             case R.id.navigation_electric_car:
+
+                                bottomNavigationView.setItemTextColor(ContextCompat.getColorStateList(getApplicationContext(),R.color.selector_bottom_navigation_green));
+                                bottomNavigationView.setItemIconTintList(ContextCompat.getColorStateList(getApplicationContext(),R.color.selector_bottom_navigation_green));
+
                                 enableEstimation(getResources().getString(R.string.estimation_electric_car_title), 0);
 
                                 informationCO2Left.setVisibility(View.GONE);
@@ -310,6 +333,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     AdapterView.OnItemSelectedListener timeSpinnerActivity = new AdapterView.OnItemSelectedListener() {
 
         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+
+            ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE);
+
             switch (pos) {
                 case 0:
                     informationCO2Left.setVisibility(VISIBLE);
@@ -426,12 +452,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-        //Spinners
-        timeSpinner = (Spinner) findViewById(R.id.time_spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.time_spinner_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        timeSpinner.setAdapter(adapter);
 
         //Indicators
         ArrayList<String> columnNames = new ArrayList<>();
