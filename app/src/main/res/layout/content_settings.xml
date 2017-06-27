@@ -8,4 +8,10 @@
     tools:context="com.example.desent.desent.activities.Settings"
     tools:showIn="@layout/app_bar_settings">
 
+    <fragment
+        android:name="com.example.desent.desent.fragments.SettingsFragment"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:id="@+id/settings_view" />
+
 </android.support.constraint.ConstraintLayout>

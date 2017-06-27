@@ -63,4 +63,54 @@
 
     <string name="action_settings">Settings</string>
 
+    <!-- Preferences -->
+    <string name="pref_title_personal">Personal settings</string>
+
+    <string name="pref_personal_name">Name</string>
+    <string name="pref_personal_email">Email</string>
+    <string name="pref_personal_gender">Gender</string>
+    <string name="pref_personal_age">Age</string>
+    <string name="pref_personal_weight">Weight</string>
+
+    <string name="pref_personal_dialog_name">Please enter your name</string>
+    <string name="pref_personal_dialog_email">Please enter your email</string>
+    <string name="pref_personal_dialog_age">Please enter your age</string>
+    <string name="pref_personal_dialog_weight">Please enter your weight</string>
+
+    <string name="pref_personal_summary_name">Please enter your name</string>
+    <string name="pref_personal_summary_email">Please enter your email</string>
+    <string name="pref_personal_summary_age">Please enter your age</string>
+    <string name="pref_personal_summary_weight">Please enter your weight</string>
+
+
+
+    <string name="pref_title_car">Car settings</string>
+
+    <string name="pref_car_owner">Car owner</string>
+    <string name="pref_car_fuel_consumption">Average consumption</string>
+    <string name="pref_car_year_produced">Production year</string>
+    <string name="pref_car_ownership_period">Planned duration of ownership</string>
+    <string name="pref_car_price">Price</string>
+
+    <string name="pref_car_dialog_fuel_consumption">Please enter fuel consumption</string>
+    <string name="pref_car_dialog_year_produced">Please enter production year</string>
+    <string name="pref_car_dialog_ownership_period">Please enter planned duration of ownership</string>
+    <string name="pref_car_dialog_price">Please enter price</string>
+
+    <string name="pref_car_summary_fuel_consumption">Please enter fuel consumption</string>
+    <string name="pref_car_summary_year_produced">Please enter production year</string>
+    <string name="pref_car_summary_ownership_period">Please enter planned duration of ownership</string>
+    <string name="pref_car_summary_price">Please enter price</string>
+
+    <string name="pref_title_gender">Gender</string>
+    <string name="pref_gender_summary">Please enter your gender</string>
+    <string-array name="pref_gender_list">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+    <string-array name="pref_gender_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
 </resources>

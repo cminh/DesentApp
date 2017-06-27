@@ -1,0 +1,61 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/pref_title_personal">
+        <EditTextPreference
+            android:dialogTitle="@string/pref_personal_dialog_name"
+            android:key="pref_key_personal_name"
+            android:summary="@string/pref_personal_summary_name"
+            android:title="@string/pref_personal_name" />
+        <EditTextPreference
+            android:dialogTitle="@string/pref_personal_dialog_email"
+            android:key="pref_key_personal_email"
+            android:summary="@string/pref_personal_summary_email"
+            android:title="@string/pref_personal_email" />
+        <ListPreference
+            android:entries="@array/pref_gender_list"
+            android:entryValues="@array/pref_gender_values"
+            android:key="pref_key_gender"
+            android:summary="@string/pref_gender_summary"
+            android:title="@string/pref_title_gender" />
+        <EditTextPreference
+            android:dialogTitle="@string/pref_personal_dialog_age"
+            android:key="pref_key_personal_age"
+            android:summary="@string/pref_personal_summary_age"
+            android:title="@string/pref_personal_age" />
+        <EditTextPreference
+            android:dialogTitle="@string/pref_personal_dialog_weight"
+            android:key="pref_key_personal_weight"
+            android:summary="@string/pref_personal_summary_weight"
+            android:title="@string/pref_personal_weight" />
+
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/pref_title_car">
+        <CheckBoxPreference
+            android:key="pref_key_car_owner"
+            android:title="@string/pref_car_owner"
+            android:defaultValue="false" />
+        <EditTextPreference
+            android:dialogTitle="@string/pref_car_dialog_price"
+            android:key="pref_key_car_price"
+            android:summary="@string/pref_car_summary_price"
+            android:title="@string/pref_car_price"
+            android:dependency="pref_key_car_owner"/>
+        <EditTextPreference
+            android:dialogTitle="@string/pref_car_dialog_fuel_consumption"
+            android:key="pref_key_car_fuel_consumption"
+            android:summary="@string/pref_car_summary_fuel_consumption"
+            android:title="@string/pref_car_fuel_consumption"
+            android:dependency="pref_key_car_owner"/>
+        <EditTextPreference
+            android:dialogTitle="@string/pref_car_dialog_ownership_period"
+            android:key="pref_key_car_ownership_period"
+            android:summary="@string/pref_car_dialog_ownership_period"
+            android:title="@string/pref_car_ownership_period"
+            android:dependency="pref_key_car_owner"/>
+
+
+
+
+    </PreferenceCategory>
+</PreferenceScreen>
