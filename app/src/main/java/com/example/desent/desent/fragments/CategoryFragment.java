@@ -83,7 +83,7 @@ public class CategoryFragment extends Fragment {
 
         switch (activeView) {
 
-            case DAY:
+            case TODAY:
 
                 if ((indicator != null) && (categoryIndex < indicator.getDailyValues().size())) {
                     values.add(indicator.getDailyValues().get(categoryIndex));
