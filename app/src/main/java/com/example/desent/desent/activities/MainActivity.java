@@ -21,12 +21,11 @@ import android.widget.TextView;
 import com.example.desent.desent.R;
 import com.example.desent.desent.fragments.CategoryFragment;
 import com.example.desent.desent.fragments.CircleFragment;
+import com.example.desent.desent.fragments.CyclingDistanceFragment;
 import com.example.desent.desent.fragments.IndicatorsBarFragment;
-import com.example.desent.desent.fragments.MonthFragment;
-import com.example.desent.desent.fragments.WeekFragment;
+import com.example.desent.desent.fragments.SolarPanelSizeFragment;
 import com.example.desent.desent.models.Indicator;
 import com.example.desent.desent.utils.Utility;
-import com.example.desent.desent.views.CircularIndicator;
 
 import java.io.InputStream;
 import java.text.ParseException;
@@ -43,12 +42,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Spinner timeSpinner;
 
     //Fragments
-    private ArrayList<CircleFragment> circleFragments = new ArrayList<>();
-    private WeekFragment weekFragment;
-    private MonthFragment monthFragment;
+    CircleFragment carbonFootprintCircleFragment;
     private CategoryFragment transportationDashboardFragment;
     private CategoryFragment housingDashboardFragment;
     private IndicatorsBarFragment indicatorsBarFragment;
+
+    private View categoriesBar;
+
+    private CyclingDistanceFragment cyclingDistanceFragment;
+    private SolarPanelSizeFragment solarPanelSizeFragment;
 
     //Indicators
     protected ArrayList<Indicator> indicators = new ArrayList<>();
@@ -58,14 +60,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected Indicator transportation;
     protected Indicator housing;
 
-    protected View informationCO2left;
+    //Information views
+    protected View informationCO2Left;
+    protected View informationSavings;
+    protected View informationDaysLeftSolarPanel;
+    protected View informationOwnEnergy;
+    protected View informationSeparator; //TODO: not treat it in the activity?
 
-    // Drawer
+    //Drawer
     private DrawerLayout drawer;
     private  Toolbar toolbar;
     private NavigationView navigationView;
-
-
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -73,7 +78,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public enum ActiveView {
-        DAY,
+        TODAY,
+        LAST_24_HOURS,
         WEEK,
         MONTH
     }
@@ -115,18 +121,85 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+
                         switch (item.getItemId()) {
+
+                            case R.id.navigation_none:
+
+                                if (timeSpinner.getSelectedItemPosition() == 0)
+                                    informationCO2Left.setVisibility(View.VISIBLE);
+
+                                informationSavings.setVisibility(View.GONE);
+                                informationDaysLeftSolarPanel.setVisibility(View.GONE);
+                                informationSeparator.setVisibility(GONE);
+                                informationOwnEnergy.setVisibility(GONE);
+
+                                ft.hide(cyclingDistanceFragment);
+                                ft.hide(solarPanelSizeFragment);
+                                ft.commit();
+
+
+                                break;
+
                             case R.id.navigation_solar_installation:
+
                                 enableEstimation(getResources().getString(R.string.estimation_solar_panel_title), 1);
+
+                                informationCO2Left.setVisibility(View.GONE);
+                                informationSavings.setVisibility(View.VISIBLE);
+                                informationDaysLeftSolarPanel.setVisibility(View.GONE);
+                                informationSeparator.setVisibility(VISIBLE);
+                                informationOwnEnergy.setVisibility(VISIBLE);
+
+                                ft.hide(cyclingDistanceFragment);
+                                ft.show(solarPanelSizeFragment);
+                                ft.commit();
+
                                 break;
                             case R.id.navigation_walking:
                                 enableEstimation(getResources().getString(R.string.estimation_walking_title), 0);
+
+                                informationCO2Left.setVisibility(View.GONE);
+                                informationSavings.setVisibility(View.VISIBLE);
+                                informationDaysLeftSolarPanel.setVisibility(View.VISIBLE);
+                                informationOwnEnergy.setVisibility(GONE);
+                                informationSeparator.setVisibility(VISIBLE);
+
+                                ft.hide(cyclingDistanceFragment);
+                                ft.hide(solarPanelSizeFragment);
+                                ft.commit();
+
                                 break;
                             case R.id.navigation_cycling:
+
                                 enableEstimation(getResources().getString(R.string.estimation_cycling_title), 0);
+
+                                informationCO2Left.setVisibility(View.GONE);
+                                informationSavings.setVisibility(View.VISIBLE);
+                                informationDaysLeftSolarPanel.setVisibility(View.VISIBLE);
+                                informationOwnEnergy.setVisibility(GONE);
+                                informationSeparator.setVisibility(VISIBLE);
+
+                                ft.show(cyclingDistanceFragment);
+                                ft.hide(solarPanelSizeFragment);
+                                ft.commit();
+
                                 break;
                             case R.id.navigation_electric_car:
                                 enableEstimation(getResources().getString(R.string.estimation_electric_car_title), 0);
+
+                                informationCO2Left.setVisibility(View.GONE);
+                                informationSavings.setVisibility(View.VISIBLE);
+                                informationDaysLeftSolarPanel.setVisibility(View.VISIBLE);
+                                informationOwnEnergy.setVisibility(GONE);
+                                informationSeparator.setVisibility(VISIBLE);
+
+                                ft.hide(cyclingDistanceFragment);
+                                ft.hide(solarPanelSizeFragment);
+                                ft.commit();
+
                                 break;
 
                         }
@@ -140,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     public void onNavigationItemReselected(@NonNull MenuItem item) {
                         findViewById(R.id.navigation_none).performClick();
                         clearEstimations();
-                        }
+                    }
                 });
 
 
@@ -148,10 +221,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         timeSpinner.setOnItemSelectedListener(timeSpinnerActivity);
 
-        goToDailyView();
+        //TODO: move
+        carbonFootprintCircleFragment.setActiveView(ActiveView.TODAY);
+        transportationDashboardFragment.setActiveView(ActiveView.TODAY);
+        housingDashboardFragment.setActiveView(ActiveView.TODAY);
 
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.hide(cyclingDistanceFragment);
+        ft.hide(solarPanelSizeFragment);
+        ft.commit();
     }
-
     private void setUpNavigationView() {
         //Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -233,13 +312,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
             switch (pos) {
                 case 0:
-                    goToDailyView();
+                    informationCO2Left.setVisibility(VISIBLE);
+                    carbonFootprintCircleFragment.setActiveView(ActiveView.TODAY);
+                    transportationDashboardFragment.setActiveView(ActiveView.TODAY);
+                    housingDashboardFragment.setActiveView(ActiveView.TODAY);
                     break;
                 case 1:
-                    goToWeeklyView();
+                    informationCO2Left.setVisibility(GONE);
+                    carbonFootprintCircleFragment.setActiveView(ActiveView.TODAY);
+                    transportationDashboardFragment.setActiveView(ActiveView.TODAY);
+                    housingDashboardFragment.setActiveView(ActiveView.TODAY);
                     break;
                 case 2:
-                    goToMonthlyView();
+                    informationCO2Left.setVisibility(GONE);
+                    carbonFootprintCircleFragment.setActiveView(ActiveView.WEEK);
+                    transportationDashboardFragment.setActiveView(ActiveView.WEEK);
+                    housingDashboardFragment.setActiveView(ActiveView.WEEK);
+                    break;
+                case 3:
+                    informationCO2Left.setVisibility(GONE);
+                    carbonFootprintCircleFragment.setActiveView(ActiveView.MONTH);
+                    transportationDashboardFragment.setActiveView(ActiveView.MONTH);
+                    housingDashboardFragment.setActiveView(ActiveView.MONTH);
             }
 
         }
@@ -254,6 +348,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ((TextView) findViewById(R.id.text_view_information_co2_left)).setText(String.format(getResources().getString(R.string.information_co2_left), Utility.floatToStringNDecimals(carbonFootprint.getLimitValue()-carbonFootprint.getDailyValue(), carbonFootprint.getDecimalsNumber())));
     }
 
+    private void updateSavings() {
+        //TODO: implement
+        ((TextView) findViewById(R.id.text_view_information_daily_savings)).setText(String.format(getResources().getString(R.string.information_savings), "20kr"));
+    }
+
     public void enableEstimation(String estimationTitle, int categoryIndex) {
 
         clearEstimations();
@@ -262,14 +361,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             indicator.estimateValues(date, estimationTitle, categoryIndex);
         }
 
-        for (CircleFragment circleFragment : circleFragments) {
-            circleFragment.refresh();
-        }
-
+        carbonFootprintCircleFragment.refresh();
         housingDashboardFragment.refresh();
         transportationDashboardFragment.refresh();
-        weekFragment.refresh();
-        monthFragment.refresh();
         updateCO2left();
 
     }
@@ -281,122 +375,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             indicator.readValues(date);
         }
 
-        for (CircleFragment circleFragment : circleFragments) {
-            circleFragment.refresh();
-        }
-
+        carbonFootprintCircleFragment.refresh();
         housingDashboardFragment.refresh();
         transportationDashboardFragment.refresh();
-        weekFragment.refresh();
-        monthFragment.refresh();
         updateCO2left();
-
-    }
-
-    protected void goToIndicatorView(Indicator indicator) {
-
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-
-        for (CircleFragment circleFragment : circleFragments) {
-            ft.hide(circleFragment);
-        }
-
-        ft.commit();
-
-
-        ft = getFragmentManager().beginTransaction();
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-
-        for (CircleFragment circleFragment : circleFragments) {
-
-            circleFragment.saveInitialHeight();
-
-            if (indicator.getName().equals(circleFragment.getIndicator().getName()))
-                ft.show(circleFragment);
-
-        }
-
-        weekFragment.setIndicator(indicator);
-        weekFragment.refresh();
-        monthFragment.setIndicator(indicator);
-        monthFragment.refresh();
-
-        if (indicator != calories) {
-            transportationDashboardFragment.setIndicator(indicator);
-            housingDashboardFragment.setIndicator(indicator);
-            ft.show(transportationDashboardFragment);
-            ft.show(housingDashboardFragment);
-        } else {
-            ft.hide(transportationDashboardFragment);
-            ft.hide(housingDashboardFragment);
-        }
-
-        ft.commit();
-
-    }
-
-    protected void goToDailyView() {
-
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-
-        ft.hide(weekFragment);
-        ft.hide(monthFragment);
-        ft.commit();
-
-        informationCO2left.setVisibility(VISIBLE);
-
-        for (CircleFragment circleFragment : circleFragments) {
-            circleFragment.setActiveView(ActiveView.DAY);
-        }
-
-        transportationDashboardFragment.setActiveView(ActiveView.DAY);
-        housingDashboardFragment.setActiveView(ActiveView.DAY);
-    }
-
-    protected void goToWeeklyView() {
-
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-
-        ft.show(weekFragment);
-        ft.hide(monthFragment);
-        ft.commit();
-
-        informationCO2left.setVisibility(GONE);
-
-        for (CircleFragment circleFragment : circleFragments)
-            circleFragment.setActiveView(ActiveView.WEEK);
-
-        transportationDashboardFragment.setActiveView(ActiveView.WEEK);
-        housingDashboardFragment.setActiveView(ActiveView.WEEK);
-
-    }
-
-    protected void goToMonthlyView() {
-
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        //ft.addToBackStack("month");
-
-        ft.hide(weekFragment);
-        ft.show(monthFragment);
-        ft.commit();
-
-        informationCO2left.setVisibility(GONE);
-
-        for (CircleFragment circleFragment : circleFragments)
-            circleFragment.setActiveView(ActiveView.MONTH);
-
-        transportationDashboardFragment.setActiveView(ActiveView.MONTH);
-        housingDashboardFragment.setActiveView(ActiveView.MONTH);
 
     }
 
     protected void setUp() {
 
-        //Text
-        informationCO2left = findViewById(R.id.information_co2_left);
+        //Information text views
+        informationCO2Left = findViewById(R.id.information_co2_left);
+        informationSavings = findViewById(R.id.information_daily_savings);
+        informationDaysLeftSolarPanel = findViewById(R.id.information_days_left_solar_panel);
+        informationOwnEnergy = findViewById(R.id.information_own_energy);
+        informationSeparator = findViewById(R.id.separator_information);
+
+        cyclingDistanceFragment = (CyclingDistanceFragment) getFragmentManager().findFragmentById(R.id.cycling_distance);
+        solarPanelSizeFragment = (SolarPanelSizeFragment) getFragmentManager().findFragmentById(R.id.solar_panel_size);
+
+        categoriesBar = findViewById(R.id.categories_bar);
 
         //Colors
         int mRed = ContextCompat.getColor(getApplicationContext(), R.color.red);
@@ -412,14 +410,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int limitCarbonFootprint = 4;
 
         //Fragments
-        CircleFragment caloriesCircleFragment;
-        CircleFragment expensesCircleFragment;
-        CircleFragment carbonFootprintCircleFragment;
 
-        circleFragments.add(carbonFootprintCircleFragment = (CircleFragment) getFragmentManager().findFragmentById(R.id.dailyCarbonFootprint));
-
-        weekFragment = (WeekFragment) getFragmentManager().findFragmentById(R.id.weeklyData);
-        monthFragment = (MonthFragment) getFragmentManager().findFragmentById(R.id.monthlyData);
+        carbonFootprintCircleFragment = (CircleFragment) getFragmentManager().findFragmentById(R.id.dailyCarbonFootprint);
 
         transportationDashboardFragment = (CategoryFragment) getFragmentManager().findFragmentById(R.id.transportation_dashboard_fragment);
         housingDashboardFragment = (CategoryFragment) getFragmentManager().findFragmentById(R.id.housing_dashboard_fragment);
@@ -499,14 +491,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         carbonFootprint.setDecimalsNumber(1);
 
         carbonFootprintCircleFragment.setIndicator(carbonFootprint);
-        carbonFootprintCircleFragment.setFormat(CircularIndicator.Format.CIRCLE_IMG_TEXT);
         carbonFootprintCircleFragment.setUp();
-
-        weekFragment.setIndicator(carbonFootprint);
-        weekFragment.setUp();
-
-        monthFragment.setIndicator(carbonFootprint);
-        monthFragment.setUp();
 
         transportationDashboardFragment.setCategory(transportation);
         transportationDashboardFragment.setCategoryIndex(0);
@@ -519,10 +504,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         housingDashboardFragment.setUp();
 
         indicatorsBarFragment.setUp();
+        cyclingDistanceFragment.setUp();
+        solarPanelSizeFragment.setUp();
+
+        //TODO: test
+        solarPanelSizeFragment.addButton("3 kW");
+        solarPanelSizeFragment.addButton("4 kW");
+        solarPanelSizeFragment.addButton("5 kW");
+        solarPanelSizeFragment.addButton("6 kW");
 
         updateCO2left();
-
-        // Drawer setup
+        updateSavings();
         setUpNavigationView();
     }
 }
