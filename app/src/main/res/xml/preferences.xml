@@ -5,7 +5,7 @@
             android:dialogTitle="@string/pref_personal_dialog_name"
             android:key="pref_key_personal_name"
             android:summary="@string/pref_personal_summary_name"
-            android:title="@string/pref_personal_name" />
+            android:title="@string/pref_personal_name"/>
         <EditTextPreference
             android:dialogTitle="@string/pref_personal_dialog_email"
             android:key="pref_key_personal_email"
@@ -34,6 +34,7 @@
         <CheckBoxPreference
             android:key="pref_key_car_owner"
             android:title="@string/pref_car_owner"
+            android:summary="No"
             android:defaultValue="false" />
         <EditTextPreference
             android:dialogTitle="@string/pref_car_dialog_price"
