@@ -16,23 +16,25 @@ import java.util.Date;
  */
 public class Indicator {
 
-    private InputStream inputStream;
-    private String name;
-    private ArrayList<String> columnNames;
+    protected InputStream inputStream;
+    protected String name;
+    protected ArrayList<String> columnNames;
 
     //Charts configs
-    private ArrayList<Integer> colors;
-    private int limitColor;
+    protected ArrayList<Integer> colors;
+    protected int limitColor;
 
-    private int maxValue;
-    private int limitValue;
-    private String unit;
-    private int decimalsNumber;
+    protected int maxValue;
+    protected int limitValue;
+    protected String unit;
+    protected int decimalsNumber;
+
+    protected Energy energy;
 
     //TODO: adapt to real data
-    private ArrayList<Float> dailyValues = new ArrayList<Float>();
-    private ArrayList<ArrayList<Float>> weeklyValues = new ArrayList<ArrayList<Float>>();
-    private ArrayList<ArrayList<Float>> monthlyValues = new ArrayList<ArrayList<Float>>();
+    protected ArrayList<Float> dailyValues = new ArrayList<Float>();
+    protected ArrayList<ArrayList<Float>> weeklyValues = new ArrayList<ArrayList<Float>>();
+    protected ArrayList<ArrayList<Float>> monthlyValues = new ArrayList<ArrayList<Float>>();
     //protected ArrayList<ArrayList<Integer>> yearlyValues = new ArrayList<ArrayList<Integer>>();
 
 
@@ -59,6 +61,7 @@ public class Indicator {
     public void setDecimalsNumber(int decimalsNumber) {
         this.decimalsNumber = decimalsNumber;
     }
+
 
     public Indicator(InputStream inputStream, String name, String unit, ArrayList<String> columnNames){
         this.inputStream = inputStream;
@@ -119,9 +122,13 @@ public class Indicator {
         this.inputStream = inputStream;
     }
 
+    public void calculateTodaysEnergyValue() {} //TODO: abstract
+
+    public void estimateTodaysValueWithSolarPanel(int pvSystemSize) {} //TODO: abstract
+
     public ArrayList<Float> calculateAverage(ArrayList<ArrayList<Float>> values) {
 
-        ArrayList<Float> weekAverage = new ArrayList<Float>();
+        ArrayList<Float> weekAverage = new ArrayList<>();
         float temp;
         int n;
 
@@ -154,7 +161,7 @@ public class Indicator {
     }
 
     public void readValues(Date date) {
-        readDailyValues(date);
+        readTodaysValues(date);
         readWeeklyValues(date);
         readMonthlyValues(date);
     }
@@ -176,14 +183,14 @@ public class Indicator {
             while((!((line = reader.readLine()).startsWith(name))) || (line == null)){
             }
             line = reader.readLine();;
-            ArrayList<String> raw = new ArrayList<String>(Arrays.asList(line.split(",")));
+            ArrayList<String> raw = new ArrayList<>(Arrays.asList(line.split(",")));
 
             if (raw.contains(columnName)) {
                 columnIndex = raw.indexOf(columnName);
 
                 while(!((line = reader.readLine()).startsWith(dateFormat.format(date))) || (line == null)) {
                 }
-                raw = new ArrayList<String>(Arrays.asList(line.split(",")));
+                raw = new ArrayList<>(Arrays.asList(line.split(",")));
                 dailyValues.set(categoryIndex, Float.parseFloat(raw.get(columnIndex)));
             }
 
@@ -192,7 +199,7 @@ public class Indicator {
 
                 while(!((line = reader.readLine()).startsWith(dateFormat.format(date))) || (line == null)) {
                 }
-                raw = new ArrayList<String>(Arrays.asList(line.split(",")));
+                raw = new ArrayList<>(Arrays.asList(line.split(",")));
                 dailyValues.set(categoryIndex, Float.parseFloat(raw.get(columnIndex))); //TODO: throw exception
             }
 
@@ -209,9 +216,9 @@ public class Indicator {
 
     }
 
-    public void readDailyValues(Date date){
+    public void readTodaysValues(Date date){
         dailyValues.clear();
-        ArrayList<Integer> columnIndexes = new ArrayList<Integer>();
+        ArrayList<Integer> columnIndexes = new ArrayList<>();
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
         BufferedReader reader = new BufferedReader(inputStreamReader);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); //TODO: move, maybe
@@ -222,7 +229,7 @@ public class Indicator {
             while((!((line = reader.readLine()).startsWith(name))) || (line == null)){
             }
             line = reader.readLine();;
-            ArrayList<String> raw = new ArrayList<String>(Arrays.asList(line.split(",")));
+            ArrayList<String> raw = new ArrayList<>(Arrays.asList(line.split(",")));
 
             for (String columnName: columnNames) {
                 if (raw.contains(columnName))
@@ -230,7 +237,7 @@ public class Indicator {
             }
             while(!((line = reader.readLine()).startsWith(dateFormat.format(date))) || (line == null)) {
             }
-            raw = new ArrayList<String>(Arrays.asList(line.split(",")));
+            raw = new ArrayList<>(Arrays.asList(line.split(",")));
 
             for (Integer columnIndex: columnIndexes) {
                 dailyValues.add(Float.parseFloat(raw.get(columnIndex)));
@@ -261,7 +268,7 @@ public class Indicator {
             while((!((line = reader.readLine()).startsWith(name))) || (line == null)){
             }
             line = reader.readLine();
-            ArrayList<String> raw = new ArrayList<String>(Arrays.asList(line.split(",")));
+            ArrayList<String> raw = new ArrayList<>(Arrays.asList(line.split(",")));
 
             if (raw.contains(columnName)) {
                 columnIndex = raw.indexOf(columnName);
@@ -269,7 +276,7 @@ public class Indicator {
                 while(!((line = reader.readLine()).startsWith(dateFormat.format(date))) || (line == null)) {
                 }
                 for (int i=0; i<7; i++){ //TODO: prevent missing data
-                    raw = new ArrayList<String>(Arrays.asList(line.split(",")));
+                    raw = new ArrayList<>(Arrays.asList(line.split(",")));
                     weeklyValues.get(categoryIndex).set(i, Float.parseFloat(raw.get(columnIndex)));
                     line = reader.readLine();
                 }
@@ -279,7 +286,7 @@ public class Indicator {
                 while(!((line = reader.readLine()).startsWith(dateFormat.format(date))) || (line == null)) {
                 }
                 for (int i=0; i<7; i++){ //TODO: prevent missing data
-                    raw = new ArrayList<String>(Arrays.asList(line.split(",")));
+                    raw = new ArrayList<>(Arrays.asList(line.split(",")));
                     weeklyValues.get(categoryIndex).set(i, Float.parseFloat(raw.get(columnIndex)));
                     line = reader.readLine();
                 }
@@ -367,7 +374,7 @@ public class Indicator {
                 while(!((line = reader.readLine()).startsWith(dateFormat.format(date))) || (line == null)) {
                 }
                 while((line.startsWith(dateFormat.format(date))) && (line != null)) {
-                    raw = new ArrayList<String>(Arrays.asList(line.split(",")));
+                    raw = new ArrayList<>(Arrays.asList(line.split(",")));
                     monthlyValues.get(categoryIndex).set(i, Float.parseFloat(raw.get(columnIndex)));//TODO: improve, errors
                     line = reader.readLine();
                     i++;
@@ -405,7 +412,7 @@ public class Indicator {
             while(!((line = reader.readLine()).startsWith(dateFormat.format(date))) || (line == null)) {
             }
             while((line.startsWith(dateFormat.format(date))) && (line != null)) {
-                raw = new ArrayList<String>(Arrays.asList(line.split(",")));
+                raw = new ArrayList<>(Arrays.asList(line.split(",")));
                 for (int j = 0; j < columnIndexes.size(); j++)
                     monthlyValues.get(j).add(Float.parseFloat(raw.get(columnIndexes.get(j))));
                 line = reader.readLine();

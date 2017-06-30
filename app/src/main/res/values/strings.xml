@@ -5,6 +5,18 @@
     <string name="estimation_cycling_title">Cycling</string>
     <string name="estimation_electric_car_title">Electric car</string>
 
+    <string name="carbon_footprint_name">Carbon footprint</string>
+    <string name="carbon_footprint_unit">kgCO2</string> <!-- TODO: support subscripts in the circular indicator -->
+
+    <string name="expenses_name">Expenses</string>
+    <string name="expenses_unit">kr</string>
+
+    <string name="calories_name">Calories</string>
+    <string name="calories_unit">kCal</string>
+
+    <string name="energy_consumption_name">Energy consumption</string>
+    <string name="energy_consumption_unit">kWh</string>
+
     <string name="information_co2_left">You have %1$s kgCO<sub><small>2</small></sub> left!</string>
     <string name="information_savings">%1$s daily savings</string>
     <string name="information_days_left_solar_panel">1253 days to finance your solar roof</string>
