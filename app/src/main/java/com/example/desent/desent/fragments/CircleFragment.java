@@ -120,7 +120,7 @@ public class CircleFragment extends Fragment {
     public void setUp(){
 
         circularIndicator = getView().findViewById(R.id.circularIndicator);
-        circularIndicator.setMaxValue(indicator.getMaxValue());
+        circularIndicator.setMaxValue((int) indicator.getMaxValue()); //TODO: change
         circularIndicator.setUnit(indicator.getUnit());
         circularIndicator.setColors(indicator.getColors());
         circularIndicator.setValues(indicator.getDailyValues());

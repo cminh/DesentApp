@@ -27,7 +27,6 @@ public class CategoryFragment extends Fragment {
     protected int categoryIndex;
     protected int startAngle = 270;
     protected int sweepAngle = 360;
-    protected int decimalsNumber;
     protected MainActivity.ActiveView activeView;
 
     public MainActivity.ActiveView getActiveView() {
@@ -79,34 +78,34 @@ public class CategoryFragment extends Fragment {
 
     public void refresh(){
 
-        ArrayList<Float> values = new ArrayList<>();
+        float[] values = new float[1]; //TODO: change
 
         switch (activeView) {
 
             case TODAY:
 
-                if ((indicator != null) && (categoryIndex < indicator.getDailyValues().size())) {
-                    values.add(indicator.getDailyValues().get(categoryIndex));
+                if ((indicator != null) && (categoryIndex < indicator.getDailyValues().length)) {
+                    values[0] = indicator.getDailyValues()[categoryIndex];
                     circularIndicator.setValues(values);
-                    ((TextView) getView().findViewById(R.id.category_content)).setText(Utility.floatToStringNDecimals(values.get(0), indicator.getDecimalsNumber()) + " " + indicator.getUnit());
+                    ((TextView) getView().findViewById(R.id.category_content)).setText(Utility.floatToStringNDecimals(values[0], indicator.getDecimalsNumber()) + " " + indicator.getUnit());
                 }
                 break;
 
             case WEEK:
 
                 if ((indicator != null) && (categoryIndex < indicator.getWeeklyValues().size())) {
-                    values.add(indicator.calculateWeekAverage().get(categoryIndex));
+                    values[0] = indicator.calculateWeekAverage()[categoryIndex];
                     circularIndicator.setValues(values);
-                    ((TextView) getView().findViewById(R.id.category_content)).setText(Utility.floatToStringNDecimals(values.get(0), indicator.getDecimalsNumber()) + " " + indicator.getUnit());
+                    ((TextView) getView().findViewById(R.id.category_content)).setText(Utility.floatToStringNDecimals(values[0], indicator.getDecimalsNumber()) + " " + indicator.getUnit());
                 }
                 break;
 
             case MONTH:
 
                 if ((indicator != null) && (categoryIndex < indicator.getMonthlyValues().size())) {
-                    values.add(indicator.calculateMonthAverage().get(categoryIndex));
+                    values[0] = indicator.calculateMonthAverage()[categoryIndex];
                     circularIndicator.setValues(values);
-                    ((TextView) getView().findViewById(R.id.category_content)).setText(Utility.floatToStringNDecimals(values.get(0), indicator.getDecimalsNumber()) + " " + indicator.getUnit());
+                    ((TextView) getView().findViewById(R.id.category_content)).setText(Utility.floatToStringNDecimals(values[0], indicator.getDecimalsNumber()) + " " + indicator.getUnit());
                 }
                 break;
         }

@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class CircularIndicator extends Chart {
 
-    protected ArrayList<Float> values;
+    protected float[] values;
 
     public enum Format {
         TEXT_ONLY,
@@ -50,7 +50,7 @@ public class CircularIndicator extends Chart {
 
     //Text
     protected String unit;
-    protected int maxValue;
+    protected float maxValue;
     protected float totalValue;
 
     //Image
@@ -67,20 +67,20 @@ public class CircularIndicator extends Chart {
         this.format = format;
     }
 
-    public void setMaxValue(int maxValue) { this.maxValue = maxValue; }
+    public void setMaxValue(float maxValue) { this.maxValue = maxValue; }
 
-    public int getMaxValue() {return this.maxValue; }
+    public float getMaxValue() {return this.maxValue; }
 
     public void setColors(List<Integer> colors) {this.colors = colors; }
 
     public List<Integer> getColors() {return this.colors; }
 
-    public void setValues(ArrayList<Float> values) {
+    public void setValues(float[] values) {
         this.values = values;
         updateValues();
     }
 
-    public ArrayList<Float> getValues(){return this.values; }
+    public float[] getValues(){return this.values; }
 
     public int getStartAngle() {
         return startAngle;
@@ -127,19 +127,19 @@ public class CircularIndicator extends Chart {
     }
 
     protected int valueToAngle(Float value){
-        return (int) (sweepAngle * value) / maxValue ;
+        return (int) ((totalValue<maxValue) ? (sweepAngle * value) / maxValue : (sweepAngle * value) /totalValue);
     }
 
     public void updateTotalValue(){
         totalValue = 0;
-        for (int i=0; i<values.size(); i++){
-            totalValue = totalValue + values.get(i);
+        for (int i=0; i<values.length; i++){
+            totalValue = totalValue + values[i];
         }
     }
 
     public void updateImgState(){
         if (maxValue != 0) {
-            int state = (int) ((numberOfStates - 1) * totalValue) / maxValue + 1;
+            int state = (int) (((numberOfStates - 1) * totalValue) / maxValue) + 1;
             imgState = (state < numberOfStates) ? state : numberOfStates;
             if (imgName != null) {
                 Resources res = getResources();
@@ -161,15 +161,12 @@ public class CircularIndicator extends Chart {
         float tempSweepAngle;
 
         if ((format != Format.TEXT_ONLY) && (format != Format.IMG_ONLY) && (maxValue !=0)) {
-            for (int i = 0; i < values.size(); i++) {
-                tempSweepAngle = valueToAngle(values.get(i));
-                mProgressPaint.setColor(colors.get(i));
-                if (tempStartAngle+tempSweepAngle < startAngle+sweepAngle)
+                for (int i = 0; i < values.length; i++) {
+                    tempSweepAngle = valueToAngle(values[i]);
+                    mProgressPaint.setColor(colors.get(i));
                     canvas.drawArc(mCircleBounds, tempStartAngle, tempSweepAngle, false, mProgressPaint);
-                else
-                    canvas.drawArc(mCircleBounds, tempStartAngle, sweepAngle-tempStartAngle+startAngle, false, mProgressPaint);
-                tempStartAngle = tempStartAngle + tempSweepAngle;
-            }
+                    tempStartAngle = tempStartAngle + tempSweepAngle;
+                }
         }
 
         if ((format == Format.CIRCLE_IMG_TEXT) && (imgName != null)){

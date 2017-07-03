@@ -25,4 +25,8 @@ public class Utility {
     public static String floatToStringNDecimals(float value, int n){
         return String.format("%."+ String.valueOf(n) + "f", value);
     }
+
+    public static String doubleToStringNDecimals(double value, int n){
+        return String.format("%."+ String.valueOf(n) + "f", value);
+    }
 }

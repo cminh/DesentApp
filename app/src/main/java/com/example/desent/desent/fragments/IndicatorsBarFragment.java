@@ -44,6 +44,20 @@ public class IndicatorsBarFragment extends Fragment {
         indicators.add(indicator);
     }
 
+    public void updateIndicatorsBarItem(Indicator indicator) {
+        IndicatorsBarItem indicatorsBarItem = (IndicatorsBarItem) ((ViewGroup) getView()).getChildAt(indicators.indexOf(indicator));
+        indicatorsBarItem.setValue(indicator.getDailyValue(), indicator.getDecimalsNumber());
+
+    }
+
+    public void refresh() {
+        ViewGroup indicatorsBar = (ViewGroup) getView();
+        indicatorsBar.removeAllViews();
+
+        setUp();
+
+    }
+
     public void setUp() {
 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT);

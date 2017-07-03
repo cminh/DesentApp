@@ -53,6 +53,7 @@ public class SolarPanelSizeFragment extends Fragment implements View.OnClickList
         MainActivity main = (MainActivity) getActivity();
         if (main.getActiveEstimation() == MainActivity.ActiveEstimation.SOLAR_INSTALLATION) {
             main.getCarbonFootprint().estimateTodaysValueWithSolarPanel(pvSystemSizes[buttonsContainer.indexOfChild(activeButton)/2]);
+            main.getExpenses().estimateTodaysValueWithSolarPanel(pvSystemSizes[buttonsContainer.indexOfChild(activeButton)/2]);
             main.refreshAll();
         }
     }

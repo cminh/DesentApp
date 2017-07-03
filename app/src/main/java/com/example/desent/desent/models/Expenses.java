@@ -23,22 +23,13 @@ public class Expenses extends Indicator {
     }
 
     @Override
-    public void readTodaysValues(Date date){ //TODO: remove date parameter
-        dailyValues.clear();
-        dailyValues.add((float) 0);
-        dailyValues.add((float) 0);
-        calculateTodaysEnergyValue();
-        estimateDailyValues(date, columnNames.get(0), 0);
-    }
-
-    @Override
     public void calculateTodaysEnergyValue() {
-        dailyValues.set(1, (float) energy.calculateTodaysElectricityCost());
+        dailyValues[1] = (float) energy.calculateTodaysElectricityCost();
     }
 
     @Override
     public void estimateTodaysValueWithSolarPanel(int pvSystemSize) {
-        dailyValues.set(1, (float) energy.calculateTodaysElectricityCost(pvSystemSize)); //TODO: change to float
+        dailyValues[1] = (float) energy.calculateTodaysElectricityCost(pvSystemSize); //TODO: change to float
     }
 
 }

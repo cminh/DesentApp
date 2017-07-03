@@ -42,7 +42,6 @@ import static android.view.View.VISIBLE;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    Date date = null;
     Spinner timeSpinner;
     ActiveEstimation activeEstimation;
 
@@ -78,6 +77,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
     private  Toolbar toolbar;
     private NavigationView navigationView;
+
+    public Expenses getExpenses() {
+        return expenses;
+    }
+
+    public void setExpenses(Expenses expenses) {
+        this.expenses = expenses;
+    }
 
     public CarbonFootprint getCarbonFootprint() {
         return carbonFootprint;
@@ -408,7 +415,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void updateCO2left(){
         //TODO: make another message when the amount of CO2 is exceeded?
-        ((TextView) findViewById(R.id.text_view_information_co2_left)).setText(String.format(getResources().getString(R.string.information_co2_left), Utility.floatToStringNDecimals(carbonFootprint.getLimitValue()-carbonFootprint.getDailyValue(), carbonFootprint.getDecimalsNumber())));
+        ((TextView) findViewById(R.id.text_view_information_co2_left)).setText(String.format(getResources().getString(R.string.information_co2_left), Utility.doubleToStringNDecimals(carbonFootprint.getLimitValue()-carbonFootprint.getDailyValue(), carbonFootprint.getDecimalsNumber())));
     }
 
     private void updateSavings() {
@@ -421,6 +428,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         carbonFootprintCircleFragment.refresh();
         housingDashboardFragment.refresh();
         transportationDashboardFragment.refresh();
+        indicatorsBarFragment.refresh();
     }
 
     public void enableEstimation(String estimationTitle, int categoryIndex) {
@@ -428,7 +436,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         clearEstimations();
 
         for (Indicator indicator : indicators) {
-            indicator.estimateValues(date, estimationTitle, categoryIndex);
+            indicator.estimateValues(estimationTitle, categoryIndex);
         }
 
         //TODO: test
@@ -446,12 +454,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //TODO: code duplication
         for (Indicator indicator : indicators) {
-            indicator.readValues(date);
+            indicator.readValues();
         }
 
         carbonFootprintCircleFragment.refresh();
         housingDashboardFragment.refresh();
         transportationDashboardFragment.refresh();
+        indicatorsBarFragment.refresh();
         updateCO2left();
 
     }
@@ -494,12 +503,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //Date
         InputStream inputStream = getResources().openRawResource(R.raw.data);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            date = dateFormat.parse("2017-04-01");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
 
         //Indicators
         energy = new Energy(getApplicationContext());
@@ -541,13 +544,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         housing.setDecimalsNumber(1);
 
         for (Indicator indicator : indicators) {
-            indicator.readTodaysValues(date);
-            indicator.readWeeklyValues(date);
-            indicator.readMonthlyValues(date);
+            indicator.readTodaysValues();
+            indicator.readWeeklyValues();
+            indicator.readMonthlyValues();
         }
 
-        transportation.readTodaysValues(date);
-        housing.readTodaysValues(date);
+        transportation.readTodaysValues();
+        housing.readTodaysValues();
 
         calories.setMaxValue(targetCalories);
         calories.setLimitValue(targetCalories);
