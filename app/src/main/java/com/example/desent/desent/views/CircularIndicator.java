@@ -71,6 +71,11 @@ public class CircularIndicator extends Chart {
 
     public float getMaxValue() {return this.maxValue; }
 
+    public void setColor(int color) {
+        this.colors = new ArrayList<Integer>();
+        colors.add(color);
+    }
+
     public void setColors(List<Integer> colors) {this.colors = colors; }
 
     public List<Integer> getColors() {return this.colors; }

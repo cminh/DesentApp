@@ -10,6 +10,7 @@ import android.widget.Space;
 
 import com.example.desent.desent.R;
 import com.example.desent.desent.activities.MainActivity;
+import com.example.desent.desent.models.Indicator;
 
 /**
  * Created by celine on 26/06/17.
@@ -51,11 +52,9 @@ public class SolarPanelSizeFragment extends Fragment implements View.OnClickList
 
         //TODO: don't think is a good way to do it
         MainActivity main = (MainActivity) getActivity();
-        if (main.getActiveEstimation() == MainActivity.ActiveEstimation.SOLAR_INSTALLATION) {
-            main.getCarbonFootprint().estimateTodaysValueWithSolarPanel(pvSystemSizes[buttonsContainer.indexOfChild(activeButton)/2]);
-            main.getExpenses().estimateTodaysValueWithSolarPanel(pvSystemSizes[buttonsContainer.indexOfChild(activeButton)/2]);
-            main.refreshAll();
-        }
+        for(Indicator indicator : main.getIndicators())
+            indicator.setPvSystemSize(pvSystemSizes[buttonsContainer.indexOfChild(activeButton)/2]);
+        main.refreshAll();
     }
 
     @Override

@@ -31,17 +31,6 @@ public class CircleFragment extends Fragment {
     protected int numberOfStates = 0;
     protected int decimalsNumber;
 
-    protected MainActivity.ActiveView activeView;
-
-    public MainActivity.ActiveView getActiveView() {
-        return activeView;
-    }
-
-    public void setActiveView(MainActivity.ActiveView activeView) {
-        this.activeView = activeView;
-        refresh();
-    }
-
     public int getDecimalsNumber() {
         return decimalsNumber;
     }
@@ -99,20 +88,7 @@ public class CircleFragment extends Fragment {
 
     public void refresh(){
 
-        switch (activeView){
-
-            case TODAY:
-                circularIndicator.setValues(indicator.getDailyValues());
-                break;
-
-            case WEEK:
-                circularIndicator.setValues(indicator.calculateWeekAverage());
-                break;
-
-            case MONTH:
-                circularIndicator.setValues(indicator.calculateMonthAverage());
-        }
-
+        circularIndicator.setValues(indicator.getAverageValues());
         circularIndicator.invalidate();
 
     }
@@ -123,7 +99,7 @@ public class CircleFragment extends Fragment {
         circularIndicator.setMaxValue((int) indicator.getMaxValue()); //TODO: change
         circularIndicator.setUnit(indicator.getUnit());
         circularIndicator.setColors(indicator.getColors());
-        circularIndicator.setValues(indicator.getDailyValues());
+        circularIndicator.setValues(indicator.getAverageValues());
         circularIndicator.setStartAngle(this.startAngle);
         circularIndicator.setSweepAngle(this.sweepAngle);
         circularIndicator.setImgName(this.imgName);

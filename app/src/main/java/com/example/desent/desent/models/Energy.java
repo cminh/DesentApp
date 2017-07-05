@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
 
+import com.example.desent.desent.utils.TimeScale;
 import com.opencsv.CSVReader;
 
 import java.io.InputStream;
@@ -129,71 +130,117 @@ public class Energy {
         return hourlyCO2;
     }
 
-    public double calculateTodaysElectricityCost() {
+    public double calculateDailyAverage(double value, int start, int stop) {
+        return ((stop > start) ? value / (1 + (stop-start)/24) : value);
+    }
 
+    //TODO: check
+    public int[] indexesFromTimeScale(TimeScale timeScale) {
+
+        int[] indexes = new int[]{0,0};
         Calendar calendar = Calendar.getInstance();
-        int start = (calendar.get(Calendar.DAY_OF_YEAR)-1) * 24;
-        int stop = start + calendar.get(Calendar.HOUR_OF_DAY);
+
+        switch (timeScale) {
+            case TODAY:
+                indexes[0] = (calendar.get(Calendar.DAY_OF_YEAR)-1) * 24;
+                indexes[1] = indexes[0] + calendar.get(Calendar.HOUR_OF_DAY);
+                break;
+            case LAST_24_HOURS:
+                indexes[0] = (calendar.get(Calendar.DAY_OF_YEAR)-2) * 24 + calendar.get(Calendar.HOUR_OF_DAY);
+                indexes[1] = indexes[0] + 24;
+                break;
+            case WEEK:
+                indexes[0] = ((calendar.get(Calendar.WEEK_OF_YEAR)-1) * 7 - 1) * 24;
+                indexes[1] = indexes[0] + (calendar.get(Calendar.DAY_OF_WEEK)) * 24 + calendar.get(Calendar.HOUR_OF_DAY);
+                break;
+            case MONTH:
+                indexes[1] = (calendar.get(Calendar.DAY_OF_YEAR)-1)*24 + calendar.get(Calendar.HOUR_OF_DAY);
+                indexes[0] = indexes[1] - (calendar.get(Calendar.DAY_OF_MONTH)-1)*24 - calendar.get(Calendar.HOUR_OF_DAY);
+                break;
+        }
+
+        return indexes;
+    }
+
+    public double calculateElectricityCost(TimeScale timeScale) {
         double[] hourlyCost;
-        double todaysCost = 0;
+        double electricityCost = 0;
+        int[] indexes = indexesFromTimeScale(timeScale);
 
-        hourlyCost = calculateHourlyElectricityCost(start, stop); //TODO: calculate directly in this method?
+        hourlyCost = calculateHourlyElectricityCost(indexes[0], indexes[1]); //TODO: calculate directly in this method?
 
-        for(int i = start; i<stop; i++) {
-            todaysCost += hourlyCost[i];
+        for(int i = indexes[0]; i<indexes[1]; i++) {
+            electricityCost += hourlyCost[i];
         }
         // TODO make it a synchronous task - hourly or when user reopens the app
-        return todaysCost;
-
+        return calculateDailyAverage(electricityCost, indexes[0], indexes[1]);
     }
 
-    public double calculateTodaysElectricityCost(int pvSystemSize) {
-
-        Calendar calendar = Calendar.getInstance();
-        int start = (calendar.get(Calendar.DAY_OF_YEAR)-1) * 24;
-        int stop = start + calendar.get(Calendar.HOUR_OF_DAY);
+    public double calculateElectricityCost(TimeScale timeScale, int pvSystemSize) {
         double[] hourlyCost;
-        double todaysCost = 0;
+        double electricityCost = 0;
+        int[] indexes = indexesFromTimeScale(timeScale);
 
-        hourlyCost = calculateHourlyElectricityCost(start, stop, pvSystemSize); //TODO: calculate directly in this method?
+        hourlyCost = calculateHourlyElectricityCost(indexes[0], indexes[1], pvSystemSize); //TODO: calculate directly in this method?
 
-        for(int i = start; i<stop; i++) {
-            todaysCost += hourlyCost[i];
+        for(int i = indexes[0]; i<indexes[1]; i++) {
+            electricityCost += hourlyCost[i];
         }
         // TODO make it a synchronous task - hourly or when user reopens the app
-        return todaysCost;
+        return calculateDailyAverage(electricityCost, indexes[0], indexes[1]);
 
     }
 
-    public double calculateTodaysCO2FromElectricity() {
-        Calendar calendar = Calendar.getInstance();
-        int start = (calendar.get(Calendar.DAY_OF_YEAR)-1) * 24;
-        int stop = start + calendar.get(Calendar.HOUR_OF_DAY);
-        double todaysLoad = 0;
+    public double calculateCO2FromElectricity(TimeScale timeScale) {
+        double load = 0;
+        int[] indexes = indexesFromTimeScale(timeScale);
 
-
-        for(int i = start; i<stop; i++) {
-            todaysLoad += load[i];
+        for(int i = indexes[0]; i<indexes[1]; i++) {
+            load += this.load[i];
         }
 
+        load = calculateDailyAverage(load, indexes[0], indexes[1]);
         // TODO make it a synchronous task - hourly or when user reopens the app
-        return CO2Factor*todaysLoad; // round to one decimal
+        return CO2Factor*load;
     }
 
-    public double calculateTodaysCO2FromElectricity(int pvSystemSize) {
-        Calendar calendar = Calendar.getInstance();
-        int start = (calendar.get(Calendar.DAY_OF_YEAR)-1) * 24;
-        int stop = start + calendar.get(Calendar.HOUR_OF_DAY);
-        double todaysCO2 = 0;
+    public double calculateCO2FromElectricity(TimeScale timeScale, int pvSystemSize) {
+        double co2 = 0;
         double[] hourlyCO2;
+        int[] indexes = indexesFromTimeScale(timeScale);
 
-        hourlyCO2 = calculateHourlyCO2(start, stop, pvSystemSize);
+        hourlyCO2 = calculateHourlyCO2(indexes[0], indexes[1], pvSystemSize);
 
-        for(int i = start; i<stop; i++) {
-            todaysCO2 += hourlyCO2[i];
+        for(int i = indexes[0]; i<indexes[1]; i++) {
+            co2 += hourlyCO2[i];
         }
+        // TODO make it a synchronous task - hourly or when user reopens the app
+        return calculateDailyAverage(co2, indexes[0], indexes[1]);
+    }
+
+    //TODO: check
+    public double calculateEnergyConsumption(TimeScale timeScale) {
+        double load = 0;
+        int[] indexes = indexesFromTimeScale(timeScale);
+
+        for(int i = indexes[0]; i<indexes[1]; i++) {
+            load += this.load[i];
+        }
+        // TODO make it a synchronous task - hourly or when user reopens the app
+        return calculateDailyAverage(load, indexes[0], indexes[1]);
+
+    }
+
+    //TODO: check
+    public double calculateEnergyConsumption(TimeScale timeScale, int pvSystemSize) {
+        double load = 0;
+        int[] indexes = indexesFromTimeScale(timeScale);
+
+        for (int i=indexes[0]; i<indexes[1]; i++)
+            load += this.load[i] - this.pv[i]*pvSystemSize;
 
         // TODO make it a synchronous task - hourly or when user reopens the app
-        return todaysCO2; // round to one decimal
+        return calculateDailyAverage(load, indexes[0], indexes[1]);
+
     }
 }

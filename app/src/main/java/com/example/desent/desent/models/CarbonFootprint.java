@@ -3,10 +3,12 @@ package com.example.desent.desent.models;
 import android.content.Context;
 
 import com.example.desent.desent.R;
+import com.example.desent.desent.utils.EstimationType;
+import com.example.desent.desent.utils.TimeScale;
+import com.example.desent.desent.utils.Utility;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by celine on 29/06/17.
@@ -23,12 +25,32 @@ public class CarbonFootprint extends Indicator {
     }
 
     @Override
-    public void calculateTodaysEnergyValue() {
-        dailyValues[1] = (float) energy.calculateTodaysCO2FromElectricity();
-    }
+    public void calculateValues() {
 
-    @Override
-    public void estimateTodaysValueWithSolarPanel(int pvSystemSize) {
-        dailyValues[1] = (float) energy.calculateTodaysCO2FromElectricity(pvSystemSize); //TODO: change to float
+        switch (estimationType) {
+
+            case NONE:
+                estimateDailyValues(columnNames.get(0), 0);
+                averageValues[1] = (float) energy.calculateCO2FromElectricity(timeScale);
+                break;
+            case SOLAR_INSTALLATION:
+                estimateDailyValues(columnNames.get(0), 0);
+                averageValues[1] = (float) energy.calculateCO2FromElectricity(timeScale, pvSystemSize);
+                break;
+            case WALKING:
+                estimateDailyValues("Walking", 0);
+                averageValues[1] = (float) energy.calculateCO2FromElectricity(timeScale);
+                break;
+            case CYCLING:
+                estimateDailyValues("Cycling", 0);
+                averageValues[1] = (float) energy.calculateCO2FromElectricity(timeScale);
+                break;
+            case ELECTRIC_CAR:
+                estimateDailyValues("Electric car", 0);
+                averageValues[1] = (float) energy.calculateCO2FromElectricity(timeScale);
+                break;
+
+        }
+
     }
 }

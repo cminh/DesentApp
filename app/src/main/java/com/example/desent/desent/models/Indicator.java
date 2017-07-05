@@ -1,6 +1,8 @@
 package com.example.desent.desent.models;
 
-import com.example.desent.desent.views.EstimationButton;
+import com.example.desent.desent.R;
+import com.example.desent.desent.utils.EstimationType;
+import com.example.desent.desent.utils.TimeScale;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,6 +18,10 @@ import java.util.Date;
  * Created by celine on 24/04/17.
  */
 public class Indicator {
+
+    protected TimeScale timeScale;
+    protected EstimationType estimationType;
+    protected int pvSystemSize;
 
     protected InputStream inputStream;
     protected String name;
@@ -36,11 +42,34 @@ public class Indicator {
     protected Date date;
 
     //TODO: adapt to real data
-    protected float[] dailyValues = new float[2];
+    protected float[] averageValues = new float[]{0,0};
     protected ArrayList<ArrayList<Float>> weeklyValues = new ArrayList<ArrayList<Float>>();
     protected ArrayList<ArrayList<Float>> monthlyValues = new ArrayList<ArrayList<Float>>();
     //protected ArrayList<ArrayList<Integer>> yearlyValues = new ArrayList<ArrayList<Integer>>();
 
+    public int getPvSystemSize() {
+        return pvSystemSize;
+    }
+
+    public void setPvSystemSize(int pvSystemSize) {
+        this.pvSystemSize = pvSystemSize;
+    }
+
+    public TimeScale getTimeScale() {
+        return timeScale;
+    }
+
+    public void setTimeScale(TimeScale timeScale) {
+        this.timeScale = timeScale;
+    }
+
+    public EstimationType getEstimationType() {
+        return estimationType;
+    }
+
+    public void setEstimationType(EstimationType estimationType) {
+        this.estimationType = estimationType;
+    }
 
     public float getLimitValue() {
         return limitValue;
@@ -131,21 +160,32 @@ public class Indicator {
         this.maxValue = maxValue;
     }
 
-    public InputStream getInputStream() {
+    public void calculateValues() {
 
-        return inputStream;
-    }
+        //TODO: temporary, will be removed later
+        switch(estimationType) {
+            case NONE:
+                estimateDailyValues("Tranportation", 0);
+                estimateDailyValues("Housing", 1);
+                break;
+            case SOLAR_INSTALLATION:
+                estimateDailyValues("Tranportation", 0);
+                estimateDailyValues("Solar panel", 1);
+                break;
+            case WALKING:
+                estimateDailyValues("Walking", 0);
+                estimateDailyValues("Housing", 1);
+                break;
+            case CYCLING:
+                estimateDailyValues("Cycling", 0);
+                estimateDailyValues("Housing", 1);
+                break;
+            case ELECTRIC_CAR:
+                estimateDailyValues("Electric car", 0);
+                estimateDailyValues("Housing", 1);
+                break;
+        }
 
-    public void setInputStream(InputStream inputStream) {
-        this.inputStream = inputStream;
-    }
-
-    public void calculateTodaysEnergyValue() {}
-
-    public void estimateTodaysValueWithSolarPanel(int pvSystemSize) {}
-
-    public void calculateTodaysTransportationValue() {
-        estimateDailyValues(columnNames.get(0), 0);
     }
 
     public float[] calculateAverage(ArrayList<ArrayList<Float>> values) {
@@ -182,16 +222,6 @@ public class Indicator {
         estimateMonthlyValues(columnName, categoryIndex);
     }
 
-    public void readValues() {
-        readTodaysValues();
-        readWeeklyValues();
-        readMonthlyValues();
-    }
-
-    public void estimateDailyValues(EstimationButton estimationButton) {
-        estimateDailyValues(estimationButton.getName(), estimationButton.getCategoryIndex());
-    }
-
     public void estimateDailyValues(String columnName, int categoryIndex) {
         int columnIndex;
         int value = -1;
@@ -213,7 +243,7 @@ public class Indicator {
                 while(!((line = reader.readLine()).startsWith(dateFormat.format(date))) || (line == null)) {
                 }
                 raw = new ArrayList<>(Arrays.asList(line.split(",")));
-                dailyValues[categoryIndex] = Float.parseFloat(raw.get(columnIndex));
+                averageValues[categoryIndex] = Float.parseFloat(raw.get(columnIndex));
             }
 
             else if ((categoryIndex < columnNames.size()) && (raw.contains(columnNames.get(categoryIndex)))){
@@ -222,7 +252,7 @@ public class Indicator {
                 while(!((line = reader.readLine()).startsWith(dateFormat.format(date))) || (line == null)) {
                 }
                 raw = new ArrayList<>(Arrays.asList(line.split(",")));
-                dailyValues[categoryIndex] = Float.parseFloat(raw.get(columnIndex)); //TODO: throw exception
+                averageValues[categoryIndex] = Float.parseFloat(raw.get(columnIndex)); //TODO: throw exception
             }
 
 
@@ -238,14 +268,8 @@ public class Indicator {
 
     }
 
-    public void readTodaysValues(){
-        calculateTodaysEnergyValue();
-        estimateDailyValues(columnNames.get(0), 0);
-
-    }
-
     /**public void readTodaysValues(){
-        dailyValues.clear();
+        averageValues.clear();
         ArrayList<Integer> columnIndexes = new ArrayList<>();
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
         BufferedReader reader = new BufferedReader(inputStreamReader);
@@ -268,7 +292,7 @@ public class Indicator {
             raw = new ArrayList<>(Arrays.asList(line.split(",")));
 
             for (Integer columnIndex: columnIndexes) {
-                dailyValues.add(Float.parseFloat(raw.get(columnIndex)));
+                averageValues.add(Float.parseFloat(raw.get(columnIndex)));
             }
 
         } catch (IOException e) {
@@ -282,10 +306,6 @@ public class Indicator {
         }
 
     }**/
-
-    public void estimateWeeklyValues(EstimationButton estimationButton){
-        estimateWeeklyValues(estimationButton.getName(), estimationButton.getCategoryIndex());
-    }
 
     public void estimateWeeklyValues(String columnName, int categoryIndex){
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -369,9 +389,6 @@ public class Indicator {
 
     }
 
-    public void estimateMonthlyValues(EstimationButton estimationButton) {
-        estimateMonthlyValues(estimationButton.getName(), estimationButton.getCategoryIndex());
-    }
 
     public void estimateMonthlyValues(String columnName, int categoryIndex){
         int columnIndex;
@@ -456,12 +473,12 @@ public class Indicator {
         }
     }
 
-    public void setDailyValues (float[] dailyValues){
-        this.dailyValues = dailyValues;
+    public void setAverageValues(float[] averageValues){
+        this.averageValues = averageValues;
     }
 
-    public float[] getDailyValues(){
-        return this.dailyValues;
+    public float[] getAverageValues(){
+        return this.averageValues;
     }
 
     public void setWeeklyValues (ArrayList<ArrayList<Float>> weeklyValues){
@@ -482,7 +499,7 @@ public class Indicator {
 
     public float getDailyValue() {
         float sum = 0;
-        for (float dailyValue : dailyValues){
+        for (float dailyValue : averageValues){
             sum = sum + dailyValue;
         }
         return sum;

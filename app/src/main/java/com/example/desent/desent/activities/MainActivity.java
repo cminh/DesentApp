@@ -27,15 +27,15 @@ import com.example.desent.desent.fragments.IndicatorsBarFragment;
 import com.example.desent.desent.fragments.SolarPanelSizeFragment;
 import com.example.desent.desent.models.CarbonFootprint;
 import com.example.desent.desent.models.Energy;
+import com.example.desent.desent.models.EnergyConsumption;
 import com.example.desent.desent.models.Expenses;
 import com.example.desent.desent.models.Indicator;
+import com.example.desent.desent.utils.EstimationType;
+import com.example.desent.desent.utils.TimeScale;
 import com.example.desent.desent.utils.Utility;
 
 import java.io.InputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -43,7 +43,6 @@ import static android.view.View.VISIBLE;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     Spinner timeSpinner;
-    ActiveEstimation activeEstimation;
 
     //Fragments
     CircleFragment carbonFootprintCircleFragment;
@@ -63,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected Expenses expenses;
     protected CarbonFootprint carbonFootprint;
     protected Indicator transportation;
-    protected Indicator housing;
+    protected EnergyConsumption energyConsumption;
     protected Energy energy;
 
     //Information views
@@ -77,6 +76,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
     private  Toolbar toolbar;
     private NavigationView navigationView;
+
+    public ArrayList<Indicator> getIndicators() {
+        return indicators;
+    }
+
+    public void setIndicators(ArrayList<Indicator> indicators) {
+        this.indicators = indicators;
+    }
 
     public Expenses getExpenses() {
         return expenses;
@@ -94,32 +101,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.carbonFootprint = carbonFootprint;
     }
 
-    public ActiveEstimation getActiveEstimation() {
-        return activeEstimation;
-    }
-
-    public void setActiveEstimation(ActiveEstimation activeEstimation) {
-        this.activeEstimation = activeEstimation;
-    }
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         return false;
-    }
-
-    public enum ActiveView {
-        TODAY,
-        LAST_24_HOURS,
-        WEEK,
-        MONTH
-    }
-
-    public enum ActiveEstimation {
-        NONE,
-        SOLAR_INSTALLATION,
-        WALKING,
-        CYCLING,
-        ELECTRIC_CAR
     }
 
     @Override
@@ -150,7 +134,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //Spinners
         timeSpinner = (Spinner) findViewById(R.id.time_spinner);
-        //timeSpinner = new Spinner(getSupportActionBar().getThemedContext());
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.time_spinner_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         timeSpinner.setAdapter(adapter);
@@ -173,7 +156,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             case R.id.navigation_none:
 
-                                activeEstimation = ActiveEstimation.NONE;
+                                for (Indicator indicator:indicators)
+                                    indicator.setEstimationType(EstimationType.NONE);
 
                                 if (timeSpinner.getSelectedItemPosition() == 0)
                                     informationCO2Left.setVisibility(View.VISIBLE);
@@ -196,8 +180,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 bottomNavigationView.setItemIconTintList(ContextCompat.getColorStateList(getApplicationContext(),R.color.selector_bottom_navigation_blue));
 
                                 //enableEstimation(getResources().getString(R.string.estimation_solar_panel_title), 1);
-                                activeEstimation = ActiveEstimation.SOLAR_INSTALLATION;
-                                solarPanelSizeFragment.selectFirstButton(); //TODO: ugly way to do it
+                                for (Indicator indicator:indicators)
+                                    indicator.setEstimationType(EstimationType.SOLAR_INSTALLATION);
 
                                 informationCO2Left.setVisibility(View.GONE);
                                 informationSavings.setVisibility(View.VISIBLE);
@@ -215,8 +199,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 bottomNavigationView.setItemTextColor(ContextCompat.getColorStateList(getApplicationContext(),R.color.selector_bottom_navigation_green));
                                 bottomNavigationView.setItemIconTintList(ContextCompat.getColorStateList(getApplicationContext(),R.color.selector_bottom_navigation_green));
 
-                                activeEstimation = ActiveEstimation.WALKING;
-                                enableEstimation(getResources().getString(R.string.estimation_walking_title), 0);
+                                for (Indicator indicator:indicators)
+                                    indicator.setEstimationType(EstimationType.WALKING);
 
                                 informationCO2Left.setVisibility(View.GONE);
                                 informationSavings.setVisibility(View.VISIBLE);
@@ -234,8 +218,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 bottomNavigationView.setItemTextColor(ContextCompat.getColorStateList(getApplicationContext(),R.color.selector_bottom_navigation_green));
                                 bottomNavigationView.setItemIconTintList(ContextCompat.getColorStateList(getApplicationContext(),R.color.selector_bottom_navigation_green));
 
-                                activeEstimation = ActiveEstimation.CYCLING;
-                                enableEstimation(getResources().getString(R.string.estimation_cycling_title), 0);
+                                for (Indicator indicator:indicators)
+                                    indicator.setEstimationType(EstimationType.CYCLING);
 
                                 informationCO2Left.setVisibility(View.GONE);
                                 informationSavings.setVisibility(View.VISIBLE);
@@ -253,8 +237,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 bottomNavigationView.setItemTextColor(ContextCompat.getColorStateList(getApplicationContext(),R.color.selector_bottom_navigation_green));
                                 bottomNavigationView.setItemIconTintList(ContextCompat.getColorStateList(getApplicationContext(),R.color.selector_bottom_navigation_green));
 
-                                activeEstimation = ActiveEstimation.ELECTRIC_CAR;
-                                enableEstimation(getResources().getString(R.string.estimation_electric_car_title), 0);
+                                for (Indicator indicator:indicators)
+                                    indicator.setEstimationType(EstimationType.ELECTRIC_CAR);
 
                                 informationCO2Left.setVisibility(View.GONE);
                                 informationSavings.setVisibility(View.VISIBLE);
@@ -269,6 +253,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 break;
 
                         }
+                        refreshAll();
                         return true;
                     }
                 });
@@ -278,7 +263,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onNavigationItemReselected(@NonNull MenuItem item) {
                         findViewById(R.id.navigation_none).performClick();
-                        clearEstimations();
                     }
                 });
 
@@ -286,11 +270,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setUp();
 
         timeSpinner.setOnItemSelectedListener(timeSpinnerActivity);
-
-        //TODO: move
-        carbonFootprintCircleFragment.setActiveView(ActiveView.TODAY);
-        transportationDashboardFragment.setActiveView(ActiveView.TODAY);
-        housingDashboardFragment.setActiveView(ActiveView.TODAY);
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.hide(cyclingDistanceFragment);
@@ -383,28 +362,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             switch (pos) {
                 case 0:
                     informationCO2Left.setVisibility(VISIBLE);
-                    carbonFootprintCircleFragment.setActiveView(ActiveView.TODAY);
-                    transportationDashboardFragment.setActiveView(ActiveView.TODAY);
-                    housingDashboardFragment.setActiveView(ActiveView.TODAY);
+                    for (Indicator indicator: indicators)
+                        indicator.setTimeScale(TimeScale.TODAY);
                     break;
                 case 1:
                     informationCO2Left.setVisibility(GONE);
-                    carbonFootprintCircleFragment.setActiveView(ActiveView.TODAY);
-                    transportationDashboardFragment.setActiveView(ActiveView.TODAY);
-                    housingDashboardFragment.setActiveView(ActiveView.TODAY);
+                    for (Indicator indicator: indicators)
+                        indicator.setTimeScale(TimeScale.LAST_24_HOURS);
                     break;
                 case 2:
                     informationCO2Left.setVisibility(GONE);
-                    carbonFootprintCircleFragment.setActiveView(ActiveView.WEEK);
-                    transportationDashboardFragment.setActiveView(ActiveView.WEEK);
-                    housingDashboardFragment.setActiveView(ActiveView.WEEK);
+                    for (Indicator indicator: indicators)
+                        indicator.setTimeScale(TimeScale.WEEK);
                     break;
                 case 3:
                     informationCO2Left.setVisibility(GONE);
-                    carbonFootprintCircleFragment.setActiveView(ActiveView.MONTH);
-                    transportationDashboardFragment.setActiveView(ActiveView.MONTH);
-                    housingDashboardFragment.setActiveView(ActiveView.MONTH);
+                    for (Indicator indicator: indicators)
+                        indicator.setTimeScale(TimeScale.MONTH);
             }
+
+            refreshAll();
 
         }
 
@@ -419,50 +396,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void updateSavings() {
-        //TODO: implement
-        ((TextView) findViewById(R.id.text_view_information_daily_savings)).setText(String.format(getResources().getString(R.string.information_savings), "20kr"));
+        ((TextView) findViewById(R.id.text_view_information_daily_savings)).setText(String.format(getResources().getString(R.string.information_savings), Utility.floatToStringNDecimals(expenses.calculateSavings(), expenses.getDecimalsNumber()) + expenses.getUnit()));
+    }
+
+    public void updateOwnEnergy(){
+        ((TextView) findViewById(R.id.text_view_information_own_energy)).setText(String.format(getResources().getString(R.string.information_own_energy), String.valueOf(energyConsumption.calculatePercentageSelfConsumption()) + "%"));
     }
 
     public void refreshAll(){
         //TODO: finish to implement
-        carbonFootprintCircleFragment.refresh();
-        housingDashboardFragment.refresh();
-        transportationDashboardFragment.refresh();
-        indicatorsBarFragment.refresh();
-    }
 
-    public void enableEstimation(String estimationTitle, int categoryIndex) {
-
-        clearEstimations();
-
-        for (Indicator indicator : indicators) {
-            indicator.estimateValues(estimationTitle, categoryIndex);
-        }
-
-        //TODO: test
-        //if (estimationTitle == getResources().getString(R.string.estimation_solar_panel_title))
-            //carbonFootprint.estimateTodaysValueWithSolarPanel(3);
-
-        carbonFootprintCircleFragment.refresh();
-        housingDashboardFragment.refresh();
-        transportationDashboardFragment.refresh();
-        updateCO2left();
-
-    }
-
-    public void clearEstimations() {
-
-        //TODO: code duplication
-        for (Indicator indicator : indicators) {
-            indicator.readValues();
-        }
+        for (Indicator indicator: indicators)
+            indicator.calculateValues();
 
         carbonFootprintCircleFragment.refresh();
         housingDashboardFragment.refresh();
         transportationDashboardFragment.refresh();
         indicatorsBarFragment.refresh();
+        updateSavings();
+        updateOwnEnergy();
         updateCO2left();
-
     }
 
     protected void setUp() {
@@ -481,11 +434,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //Colors
         int mRed = ContextCompat.getColor(getApplicationContext(), R.color.red);
-        int mOrange = ContextCompat.getColor(getApplicationContext(), R.color.orange);
         int mGreen = ContextCompat.getColor(getApplicationContext(), R.color.green);
         int mBlue = ContextCompat.getColor(getApplicationContext(), R.color.blue);
-        int mDarkGrey = ContextCompat.getColor(getApplicationContext(), R.color.dark_grey);
-        int mLightGrey = ContextCompat.getColor(getApplicationContext(), R.color.light_grey);
 
         //Limit values
         int targetCalories = 1700;
@@ -509,69 +459,53 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         ArrayList<String> columnNames = new ArrayList<>();
         columnNames.add("Transportation");
-        columnNames.add("Housing"); //Prevent errors for estimations
+        columnNames.add("Housing");
         indicators.add(carbonFootprint = new CarbonFootprint(getApplicationContext(), energy, inputStream, columnNames));
         indicators.add(calories = new Indicator(inputStream, "Calories", "kCal", columnNames));
         indicators.add(expenses = new Expenses(getApplicationContext(), energy, inputStream, columnNames));
-
-        transportation = new Indicator(inputStream, "Transportation", "km", "Distance");
-        housing = new Indicator(inputStream, "Housing", "kWh", "Energy consumption");
+        indicators.add(transportation = new Indicator(inputStream, "Transportation", "km", "Distance"));
+        indicators.add(energyConsumption = new EnergyConsumption(getApplicationContext(), energy, inputStream, columnNames));
 
         indicatorsBarFragment.addIndicator(calories);
         indicatorsBarFragment.addIndicator(expenses);
         indicatorsBarFragment.addIndicator(transportation);
-        indicatorsBarFragment.addIndicator(housing);
+        indicatorsBarFragment.addIndicator(energyConsumption);
 
         carbonFootprintCircleFragment.setStartAngle(135);
         carbonFootprintCircleFragment.setSweepAngle(270);
         carbonFootprintCircleFragment.setImgName("earth");
         carbonFootprintCircleFragment.setNumberOfStates(5);
 
-        calories.setColor(mOrange);
-        calories.setLimitColor(mLightGrey);
-
         ArrayList<Integer> energyTransportationColors = new ArrayList<>();
         energyTransportationColors.add(mGreen);
         energyTransportationColors.add(mBlue);
         carbonFootprint.setColors(energyTransportationColors);
         carbonFootprint.setLimitColor(mRed);
-        expenses.setColors(energyTransportationColors);
-        expenses.setLimitColor(mRed);
-
-        transportation.setColor(mGreen);
-        transportation.setDecimalsNumber(1);
-        housing.setColor(mBlue);
-        housing.setDecimalsNumber(1);
 
         for (Indicator indicator : indicators) {
-            indicator.readTodaysValues();
-            indicator.readWeeklyValues();
-            indicator.readMonthlyValues();
+            indicator.setTimeScale(TimeScale.TODAY); //TODO: SharedPreferences?
+            indicator.setEstimationType(EstimationType.NONE);
+            indicator.calculateValues(); //TODO: move?
         }
 
-        transportation.readTodaysValues();
-        housing.readTodaysValues();
-
-        calories.setMaxValue(targetCalories);
-        calories.setLimitValue(targetCalories);
-        expenses.setMaxValue(limitExpenses);
-        expenses.setLimitValue(limitExpenses);
         carbonFootprint.setMaxValue(2 * limitCarbonFootprint);
         carbonFootprint.setLimitValue(limitCarbonFootprint);
 
         calories.setDecimalsNumber(0);
         expenses.setDecimalsNumber(0);
         carbonFootprint.setDecimalsNumber(1);
+        transportation.setDecimalsNumber(1);
+        energyConsumption.setDecimalsNumber(1);
 
         carbonFootprintCircleFragment.setIndicator(carbonFootprint);
         carbonFootprintCircleFragment.setUp();
 
-        transportationDashboardFragment.setCategory(transportation);
+        transportationDashboardFragment.setCategoryName("Transportation");
         transportationDashboardFragment.setCategoryIndex(0);
         transportationDashboardFragment.setIndicator(carbonFootprint);
         transportationDashboardFragment.setUp();
 
-        housingDashboardFragment.setCategory(housing);
+        housingDashboardFragment.setCategoryName("Housing");
         housingDashboardFragment.setCategoryIndex(1);
         housingDashboardFragment.setIndicator(carbonFootprint);
         housingDashboardFragment.setUp();
@@ -580,15 +514,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         cyclingDistanceFragment.setUp();
         solarPanelSizeFragment.setUp();
 
-        //solarPanelSizeFragment.addButton("3 kW");
-        //solarPanelSizeFragment.addButton("4 kW");
-        //solarPanelSizeFragment.addButton("5 kW");
-        //solarPanelSizeFragment.addButton("6 kW");
         int[] pvSystemSizes = {3,4,5,6};
         solarPanelSizeFragment.addButtons(pvSystemSizes);
 
         updateCO2left();
         updateSavings();
+        updateOwnEnergy();
         setUpNavigationView();
     }
 }
