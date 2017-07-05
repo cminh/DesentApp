@@ -132,7 +132,7 @@ public class CircularIndicator extends Chart {
     }
 
     protected int valueToAngle(Float value){
-        return (int) ((totalValue<maxValue) ? (sweepAngle * value) / maxValue : (sweepAngle * value) /totalValue);
+        return (int) ((value < 0) ? 0 : ((totalValue<maxValue) ? (sweepAngle * value) / maxValue : (sweepAngle * value) /totalValue));
     }
 
     public void updateTotalValue(){
