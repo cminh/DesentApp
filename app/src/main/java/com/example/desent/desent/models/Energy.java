@@ -131,7 +131,7 @@ public class Energy {
     }
 
     public double calculateDailyAverage(double value, int start, int stop) {
-        return ((stop > start) ? value / (1 + (stop-start)/24) : value);
+        return ((stop > 24 + start) ? value / (1 + (stop-start)/24) : value);
     }
 
     //TODO: check
