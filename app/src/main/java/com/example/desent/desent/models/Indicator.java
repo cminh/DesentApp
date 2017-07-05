@@ -160,6 +160,10 @@ public class Indicator {
         this.maxValue = maxValue;
     }
 
+    public float calculateTotalAverageValue(){
+        return averageValues[0] + averageValues[1];
+    }
+
     public void calculateValues() {
 
         //TODO: temporary, will be removed later

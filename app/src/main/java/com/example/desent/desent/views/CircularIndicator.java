@@ -42,7 +42,7 @@ public class CircularIndicator extends Chart {
 
     //Angles
     protected int startAngle;
-    protected int sweepAngle; //TODO: mayday, mayday
+    protected int sweepAngle;
 
     //Paints
     private Paint mProgressPaint = new Paint();
@@ -245,7 +245,7 @@ public class CircularIndicator extends Chart {
         mTextPaint.setAntiAlias(true);
         mTextPaint.setStyle(Style.FILL);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
-        mTextPaint.setTextSize(x/mTextSizeFactor); //TODO: make it more responsive
+        mTextPaint.setTextSize(x/mTextSizeFactor);
         mTextPaint.getTextBounds(String.valueOf(unit), 0, String.valueOf(unit).length(), mTextBounds);
 
     }

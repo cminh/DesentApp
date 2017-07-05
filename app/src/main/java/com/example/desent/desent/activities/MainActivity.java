@@ -361,7 +361,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             switch (pos) {
                 case 0:
-                    informationCO2Left.setVisibility(VISIBLE);
+                    informationCO2Left.setVisibility(VISIBLE); //TODO: nope
                     for (Indicator indicator: indicators)
                         indicator.setTimeScale(TimeScale.TODAY);
                     break;
@@ -485,7 +485,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         for (Indicator indicator : indicators) {
             indicator.setTimeScale(TimeScale.TODAY); //TODO: SharedPreferences?
             indicator.setEstimationType(EstimationType.NONE);
-            indicator.calculateValues(); //TODO: move?
         }
 
         carbonFootprint.setMaxValue(2 * limitCarbonFootprint);
@@ -517,9 +516,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int[] pvSystemSizes = {3,4,5,6};
         solarPanelSizeFragment.addButtons(pvSystemSizes);
 
-        updateCO2left();
-        updateSavings();
-        updateOwnEnergy();
         setUpNavigationView();
     }
 }

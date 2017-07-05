@@ -1,14 +1,18 @@
 package com.example.desent.desent.fragments;
 
 import android.app.Fragment;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.desent.desent.R;
-import com.example.desent.desent.activities.MainActivity;
 import com.example.desent.desent.models.Indicator;
+import com.example.desent.desent.utils.Utility;
 import com.example.desent.desent.views.CircularIndicator;
 
 /**
@@ -18,6 +22,7 @@ public class CircleFragment extends Fragment {
 
     protected Indicator indicator;
     protected CircularIndicator circularIndicator;
+    protected TextView caption;
 
     //Sizes
     protected int initialLayoutHeight = -1;
@@ -95,7 +100,7 @@ public class CircleFragment extends Fragment {
 
     public void setUp(){
 
-        circularIndicator = getView().findViewById(R.id.circularIndicator);
+        circularIndicator = getView().findViewById(R.id.circular_indicator);
         circularIndicator.setMaxValue((int) indicator.getMaxValue()); //TODO: change
         circularIndicator.setUnit(indicator.getUnit());
         circularIndicator.setColors(indicator.getColors());
