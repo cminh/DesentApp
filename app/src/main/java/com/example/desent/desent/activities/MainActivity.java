@@ -1,14 +1,21 @@
 package com.example.desent.desent.activities;
 
+import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -18,6 +25,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.desent.desent.R;
 import com.example.desent.desent.fragments.CategoryFragment;
@@ -26,6 +34,7 @@ import com.example.desent.desent.fragments.CyclingDistanceFragment;
 import com.example.desent.desent.fragments.IndicatorsBarFragment;
 import com.example.desent.desent.fragments.SolarPanelSizeFragment;
 import com.example.desent.desent.models.CarbonFootprint;
+import com.example.desent.desent.models.DistanceTracker;
 import com.example.desent.desent.models.Energy;
 import com.example.desent.desent.models.EnergyConsumption;
 import com.example.desent.desent.models.Expenses;
@@ -76,6 +85,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
     private  Toolbar toolbar;
     private NavigationView navigationView;
+
+    //DistanceTracker
+    private String activity = "STILL";
+    private DistanceTracker distanceTracking;
+    private boolean gpsFlag;
+    private static final String FENCE_RECEIVER_ACTION = "FENCE_RECEIVE";
+
 
     public ArrayList<Indicator> getIndicators() {
         return indicators;
@@ -275,7 +291,90 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ft.hide(cyclingDistanceFragment);
         ft.hide(solarPanelSizeFragment);
         ft.commit();
+
+        //DistanceTracker
+        Activity activityContext = (Activity) this;
+        distanceTracking = new DistanceTracker(activityContext, this);
+        distanceTracking.setActivity(activity);
+        gpsFlag = checkGpsStatus();
+        if (gpsFlag) {
+
+        } else {
+            alertbox();
+        }
+
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        distanceTracking.start();
+        registerReceiver(distanceTracking.getFenceReceiver(), new IntentFilter(FENCE_RECEIVER_ACTION));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        distanceTracking.stop();
+        unregisterReceiver(distanceTracking.getFenceReceiver());
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 2: { if ((grantResults.length > 0)
+                    && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                distanceTracking.initiateLocation();
+            } else {
+                Toast.makeText(this, "The app needs to enable 'location' to do the calculations.",
+                        Toast.LENGTH_LONG).show();
+            }
+                return;
+            }
+        }
+    }
+
+    protected void alertbox() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Your Device's GPS is Disabled. Activate?")
+                .setCancelable(false)
+                .setTitle("Gps Status")
+                .setPositiveButton("Yes",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // finish the current activity
+                                // AlertBoxAdvance.this.finish();
+                                Intent myIntent = new Intent(
+                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivity(myIntent);
+                                dialog.cancel();
+                            }
+                        })
+                .setNegativeButton("No",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // cancel the dialog box
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    protected boolean checkGpsStatus() {
+        ContentResolver contentResolver = getBaseContext().getContentResolver();
+        boolean gpsStatus = android.provider.Settings.Secure
+                .isLocationProviderEnabled(contentResolver,
+                        LocationManager.GPS_PROVIDER);
+        if (gpsStatus) {
+            return true;
+
+        } else {
+            return false;
+        }
+    }
+
     private void setUpNavigationView() {
         //Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
