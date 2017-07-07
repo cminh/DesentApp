@@ -16,12 +16,13 @@ import java.util.ArrayList;
 
 public class CarbonFootprint extends Indicator {
 
-    public CarbonFootprint(Context context, Energy energy, InputStream inputStream, ArrayList<String> columnNames) {
+    public CarbonFootprint(Context context, Transportation transport, Energy energy, InputStream inputStream, ArrayList<String> columnNames) {
         super(inputStream,
                 context.getResources().getString(R.string.carbon_footprint_name),
                 context.getResources().getString(R.string.carbon_footprint_unit),
                 columnNames);
         this.energy = energy; //TODO: move
+        this.transport = transport; //TODO: move
     }
 
     @Override
@@ -30,7 +31,8 @@ public class CarbonFootprint extends Indicator {
         switch (estimationType) {
 
             case NONE:
-                estimateDailyValues(columnNames.get(0), 0);
+                //estimateDailyValues(columnNames.get(0), 0);
+                averageValues[0] = transport.getCo2Today();
                 averageValues[1] = (float) energy.calculateCO2FromElectricity(timeScale);
                 break;
             case SOLAR_INSTALLATION:

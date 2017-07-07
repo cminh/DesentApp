@@ -107,19 +107,33 @@
     <string name="pref_car_year_produced">Production year</string>
     <string name="pref_car_ownership_period">Planned duration of ownership</string>
     <string name="pref_car_price">Price</string>
+    <string name="pref_car_fuel">Fuel type</string>
 
     <string name="pref_car_dialog_fuel_consumption">Please enter fuel consumption</string>
     <string name="pref_car_dialog_year_produced">Please enter production year</string>
     <string name="pref_car_dialog_ownership_period">Please enter planned duration of ownership</string>
     <string name="pref_car_dialog_price">Please enter price</string>
+    <string name="pref_car_dialog_fuel">Please enter fuel type</string>
 
     <string name="pref_car_summary_fuel_consumption">Please enter fuel consumption</string>
     <string name="pref_car_summary_year_produced">Please enter production year</string>
     <string name="pref_car_summary_ownership_period">Please enter planned duration of ownership</string>
     <string name="pref_car_summary_price">Please enter price</string>
+    <string name="pref_car_summary_fuel">Please enter fuel type</string>
+
+    <string name="pref_car_default_fuel">Gasoline</string>
+
+    <string-array name="pref_car_fuel_list">
+        <item>Gasoline</item>
+        <item>Diesel</item>
+        <item>Electricity</item>
+    </string-array>
+
 
     <string name="pref_title_gender">Gender</string>
     <string name="pref_gender_summary">Please enter your gender</string>
+
+
     <string-array name="pref_gender_list">
         <item>Male</item>
         <item>Female</item>
@@ -128,5 +142,8 @@
         <item>Male</item>
         <item>Female</item>
     </string-array>
+
+    <string name="pref_car_default_consumption" format="float">0.5</string>
+
 
 </resources>

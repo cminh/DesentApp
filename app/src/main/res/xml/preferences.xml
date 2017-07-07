@@ -34,8 +34,15 @@
         <CheckBoxPreference
             android:key="pref_key_car_owner"
             android:title="@string/pref_car_owner"
-            android:summary="No"
-            android:defaultValue="false" />
+            android:summary="Yes"
+            android:defaultValue="true" />
+        <ListPreference
+            android:entries="@array/pref_car_fuel_list"
+            android:entryValues="@array/pref_car_fuel_list"
+            android:key="pref_key_car_fuel"
+            android:summary="@string/pref_car_summary_fuel"
+            android:title="@string/pref_car_fuel"
+            android:defaultValue="@string/pref_car_default_fuel"/>
         <EditTextPreference
             android:dialogTitle="@string/pref_car_dialog_price"
             android:key="pref_key_car_price"
@@ -47,6 +54,8 @@
             android:key="pref_key_car_fuel_consumption"
             android:summary="@string/pref_car_summary_fuel_consumption"
             android:title="@string/pref_car_fuel_consumption"
+            android:inputType="numberDecimal"
+            android:defaultValue="@string/pref_car_default_consumption"
             android:dependency="pref_key_car_owner"/>
         <EditTextPreference
             android:dialogTitle="@string/pref_car_dialog_ownership_period"

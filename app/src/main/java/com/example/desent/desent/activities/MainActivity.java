@@ -39,6 +39,7 @@ import com.example.desent.desent.models.Energy;
 import com.example.desent.desent.models.EnergyConsumption;
 import com.example.desent.desent.models.Expenses;
 import com.example.desent.desent.models.Indicator;
+import com.example.desent.desent.models.Transportation;
 import com.example.desent.desent.utils.EstimationType;
 import com.example.desent.desent.utils.TimeScale;
 import com.example.desent.desent.utils.Utility;
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected Indicator transportation;
     protected EnergyConsumption energyConsumption;
     protected Energy energy;
+    protected Transportation transport;
 
     //Information views
     protected View informationCO2Left;
@@ -555,11 +557,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //Indicators
         energy = new Energy(getApplicationContext());
+        transport = new Transportation(this);
 
         ArrayList<String> columnNames = new ArrayList<>();
         columnNames.add("Transportation");
         columnNames.add("Housing");
-        indicators.add(carbonFootprint = new CarbonFootprint(getApplicationContext(), energy, inputStream, columnNames));
+        indicators.add(carbonFootprint = new CarbonFootprint(getApplicationContext(),transport, energy, inputStream, columnNames));
         indicators.add(calories = new Indicator(inputStream, "Calories", "kCal", columnNames));
         indicators.add(expenses = new Expenses(getApplicationContext(), energy, inputStream, columnNames));
         indicators.add(transportation = new Indicator(inputStream, "Transportation", "km", "Distance"));

@@ -37,6 +37,7 @@ public class Indicator {
     protected int decimalsNumber;
 
     protected Energy energy;
+    protected Transportation transport;
 
     //TODO: remove later
     protected Date date;
@@ -247,7 +248,8 @@ public class Indicator {
                 while(!((line = reader.readLine()).startsWith(dateFormat.format(date))) || (line == null)) {
                 }
                 raw = new ArrayList<>(Arrays.asList(line.split(",")));
-                averageValues[categoryIndex] = Float.parseFloat(raw.get(columnIndex));
+                averageValues[categoryIndex] = 80f; // Float.parseFloat(raw.get(columnIndex));
+                //This is where the database value can be entered
             }
 
             else if ((categoryIndex < columnNames.size()) && (raw.contains(columnNames.get(categoryIndex)))){
@@ -257,6 +259,7 @@ public class Indicator {
                 }
                 raw = new ArrayList<>(Arrays.asList(line.split(",")));
                 averageValues[categoryIndex] = Float.parseFloat(raw.get(columnIndex)); //TODO: throw exception
+                //or change here
             }
 
 
