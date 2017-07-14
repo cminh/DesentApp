@@ -14,6 +14,18 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="AppTheme.NoActionBar.AccentColorGreen">
+        <item name="colorAccent">@color/green</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.AccentColorBlue">
+        <item name="colorAccent">@color/blue</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.AccentColorOrange">
+        <item name="colorAccent">@color/orange</item>
+    </style>
+
     <style name="AppTheme.NoActionBar.Settings">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

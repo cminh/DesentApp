@@ -39,19 +39,23 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         for (Map.Entry<String, ?> entry : preferencesMap.entrySet()) {
 
             Preference currentPref = findPreference(entry.getKey());
-            String currentValue = entry.getValue().toString();
 
-            switch (currentValue){
-                case "0":
-                    break;
-                case "true":
-                    currentPref.setSummary("Yes");
-                    break;
-                case "false":
-                    currentPref.setSummary("No");
-                    break;
-                default:
-                    currentPref.setSummary(currentValue);
+            if (currentPref != null ){
+
+                String currentValue = entry.getValue().toString();
+
+                switch (currentValue) {
+                    case "0":
+                        break;
+                    case "true":
+                        currentPref.setSummary("Yes");
+                        break;
+                    case "false":
+                        currentPref.setSummary("No");
+                        break;
+                    default:
+                        currentPref.setSummary(currentValue);
+                }
             }
         }
     }
