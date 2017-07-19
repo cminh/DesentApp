@@ -172,7 +172,8 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
                 boolean isInserted = myDb.insertDistance(activity, (float)distance);
 
                 if(isInserted == true){
-                    Toast.makeText(context,"Data inserted",Toast.LENGTH_LONG).show();
+                    String distToast = "Walking: " + String.format("%.1f", myDb.getWalkingDistanceToday()) + " Cycling: " + String.format("%.1f", myDb.getCyclingDistanceToday()) + " Driving: " +  String.format("%.1f", myDb.getDrivingDistanceToday());
+                    Toast.makeText(context,"Data inserted. " + distToast,Toast.LENGTH_LONG).show();
                 }
                 else{
                     Toast.makeText(context,"Data not Inserted",Toast.LENGTH_LONG).show();
