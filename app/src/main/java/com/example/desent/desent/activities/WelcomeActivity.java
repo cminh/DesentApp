@@ -59,7 +59,7 @@ public class WelcomeActivity extends Activity {
         btnSkip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchHomeScreen();
+                launchLoginScreen();
             }
         });
 
@@ -73,7 +73,7 @@ public class WelcomeActivity extends Activity {
                     // move to next screen
                     viewPager.setCurrentItem(current);
                 } else {
-                    launchHomeScreen();
+                    launchLoginScreen();
                 }
             }
         });
@@ -102,8 +102,8 @@ public class WelcomeActivity extends Activity {
         return viewPager.getCurrentItem() + i;
     }
 
-    private void launchHomeScreen() {
-        startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
+    private void launchLoginScreen() {
+        startActivity(new Intent(WelcomeActivity.this, LoginActivity.class));
         finish();
     }
 

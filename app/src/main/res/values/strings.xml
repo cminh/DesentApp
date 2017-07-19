@@ -36,23 +36,27 @@
         <item>Expenses</item>
     </string-array>
 
+    <string name="register_housing_description">The type of energy you use for heating and the efficiency of your heating system determine 80% of your carbon footprint from energy consumption. </string>
+    <string name="register_transportation_description">Your vehicle is major source of greenhouse gas emissions. Cycling or walking instead of driving will save you money, increase your calorie count and reduce your emissions. But first tell us this:</string>
+    <string name="register_activity_description">Finally, to monitor your health gains </string>
+
     <string name="title_activity_welcome">Home Screen</string>
     <string name="next">NEXT</string>
     <string name="skip">SKIP</string>
     <string name="start">GOT IT</string>
 
     <string name="slide_1_title">Welcome!</string>
-    <string name="slide_1_desc">This app accesses to your electricity profile and follows your travels to analyze your performances.</string>
+    <string name="slide_1_desc">By 2030 greenhouse gas emissions will have to be cut by 40%.</string>
 
-    <string name="slide_2_desc">Look at the outcomes of your energy habits.</string>
+    <string name="slide_2_desc">Energy consumption and transport contribute over one half of total greenhouse gas emissions. </string>
 
-    <string name="slide_3_desc">Estimate your savings with more sustainable technologies...</string>
+    <string name="slide_3_desc">But they are also the easiest to control.</string>
 
-    <string name="slide_4_desc">... or small changes every day!</string>
+    <string name="slide_4_desc">This app helps you monitor the emissions produced by your energy consumption and your driving.</string>
 
-    <string name="slide_5_desc">Follow your evolution during the week...</string>
+    <string name="slide_5_desc">Try and see if you can reduce your daily emissions by 40%.</string>
 
-    <string name="slide_6_desc">... and the month!</string>
+    <string name="slide_6_desc">The app will show you how much this can cost you or how much you can actually save doing it.</string>
 
     <string name="slide_7_title">Enjoy!</string>
 
@@ -62,6 +66,7 @@
 
     <!-- Toolbar titles -->
     <string name="nav_home">Home</string>
+    <string name="nav_history">History</string>
     <string name="nav_settings">Settings</string>
     <string name="nav_about_us">About Us</string>
 

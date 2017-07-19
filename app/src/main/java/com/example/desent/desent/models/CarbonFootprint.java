@@ -31,12 +31,11 @@ public class CarbonFootprint extends Indicator {
         switch (estimationType) {
 
             case NONE:
-                //estimateDailyValues(columnNames.get(0), 0);
                 averageValues[0] = transport.getCo2Today();
                 averageValues[1] = (float) energy.calculateCO2FromElectricity(timeScale);
                 break;
             case SOLAR_INSTALLATION:
-                estimateDailyValues(columnNames.get(0), 0);
+                averageValues[0] = transport.getCo2Today();
                 averageValues[1] = (float) energy.calculateCO2FromElectricity(timeScale, pvSystemSize);
                 break;
             case WALKING:
@@ -44,7 +43,7 @@ public class CarbonFootprint extends Indicator {
                 averageValues[1] = (float) energy.calculateCO2FromElectricity(timeScale);
                 break;
             case CYCLING:
-                estimateDailyValues("Cycling", 0);
+                averageValues[0] = transport.calculateKgCo2FromDriving(this.drivingDistance);
                 averageValues[1] = (float) energy.calculateCO2FromElectricity(timeScale);
                 break;
             case ELECTRIC_CAR:

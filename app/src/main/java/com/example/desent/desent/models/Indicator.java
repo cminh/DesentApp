@@ -22,6 +22,7 @@ public class Indicator {
     protected TimeScale timeScale;
     protected EstimationType estimationType;
     protected int pvSystemSize;
+    protected float drivingDistance;
 
     protected InputStream inputStream;
     protected String name;
@@ -47,6 +48,15 @@ public class Indicator {
     protected ArrayList<ArrayList<Float>> weeklyValues = new ArrayList<ArrayList<Float>>();
     protected ArrayList<ArrayList<Float>> monthlyValues = new ArrayList<ArrayList<Float>>();
     //protected ArrayList<ArrayList<Integer>> yearlyValues = new ArrayList<ArrayList<Integer>>();
+
+
+    public float getDrivingDistance() {
+        return drivingDistance;
+    }
+
+    public void setDrivingDistance(float drivingDistance) {
+        this.drivingDistance = drivingDistance;
+    }
 
     public int getPvSystemSize() {
         return pvSystemSize;

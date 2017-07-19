@@ -10,6 +10,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.desent.desent.R;
+import com.example.desent.desent.activities.MainActivity;
+import com.example.desent.desent.models.Indicator;
 
 /**
  * Created by celine on 22/06/17.
@@ -55,6 +57,12 @@ public class CyclingDistanceFragment extends Fragment {
 
                 cyclingTextView.setText(String.valueOf(cyclingDistance) + " km");
                 drivingTextView.setText(String.valueOf(drivingDistance) + " km");
+
+                //TODO: don't think is a good way to do it
+                MainActivity main = (MainActivity) getActivity();
+                for(Indicator indicator : main.getIndicators())
+                    indicator.setDrivingDistance((float) drivingDistance);
+                main.refreshAll();
             }
 
             @Override

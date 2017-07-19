@@ -11,14 +11,14 @@
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
-        <ImageView
+        <!--<ImageView
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:scaleType="fitCenter"
                 android:adjustViewBounds="true"
                 android:paddingLeft="@dimen/desc_padding"
                 android:paddingRight="@dimen/desc_padding"
-                android:src="@drawable/slide1" />
+                android:src="@drawable/slide1" />-->
 
         <TextView
                 android:layout_width="match_parent"

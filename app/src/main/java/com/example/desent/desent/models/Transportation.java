@@ -36,6 +36,7 @@ public class Transportation {
     public float getCo2Today(){
         return co2Today;
     }
+
     private float getDrivingDistanceToday(){
 
         drivingDistanceToday = db.getDrivingDistanceToday();
@@ -76,11 +77,20 @@ public class Transportation {
     }
 
     private float getLitrePer10km(){
-        if (prefs.getFloat("pref_key_car_feul_consumption", 0f)>0){
-            return prefs.getFloat("pref_key_car_feul_consumption", 0f);
+        float fuelConsumption = Float.parseFloat(prefs.getString("pref_key_car_fuel_consumption", "0"));
+        if (fuelConsumption>0){
+            return fuelConsumption;
         }else{
             return 0f;
         }
+    }
+
+    protected float calculateKgCo2FromDriving(){
+        return ((prefs.getBoolean("pref_key_car_owner", true) ? calculateKgCo2FromDriving(getDrivingDistanceToday(), getEmissionsPrLitre(), getLitrePer10km()) : 0));
+    }
+
+    protected float calculateKgCo2FromDriving(float drivingDistance){
+        return ((prefs.getBoolean("pref_key_car_owner", true) ? calculateKgCo2FromDriving(drivingDistance, getEmissionsPrLitre(), getLitrePer10km()) : 0));
     }
 
     private float calculateKgCo2FromDriving(float drivingDistance, float emission, float consumption){
