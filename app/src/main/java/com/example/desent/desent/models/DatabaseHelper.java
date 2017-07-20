@@ -287,7 +287,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 // The activity is driving
                 drivingDistance += distance;
                 ContentValues contentValues = new ContentValues();
-                contentValues.put(D_COL_3, drivingDistance);
+                contentValues.put(D_COL_4, drivingDistance);
 
                 db.update(TABLE_DISTANCE, contentValues,"DATE = ?" , new String[]{date});
                 return true;

@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
@@ -38,6 +39,7 @@ import com.google.android.gms.common.api.ResultCallbacks;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
@@ -46,7 +48,8 @@ import com.google.android.gms.location.LocationServices;
  */
 
 public class DistanceTracker extends MainActivity implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+        GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener{
+
 
     private MyFenceReceiver fenceReceiver;
     private PendingIntent mFencePendingIntent;
@@ -60,7 +63,8 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
     private final String LOG="DistanceTracking";
     private GoogleApiClient mGoogleApiClientLoc;
     private LocationRequest mLocationRequest;
-    private static final int DELAY = 6000;
+    private static final int DELAY = 3000;
+    private static final int SNAP_DELAY = 10000;
     private Location mLastLocation;
     private String activity;
     private String probableActivity;
@@ -68,8 +72,75 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
     private Context context;
     private Activity activityContext;
     private LocationManager service;
-    private boolean enabled;
-    private boolean update = false;
+    private boolean locationConnected = false;
+    private boolean isStill = true;
+    private boolean activeGps = false;
+    private Handler handler = new Handler();
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+      /* do what you need to do */
+           Awareness.SnapshotApi.getDetectedActivity(mGoogleApiClientAware)
+                    .setResultCallback(new ResultCallback<DetectedActivityResult>() {
+                        @Override
+                        public void onResult(@NonNull DetectedActivityResult detectedActivityResult) {
+                            ActivityRecognitionResult result = detectedActivityResult.getActivityRecognitionResult();
+                                Log.i(TAG, "time: " + result.getTime());
+                                Log.i(TAG, "elapsed time: " + result.getElapsedRealtimeMillis());
+                                String stringBuffer ="";
+                                for( DetectedActivity activity : result.getProbableActivities() ) {
+                                    Log.i(TAG, "Activity num.: " + activity.getType() + " Activity: " + translateActivity(activity.getType()) +
+                                            " Likelihood: " + activity.getConfidence() );
+                                    stringBuffer = stringBuffer + "\nActivity num.: " + activity.getType() +
+                                            "\nActivity: " + translateActivity(activity.getType()) +
+                                            "\nLikelihood: " + activity.getConfidence() + "\n";
+                                }
+                                Log.i(TAG,stringBuffer);
+                        }
+                    });
+
+      // Repeater
+            handler.postDelayed(this, SNAP_DELAY);
+        }
+    };
+    private String translateActivity(int number){
+        String stringActivity;
+
+        switch (number){
+            case 0:
+                stringActivity = "IN_VEHICLE";
+                break;
+            case 1:
+                stringActivity = "ON_BICYCLE";
+                break;
+            case 2:
+                stringActivity = "ON_FOOT";
+                break;
+            case 3:
+                stringActivity = "STILL";
+                break;
+            case 4:
+                stringActivity = "UNKNOWN";
+                break;
+            case 5:
+                stringActivity = "5 - DOES NOT EXIST?";
+                break;
+            case 6:
+                stringActivity = "6 - DOES NOT EXIST?";
+                break;
+            case 7:
+                stringActivity = "WALKING";
+                break;
+            case 8:
+                stringActivity = "RUNNING";
+                break;
+            default:
+                stringActivity = "default";
+                break;
+        }
+
+        return stringActivity;
+    }
 
 
     public DistanceTracker(Activity activityContext, Context context){
@@ -81,7 +152,7 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
         onCreate();
         String locationProvider = LocationManager.GPS_PROVIDER;
         Log.i(LOG,locationProvider);
-        //startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+        //startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS))
     }
 
 
@@ -94,6 +165,8 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
+
+
         myDb = new DatabaseHelper(context);
 
         //Create a GoogleApiClient instance
@@ -109,6 +182,10 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
                 0);
 
         Log.i(TAG, "mFencePendingIntent finished");
+
+
+
+
     }
 
     public void start() {
@@ -123,6 +200,7 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
     public void stop() {
         if (mGoogleApiClientLoc.isConnected()) {
             mGoogleApiClientLoc.disconnect();
+            handler.removeCallbacks(runnable);
         }
     }
 
@@ -143,7 +221,8 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
 
         } else {
             initiateLocation();
-
+            Log.i(LOG, "Location api connected");
+            locationConnected = true;
         }
     }
 
@@ -158,17 +237,14 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
             Log.i(LOG, mLastLocation.toString());
             distance = mLastLocation.distanceTo(location);
             mLastLocation = location;
-
-            // The code is tricked to think that it knows activity
+            activeGps = true;
             if(activity.equals("STILL")){
-
-                if (mGoogleApiClientLoc.isConnected() && !update) {
-                    mGoogleApiClientLoc.disconnect();
-                }
-
+                disableGPS();
                 Log.i(LOG, "You are still");
             }else{
-                mGoogleApiClientLoc.connect();
+                if (!mGoogleApiClientLoc.isConnected()) {
+                    Log.i(TAG, "Enable GPS");
+                }
                 boolean isInserted = myDb.insertDistance(activity, (float)distance);
 
                 if(isInserted == true){
@@ -198,7 +274,8 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
     public void setActivity(String activity){
         this.activity = activity;
         if (!mGoogleApiClientLoc.isConnected()) {
-            mGoogleApiClientLoc.connect();
+            Log.e(TAG, "Connecting location from setActivity");
+            //mGoogleApiClientLoc.connect();
         }
 
     }
@@ -207,30 +284,38 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
         Log.i(LOG, "Textview should be changed");
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClientLoc, mLocationRequest, this);
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClientLoc);
+
     }
 
     private void registerFences() {
-        Calendar cal = Calendar.getInstance();
+
         //Create fences
         AwarenessFence onFootFence = DetectedActivityFence.during(DetectedActivityFence.ON_FOOT);
-        AwarenessFence runningFence = DetectedActivityFence.during(DetectedActivityFence.RUNNING);
-        AwarenessFence unknownFence = DetectedActivityFence.during(DetectedActivityFence.UNKNOWN);
         AwarenessFence stillFence = DetectedActivityFence.during(DetectedActivityFence.STILL);
-        AwarenessFence walkingFence = DetectedActivityFence.during(DetectedActivityFence.WALKING);
+        //AwarenessFence runningFence = DetectedActivityFence.during(DetectedActivityFence.RUNNING);
+        //AwarenessFence unknownFence = DetectedActivityFence.during(DetectedActivityFence.UNKNOWN);
+        //AwarenessFence walkingFence = DetectedActivityFence.during(DetectedActivityFence.WALKING);
         AwarenessFence cyclingFence = DetectedActivityFence.during(DetectedActivityFence.ON_BICYCLE);
         AwarenessFence drivingFence = DetectedActivityFence.during(DetectedActivityFence.IN_VEHICLE);
 
+
         Awareness.FenceApi.updateFences(
+/*
+.addFence("runningFence", runningFence, mFencePendingIntent)
+.addFence("walkingFence", walkingFence, mFencePendingIntent)
+.addFence("onFootFence", onFootFence, mFencePendingIntent)
+.addFence("unknownFence", unknownFence, mFencePendingIntent)
+.addFence("stillFence", stillFence, mFencePendingIntent)
+.addFence("cyclingFence", cyclingFence, mFencePendingIntent)
+.addFence("drivingFence", drivingFence, mFencePendingIntent)
+* */
                 mGoogleApiClientAware,
                 new FenceUpdateRequest.Builder()
-                        .addFence("onFootFence", onFootFence, mFencePendingIntent)
-                        .addFence("runningFence", runningFence, mFencePendingIntent)
-                        .addFence("unknownFence", unknownFence, mFencePendingIntent)
-                        .addFence("stillFence", stillFence, mFencePendingIntent)
-                        .addFence("walkingFence", walkingFence, mFencePendingIntent)
-                        .addFence("cyclingFence", cyclingFence, mFencePendingIntent)
-                        .addFence("drivingFence", drivingFence, mFencePendingIntent)
-                        .build())
+                .addFence("onFootFence", onFootFence, mFencePendingIntent)
+                .addFence("stillFence", stillFence, mFencePendingIntent)
+                .addFence("cyclingFence", cyclingFence, mFencePendingIntent)
+                .addFence("drivingFence", drivingFence, mFencePendingIntent)
+                .build())
                 .setResultCallback(new ResultCallback<Status>() {
                     @Override
                     public void onResult(@NonNull Status status) {
@@ -241,6 +326,7 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
                         }
                     }
                 });
+
     }
 
     private void unregisterFences() {
@@ -252,10 +338,21 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
         unregisterFence("cyclingFence");
         unregisterFence("drivingFence");
     }
+    protected void enableGPS(){
+        if(!activeGps){
+            activeGps = true;
+            handler.removeCallbacks(runnable);
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClientLoc, mLocationRequest, this);
+        }
+    }
+    protected void disableGPS(){
+        if (mGoogleApiClientLoc.isConnected() && activeGps) {
+            Log.i(TAG, "Tried to shut down Location API");
 
-    public void updateActivity(boolean update){
-        this.update = update;
-        mGoogleApiClientLoc.connect();
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClientLoc, this);
+            activeGps = false;
+            handler.postDelayed(runnable, 1000);
+        }
     }
 
     private void unregisterFence(final String fenceKey) {
@@ -284,49 +381,67 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
         public void onReceive(Context context, Intent intent) {
             FenceState fenceState = FenceState.extract(intent);
             Log.i(TAG, "onReceive");
+            isStill = false;
+
             switch(fenceState.getFenceKey()) {
                 case "onFootFence":
                     if(fenceState.getCurrentState() == FenceState.TRUE) {
                         currentActivity = "WALKING";
                         setActivity(currentActivity);
+                        enableGPS();
+                        Log.i(TAG, "onFootFence");
                     }
-                    break;
+                     break;
                 case "runningFence":
                     if(fenceState.getCurrentState() == FenceState.TRUE) {
                         currentActivity = "WALKING";
                         setActivity(currentActivity);
+                        Log.i(TAG, "runningFence");
                     }
                     break;
                 case "unknownFence":
                     if(fenceState.getCurrentState() == FenceState.TRUE) {
                         currentActivity = "STILL";
+                        isStill = true;
                         setActivity(currentActivity);
+                        Log.i(TAG, "unknownFence");
                     }
                     break;
                 case "stillFence":
                     if(fenceState.getCurrentState() == FenceState.TRUE) {
                         currentActivity = "STILL";
+                        isStill = true;
+                        disableGPS();
                         setActivity(currentActivity);
+                        Log.i(TAG, "stillFence");
                     }
                     break;
                 case "walkingFence":
                     if(fenceState.getCurrentState() == FenceState.TRUE) {
                         currentActivity = "WALKING";
                         setActivity(currentActivity);
+                        Log.i(TAG, "walkingFence");
                     }
                     break;
                 case "cyclingFence":
                     if(fenceState.getCurrentState() == FenceState.TRUE) {
                         currentActivity = "CYCLING";
                         setActivity(currentActivity);
+                        Log.i(TAG, "cyclingFence");
                     }
                     break;
                 case "drivingFence":
                     if(fenceState.getCurrentState() == FenceState.TRUE) {
                         currentActivity = "DRIVING";
                         setActivity(currentActivity);
+                        Log.i(TAG, "drivingFence");
                     }
                     break;
+                default:
+                    currentActivity = "STILL";
+                    isStill = true;
+                    setActivity(currentActivity);
+                    Log.i(TAG, "stillFence initiated from default");
             }
         }
     }
