@@ -50,4 +50,6 @@ public class IndicatorsBarItem extends LinearLayout {
     public void setUnit(String unit) {
         unitTextView.setText(unit);
     }
+
+
 }

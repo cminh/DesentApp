@@ -22,10 +22,13 @@ public class Indicator {
     protected TimeScale timeScale;
     protected EstimationType estimationType;
     protected int pvSystemSize;
+    protected float walkingDistance;
+    protected float cyclingDistance;
     protected float drivingDistance;
 
     protected InputStream inputStream;
     protected String name;
+    protected String explanation = "";
     protected ArrayList<String> columnNames;
 
     //Charts configs
@@ -49,6 +52,22 @@ public class Indicator {
     protected ArrayList<ArrayList<Float>> monthlyValues = new ArrayList<ArrayList<Float>>();
     //protected ArrayList<ArrayList<Integer>> yearlyValues = new ArrayList<ArrayList<Integer>>();
 
+
+    public float getWalkingDistance() {
+        return walkingDistance;
+    }
+
+    public void setWalkingDistance(float walkingDistance) {
+        this.walkingDistance = walkingDistance;
+    }
+
+    public float getCyclingDistance() {
+        return cyclingDistance;
+    }
+
+    public void setCyclingDistance(float cyclingDistance) {
+        this.cyclingDistance = cyclingDistance;
+    }
 
     public float getDrivingDistance() {
         return drivingDistance;
@@ -147,6 +166,14 @@ public class Indicator {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getExplanation() {
+        return explanation;
+    }
+
+    public void setExplanation(String explanation) {
+        this.explanation = explanation;
     }
 
     public void setColors(ArrayList<Integer> colors) {this.colors = colors;}

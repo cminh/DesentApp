@@ -1,10 +1,7 @@
 package com.example.desent.desent.fragments;
 
 import android.app.Fragment;
-import android.os.Build;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +9,6 @@ import android.widget.TextView;
 
 import com.example.desent.desent.R;
 import com.example.desent.desent.models.Indicator;
-import com.example.desent.desent.utils.Utility;
 import com.example.desent.desent.views.CircularIndicator;
 
 /**

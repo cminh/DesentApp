@@ -17,46 +17,46 @@ import com.example.desent.desent.models.Indicator;
  * Created by celine on 22/06/17.
  */
 
-public class CyclingDistanceFragment extends Fragment {
+public class WalkingDistanceFragment extends Fragment {
 
     private SeekBar seekBar;
-    private TextView cyclingTextView;
+    private TextView walkingTextView;
     private TextView drivingTextView;
 
-    protected int cyclingDistance = 20; //TODO:test
+    protected int walkingDistance = 20; //TODO:test
     protected int drivingDistance = 100; //TODO:test
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_cycling_distance, container, false);
+        return inflater.inflate(R.layout.fragment_walking_distance, container, false);
     }
 
     public void setUp() {
 
-        seekBar = getView().findViewById(R.id.seekbar_cycling_distance);
-        cyclingTextView = getView().findViewById(R.id.text_view_cycling_distance);
+        seekBar = getView().findViewById(R.id.seekbar_walking_distance);
+        walkingTextView = getView().findViewById(R.id.text_view_walking_distance);
         drivingTextView = getView().findViewById(R.id.text_view_driving_distance);
 
-        seekBar.setMax(cyclingDistance+drivingDistance);
-        seekBar.setProgress(cyclingDistance);
+        seekBar.setMax(walkingDistance +drivingDistance);
+        seekBar.setProgress(walkingDistance);
 
-        cyclingTextView.setText(String.valueOf(cyclingDistance) + " km");
+        walkingTextView.setText(String.valueOf(walkingDistance) + " km");
         drivingTextView.setText(String.valueOf(drivingDistance) + " km");
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                cyclingDistance = progress;
+                walkingDistance = progress;
                 drivingDistance = seekBar.getMax() - progress;
 
-                cyclingTextView.setText(String.valueOf(cyclingDistance) + " km");
+                walkingTextView.setText(String.valueOf(walkingDistance) + " km");
                 drivingTextView.setText(String.valueOf(drivingDistance) + " km");
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                Toast.makeText(getActivity(), "Estimate your values with a different cycling distance", Toast.LENGTH_SHORT).show(); //TODO: test
+                Toast.makeText(getActivity(), "Estimate your values with a different walking distance", Toast.LENGTH_SHORT).show(); //TODO: test
             }
 
             @Override
@@ -65,7 +65,7 @@ public class CyclingDistanceFragment extends Fragment {
                 //TODO: don't think is a good way to do it
                 MainActivity main = (MainActivity) getActivity();
                 for(Indicator indicator : main.getIndicators()) {
-                    indicator.setCyclingDistance((float) cyclingDistance);
+                    indicator.setWalkingDistance((float) walkingDistance);
                     indicator.setDrivingDistance((float) drivingDistance);
                 }
                 main.refreshAll();

@@ -31,4 +31,6 @@ dependencies {
     compile 'com.google.android.gms:play-services:+'
     testCompile 'junit:junit:4.12'
     compile files('libs/opencsv-3.9.jar')
+    compile 'junit:junit:4.12'
+    compile 'com.jjoe64:graphview:4.2.1'
 }

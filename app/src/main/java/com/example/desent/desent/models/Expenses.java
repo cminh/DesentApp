@@ -19,6 +19,7 @@ public class Expenses extends Indicator {
                 context.getResources().getString(R.string.expenses_unit),
                 columnNames);
         this.energy = energy;
+        this.explanation = context.getResources().getString(R.string.expenses_explanation);
     }
 
     //TODO: optimize

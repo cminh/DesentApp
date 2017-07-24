@@ -33,6 +33,8 @@ import com.example.desent.desent.fragments.CircleFragment;
 import com.example.desent.desent.fragments.CyclingDistanceFragment;
 import com.example.desent.desent.fragments.IndicatorsBarFragment;
 import com.example.desent.desent.fragments.SolarPanelSizeFragment;
+import com.example.desent.desent.fragments.WalkingDistanceFragment;
+import com.example.desent.desent.models.Calories;
 import com.example.desent.desent.models.CarbonFootprint;
 import com.example.desent.desent.models.DistanceTracker;
 import com.example.desent.desent.models.Energy;
@@ -63,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private View categoriesBar;
 
     //Estimations parameters
+    private WalkingDistanceFragment walkingDistanceFragment;
     private CyclingDistanceFragment cyclingDistanceFragment;
     private SolarPanelSizeFragment solarPanelSizeFragment;
 
@@ -185,6 +188,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 informationSeparator.setVisibility(GONE);
                                 informationOwnEnergy.setVisibility(GONE);
 
+                                ft.hide(walkingDistanceFragment);
                                 ft.hide(cyclingDistanceFragment);
                                 ft.hide(solarPanelSizeFragment);
                                 ft.commit();
@@ -197,7 +201,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 bottomNavigationView.setItemTextColor(ContextCompat.getColorStateList(getApplicationContext(),R.color.selector_bottom_navigation_blue));
                                 bottomNavigationView.setItemIconTintList(ContextCompat.getColorStateList(getApplicationContext(),R.color.selector_bottom_navigation_blue));
 
-                                //enableEstimation(getResources().getString(R.string.estimation_solar_panel_title), 1);
                                 for (Indicator indicator:indicators)
                                     indicator.setEstimationType(EstimationType.SOLAR_INSTALLATION);
 
@@ -207,6 +210,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 informationSeparator.setVisibility(VISIBLE);
                                 informationOwnEnergy.setVisibility(VISIBLE);
 
+                                ft.hide(walkingDistanceFragment);
                                 ft.hide(cyclingDistanceFragment);
                                 ft.show(solarPanelSizeFragment);
                                 ft.commit();
@@ -226,6 +230,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 informationOwnEnergy.setVisibility(GONE);
                                 informationSeparator.setVisibility(VISIBLE);
 
+                                ft.show(walkingDistanceFragment);
                                 ft.hide(cyclingDistanceFragment);
                                 ft.hide(solarPanelSizeFragment);
                                 ft.commit();
@@ -245,6 +250,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 informationOwnEnergy.setVisibility(GONE);
                                 informationSeparator.setVisibility(VISIBLE);
 
+                                ft.hide(walkingDistanceFragment);
                                 ft.show(cyclingDistanceFragment);
                                 ft.hide(solarPanelSizeFragment);
                                 ft.commit();
@@ -264,6 +270,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 informationOwnEnergy.setVisibility(GONE);
                                 informationSeparator.setVisibility(VISIBLE);
 
+                                ft.hide(walkingDistanceFragment);
                                 ft.hide(cyclingDistanceFragment);
                                 ft.hide(solarPanelSizeFragment);
                                 ft.commit();
@@ -287,9 +294,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         setUp();
 
-        timeSpinner.setOnItemSelectedListener(timeSpinnerActivity);
+        timeSpinner.setOnItemSelectedListener(timeSpinnerHandler);
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.hide(walkingDistanceFragment);
         ft.hide(cyclingDistanceFragment);
         ft.hide(solarPanelSizeFragment);
         ft.commit();
@@ -398,6 +406,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         drawer.closeDrawers();
 
                         return true;
+                    case R.id.nav_history:
+
+
+                        // launch new intent instead of loading fragment
+                        startActivity(new Intent(MainActivity.this, HistoryActivity.class));
+                        drawer.closeDrawers();
+                        return true;
                     case R.id.nav_settings:
 
 
@@ -454,7 +469,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         actionBarDrawerToggle.syncState();
     }
 
-    AdapterView.OnItemSelectedListener timeSpinnerActivity = new AdapterView.OnItemSelectedListener() {
+    AdapterView.OnItemSelectedListener timeSpinnerHandler = new AdapterView.OnItemSelectedListener() {
 
         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 
@@ -462,21 +477,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             switch (pos) {
                 case 0:
-                    informationCO2Left.setVisibility(VISIBLE); //TODO: nope
+                    if (carbonFootprint.getEstimationType() == EstimationType.NONE)
+                        informationCO2Left.setVisibility(VISIBLE);
                     for (Indicator indicator: indicators)
                         indicator.setTimeScale(TimeScale.TODAY);
                     break;
                 case 1:
                     informationCO2Left.setVisibility(GONE);
                     for (Indicator indicator: indicators)
-                        indicator.setTimeScale(TimeScale.LAST_24_HOURS);
-                    break;
-                case 2:
-                    informationCO2Left.setVisibility(GONE);
-                    for (Indicator indicator: indicators)
                         indicator.setTimeScale(TimeScale.WEEK);
                     break;
-                case 3:
+                case 2:
                     informationCO2Left.setVisibility(GONE);
                     for (Indicator indicator: indicators)
                         indicator.setTimeScale(TimeScale.MONTH);
@@ -491,9 +502,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     };
 
-    public void updateCO2left(){
-        //TODO: make another message when the amount of CO2 is exceeded?
-        ((TextView) findViewById(R.id.text_view_information_co2_left)).setText(String.format(getResources().getString(R.string.information_co2_left), Utility.doubleToStringNDecimals(carbonFootprint.getLimitValue()-carbonFootprint.getDailyValue(), carbonFootprint.getDecimalsNumber())));
+    public void updateCO2left() {
+        TextView co2Left = (TextView) findViewById(R.id.text_view_information_co2_left);
+        if (carbonFootprint.getDailyValue() < carbonFootprint.getLimitValue()) {
+            co2Left.setVisibility(VISIBLE);
+            co2Left.setText(String.format(getResources().getString(R.string.information_co2_left), Utility.doubleToStringNDecimals(carbonFootprint.getLimitValue() - carbonFootprint.getDailyValue(), carbonFootprint.getDecimalsNumber())));
+        } else
+            co2Left.setVisibility(GONE);
     }
 
     private void updateSavings() {
@@ -528,6 +543,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         informationOwnEnergy = findViewById(R.id.information_own_energy);
         informationSeparator = findViewById(R.id.separator_information);
 
+        walkingDistanceFragment = (WalkingDistanceFragment) getFragmentManager().findFragmentById(R.id.walking_distance);
         cyclingDistanceFragment = (CyclingDistanceFragment) getFragmentManager().findFragmentById(R.id.cycling_distance);
         solarPanelSizeFragment = (SolarPanelSizeFragment) getFragmentManager().findFragmentById(R.id.solar_panel_size);
 
@@ -539,8 +555,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int mBlue = ContextCompat.getColor(getApplicationContext(), R.color.blue);
 
         //Limit values
-        int targetCalories = 1700;
-        int limitExpenses = 400;
         int limitCarbonFootprint = 4;
 
         //Fragments
@@ -563,7 +577,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         columnNames.add("Transportation");
         columnNames.add("Housing");
         indicators.add(carbonFootprint = new CarbonFootprint(getApplicationContext(),transport, energy, inputStream, columnNames));
-        indicators.add(calories = new Indicator(inputStream, "Calories", "kCal", columnNames));
+        indicators.add(calories = new Calories(getApplicationContext(), transport, inputStream, columnNames));
         indicators.add(expenses = new Expenses(getApplicationContext(), energy, inputStream, columnNames));
         indicators.add(transportation = new Indicator(inputStream, "Transportation", "km", "Distance"));
         indicators.add(energyConsumption = new EnergyConsumption(getApplicationContext(), energy, inputStream, columnNames));
@@ -612,6 +626,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         housingDashboardFragment.setUp();
 
         indicatorsBarFragment.setUp();
+        walkingDistanceFragment.setUp();
         cyclingDistanceFragment.setUp();
         solarPanelSizeFragment.setUp();
 

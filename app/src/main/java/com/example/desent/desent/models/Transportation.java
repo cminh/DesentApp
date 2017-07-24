@@ -37,7 +37,17 @@ public class Transportation {
         return co2Today;
     }
 
-    private float getDrivingDistanceToday(){
+    public float getWalkingDistanceToday(){
+
+        return db.getWalkingDistanceToday();
+    }
+
+    public float getCyclingDistanceToday(){
+
+        return db.getCyclingDistanceToday();
+    }
+
+    public float getDrivingDistanceToday(){
 
         drivingDistanceToday = db.getDrivingDistanceToday();
 

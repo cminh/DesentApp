@@ -10,9 +10,11 @@
 
     <string name="expenses_name">Expenses</string>
     <string name="expenses_unit">kr</string>
+    <string name="expenses_explanation">The costs are a sum of your energy costs, your car fuel costs and the fixed costs your car produces, like insurance and value depreciation.</string>
 
     <string name="calories_name">Calories</string>
     <string name="calories_unit">kCal</string>
+    <string name="calories_explanation">Your calorie consumption. The more you walk or cycle instead of driving, the more you will burn.</string>
 
     <string name="energy_consumption_name">Energy consumption</string>
     <string name="energy_consumption_unit">kWh</string>
@@ -25,15 +27,14 @@
     <string name="app_name">DESENT</string>
     <string-array name="time_spinner_array">
         <item>TODAY</item>
-        <item>LAST 24 HOURS</item>
         <item>THIS WEEK</item>
         <item>THIS MONTH</item>
     </string-array>
-    <string-array name="indicator_spinner_array">
-        <item>Dashboard</item>
+
+    <string-array name="history_array">
         <item>Carbon footprint</item>
-        <item>Calories</item>
-        <item>Expenses</item>
+        <item>Transportation</item>
+        <item>Energy consumption</item>
     </string-array>
 
     <string name="register_housing_description">The type of energy you use for heating and the efficiency of your heating system determine 80% of your carbon footprint from energy consumption. </string>

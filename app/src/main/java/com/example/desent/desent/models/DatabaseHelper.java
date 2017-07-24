@@ -303,6 +303,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
+    public Cursor getDistance() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor distRes = db.rawQuery("select * from " + TABLE_DISTANCE, null);
+        return distRes;
+    }
+
     public float getWalkingDistanceToday() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("select " + D_COL_2 + " from " + TABLE_DISTANCE + " where "+ D_COL_1 +" = '" + date + "'", null);

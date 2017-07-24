@@ -1,5 +1,6 @@
 package com.example.desent.desent.fragments;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.os.Build;
 import android.os.Bundle;
@@ -44,6 +45,14 @@ public class IndicatorsBarFragment extends Fragment {
         indicators.add(indicator);
     }
 
+    public void showExplanation(String title,String Message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(Message);
+        builder.show();
+    }
+
     public void updateIndicatorsBarItem(Indicator indicator) {
         IndicatorsBarItem indicatorsBarItem = (IndicatorsBarItem) ((ViewGroup) getView()).getChildAt(indicators.indexOf(indicator));
         indicatorsBarItem.setValue(indicator.getDailyValue(), indicator.getDecimalsNumber());
@@ -63,12 +72,21 @@ public class IndicatorsBarFragment extends Fragment {
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT);
         lp.weight = 1;
 
-        for (Indicator indicator : indicators) {
-            IndicatorsBarItem indicatorsBarItem = new IndicatorsBarItem(getActivity());
+        for (final Indicator indicator : indicators) {
+            final IndicatorsBarItem indicatorsBarItem = new IndicatorsBarItem(getActivity());
             indicatorsBarItem.setValue(indicator.getDailyValue(), indicator.getDecimalsNumber());
             indicatorsBarItem.setUnit(indicator.getUnit());
             indicatorsBarItem.setOrientation(LinearLayout.VERTICAL);
             indicatorsBarItem.setLayoutParams(lp);
+            indicatorsBarItem.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (!indicator.getExplanation().equals(""))
+                                showExplanation(indicator.getName(), indicator.getExplanation());
+                        }
+                    }
+            );
 
             ViewGroup indicatorsBar = (ViewGroup) getView();
             indicatorsBar.addView(indicatorsBarItem);

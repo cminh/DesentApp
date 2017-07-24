@@ -37,6 +37,12 @@
             android:padding="10dp"
             android:gravity="center">
 
+            <fragment android:name="com.example.desent.desent.fragments.WalkingDistanceFragment"
+                android:id="@+id/walking_distance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_walking_distance" />
+
             <fragment android:name="com.example.desent.desent.fragments.CyclingDistanceFragment"
                 android:id="@+id/cycling_distance"
                 android:layout_width="match_parent"

@@ -1,0 +1,52 @@
+package com.example.desent.desent.models;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+import com.example.desent.desent.R;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+
+/**
+ * Created by celine on 24/07/17.
+ */
+
+public class Calories extends Indicator {
+
+    private SharedPreferences prefs;
+    protected String gender;
+    protected float weight;
+    protected int age;
+
+    public Calories(Context context, Transportation transport, InputStream inputStream, ArrayList<String> columnNames) {
+        super(inputStream,
+                context.getResources().getString(R.string.calories_name),
+                context.getResources().getString(R.string.calories_unit),
+                columnNames);
+        this.transport = transport; //TODO: move
+        this.explanation = context.getResources().getString(R.string.calories_explanation);
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        //TODO: gender
+        weight = Float.parseFloat(prefs.getString("pref_key_personal_weight", "70"));
+        age = Integer.parseInt(prefs.getString("pref_key_personal_age", "25"));
+    }
+
+    protected float calculateCaloriesFromWalking(float distance) {
+        return 7*distance; //TODO: accurate formula
+    }
+
+    protected float calculateCaloriesFromCycling(float distance) {
+        return 2*distance; //TODO: accurate formula
+    }
+
+    @Override
+    public void calculateValues() {
+
+        //TODO: time scale
+        averageValues[0] = calculateCaloriesFromWalking(this.walkingDistance) + calculateCaloriesFromCycling(this.cyclingDistance);
+
+    }
+}
