@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -34,6 +35,7 @@ import com.google.android.gms.awareness.fence.FenceUpdateRequest;
 import com.google.android.gms.awareness.snapshot.DetectedActivityResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.ResultCallbacks;
 import com.google.android.gms.common.api.Status;
@@ -42,6 +44,10 @@ import com.google.android.gms.location.DetectedActivity;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 /**
  * Created by magnust on 04.07.2017.
@@ -67,12 +73,9 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
     private static final int SNAP_DELAY = 10000;
     private Location mLastLocation;
     private String activity;
-    private String probableActivity;
     private DatabaseHelper myDb;
     private Context context;
     private Activity activityContext;
-    private LocationManager service;
-    private boolean locationConnected = false;
     private boolean isStill = true;
     private boolean activeGps = false;
     private Handler handler = new Handler();
@@ -218,11 +221,8 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
                 != PackageManager.PERMISSION_GRANTED) {
             Log.i(LOG, "Request location");
             ActivityCompat.requestPermissions(activityContext, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 2);
-
         } else {
-            initiateLocation();
-            Log.i(LOG, "Location api connected");
-            locationConnected = true;
+            askForGps();
         }
     }
 
@@ -344,6 +344,53 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
             handler.removeCallbacks(runnable);
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClientLoc, mLocationRequest, this);
         }
+    }
+
+    public void askForGps(){
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(mLocationRequest);
+
+        //**************************
+        builder.setAlwaysShow(true); //this is the key ingredient
+        //**************************
+
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClientLoc, builder.build());
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(LocationSettingsResult result) {
+                Log.i(LOG, "onResult LocationSettingsResult");
+                final Status status = result.getStatus();
+                final LocationSettingsStates state = result.getLocationSettingsStates();
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        Log.i(LOG, "SUCCESS");
+                        initiateLocation();
+                        // All location settings are satisfied. The client can initialize location
+                        // requests here.
+                        break;
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        Log.i(LOG, "RESOLUTION_REQUIRED");
+                        initiateLocation();
+                        // Location settings are not satisfied. But could be fixed by showing the user
+                        // a dialog.
+                        try {
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            status.startResolutionForResult( activityContext, 1000);
+                        } catch (IntentSender.SendIntentException e) {
+                            // Ignore the error.
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        Log.i(LOG, "SETTINGS_CHANGE_UNAVAILABLE");
+                        // Location settings are not satisfied. However, we have no way to fix the
+                        // settings so we won't show the dialog.
+                        break;
+                }
+            }
+        });
+
     }
     protected void disableGPS(){
         if (mGoogleApiClientLoc.isConnected() && activeGps) {

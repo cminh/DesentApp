@@ -19,6 +19,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -306,12 +307,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Activity activityContext = (Activity) this;
         distanceTracking = new DistanceTracker(activityContext, this);
         distanceTracking.setActivity(activity);
-        gpsFlag = checkGpsStatus();
-        if (gpsFlag) {
-
-        } else {
-            alertbox();
-        }
 
     }
 
@@ -332,56 +327,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
+
         switch (requestCode) {
             case 2: { if ((grantResults.length > 0)
                     && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                distanceTracking.initiateLocation();
+                Log.i("MAIN","onRequestPermissionsResult");
+                distanceTracking.askForGps();
             } else {
-                Toast.makeText(this, "The app needs to enable 'location' to do the calculations.",
+                Toast.makeText(this, "The app needs to enable location to do the calculations.",
                         Toast.LENGTH_LONG).show();
             }
                 return;
             }
-        }
-    }
-
-    protected void alertbox() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Your Device's GPS is Disabled. Activate?")
-                .setCancelable(false)
-                .setTitle("Gps Status")
-                .setPositiveButton("Yes",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // finish the current activity
-                                // AlertBoxAdvance.this.finish();
-                                Intent myIntent = new Intent(
-                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                startActivity(myIntent);
-                                dialog.cancel();
-                            }
-                        })
-                .setNegativeButton("No",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // cancel the dialog box
-                                dialog.cancel();
-                            }
-                        });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
-    protected boolean checkGpsStatus() {
-        ContentResolver contentResolver = getBaseContext().getContentResolver();
-        boolean gpsStatus = android.provider.Settings.Secure
-                .isLocationProviderEnabled(contentResolver,
-                        LocationManager.GPS_PROVIDER);
-        if (gpsStatus) {
-            return true;
-
-        } else {
-            return false;
         }
     }
 
