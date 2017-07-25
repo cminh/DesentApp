@@ -517,6 +517,10 @@ public class Indicator {
         }
     }
 
+    public float getSumValues() {
+        return getAverageValues()[0] + averageValues[1];
+    }
+
     public void setAverageValues(float[] averageValues){
         this.averageValues = averageValues;
     }

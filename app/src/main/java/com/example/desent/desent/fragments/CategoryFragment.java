@@ -1,10 +1,13 @@
 package com.example.desent.desent.fragments;
 
 import android.app.Fragment;
+import android.content.res.Resources;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.desent.desent.models.Indicator;
 import com.example.desent.desent.activities.MainActivity;
@@ -20,6 +23,7 @@ public class CategoryFragment extends Fragment {
     protected Indicator indicator;
     protected String imgName;
     protected CircularIndicator circularIndicator;
+    protected ImageView categoryImage;
     protected String categoryName;
     protected int categoryIndex;
     protected int startAngle = 270;
@@ -79,9 +83,13 @@ public class CategoryFragment extends Fragment {
     }
 
     public void setUp() {
+
+        categoryImage = getView().findViewById(R.id.image_view_category);
+        Resources res = getResources();
+        categoryImage.setImageBitmap(BitmapFactory.decodeResource(res, res.getIdentifier(categoryName.toLowerCase(), "drawable", getActivity().getPackageName())));
+
         circularIndicator = getView().findViewById(R.id.category_image);
         circularIndicator.setColor(indicator.getColors().get(categoryIndex));
-        circularIndicator.setImgName(categoryName.toLowerCase());
         circularIndicator.setStartAngle(this.startAngle);
         circularIndicator.setSweepAngle(this.sweepAngle);
 
@@ -94,14 +102,12 @@ public class CategoryFragment extends Fragment {
         tempParams.width = Utility.dpToPx(60);
         circularIndicator.setLayoutParams(tempParams);
 
-        circularIndicator.setFormat(CircularIndicator.Format.CIRCLE_IMG);
         circularIndicator.setMaxValue(indicator.getMaxValue());
         circularIndicator.setDecimalsNumber(indicator.getDecimalsNumber());
 
         ((TextView) getView().findViewById(R.id.category_name)).setText(categoryName);
         ((TextView) getView().findViewById(R.id.category_name)).setTextColor(indicator.getColors().get(categoryIndex));
         ((TextView) getView().findViewById(R.id.category_content)).setTextColor(indicator.getColors().get(categoryIndex));
-
 
     }
 }
