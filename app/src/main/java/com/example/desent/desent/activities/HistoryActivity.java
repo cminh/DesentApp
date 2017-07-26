@@ -3,8 +3,12 @@ package com.example.desent.desent.activities;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -27,11 +32,13 @@ import com.example.desent.desent.utils.ChartData;
 import com.example.desent.desent.utils.EstimationType;
 import com.example.desent.desent.utils.GraphPoints;
 import com.example.desent.desent.utils.TimeScale;
+import com.example.desent.desent.utils.Utility;
 import com.example.desent.desent.views.StackBarChart;
 import com.example.desent.desent.views.StackedBarLabel;
 import com.example.desent.desent.views.Yaxis;
 import com.jjoe64.graphview.series.DataPoint;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,8 +70,7 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        setUpNavigationView();
 
         spinner = (Spinner) findViewById(R.id.history_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.history_array, android.R.layout.simple_spinner_item);
@@ -85,12 +91,13 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
         if (id == R.id.nav_home) {
             startActivity(new Intent(HistoryActivity.this, MainActivity.class));
             drawer.closeDrawer(GravityCompat.START);
-
+        } else if (id == R.id.nav_history) {
+            drawer.closeDrawers();
         } else if (id == R.id.nav_settings) {
             startActivity(new Intent(HistoryActivity.this, Settings.class));
             drawer.closeDrawer(GravityCompat.START);
 
-        } else if (id == R.id.nav_about) {
+        } else if (id == R.id.nav_about_us) {
             drawer.closeDrawer(GravityCompat.START);
 
         }
@@ -127,6 +134,32 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
         builder.setTitle(title);
         builder.setMessage(Message);
         builder.show();
+    }
+
+    protected void setUpNavigationView(){
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        ((TextView) navigationView.getHeaderView(0).findViewById(R.id.title_nav_header)).setText(PreferenceManager.getDefaultSharedPreferences(this).getString("pref_key_personal_name", ""));
+        ((TextView) navigationView.getHeaderView(0).findViewById(R.id.subtitle_nav_header)).setText(PreferenceManager.getDefaultSharedPreferences(this).getString("pref_key_personal_email", ""));
+        ImageView profilePicture = navigationView.getHeaderView(0).findViewById(R.id.imageView);
+
+        Uri imageUri = null;
+        try {
+            imageUri = Uri.parse(PreferenceManager.getDefaultSharedPreferences(this).getString("pref_key_profile_picture", "android.resource://com.example.desent.desent/drawable/earth"));
+        } catch (IllegalArgumentException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        Bitmap bitmap;
+        try {
+            bitmap = BitmapFactory.decodeStream(this.getContentResolver().openInputStream(imageUri));
+            profilePicture.setImageBitmap(Utility.getCroppedBitmap(bitmap));
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     public void displayGraph() {
