@@ -27,11 +27,9 @@ import android.widget.TextView;
 
 import com.example.desent.desent.R;
 import com.example.desent.desent.models.DatabaseHelper;
-import com.example.desent.desent.models.Indicator;
+import com.example.desent.desent.models.Energy;
 import com.example.desent.desent.utils.ChartData;
-import com.example.desent.desent.utils.EstimationType;
 import com.example.desent.desent.utils.GraphPoints;
-import com.example.desent.desent.utils.TimeScale;
 import com.example.desent.desent.utils.Utility;
 import com.example.desent.desent.views.StackBarChart;
 import com.example.desent.desent.views.StackedBarLabel;
@@ -40,10 +38,8 @@ import com.jjoe64.graphview.series.DataPoint;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
-
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
 
 /**
  * Created by celine on 20/07/17.
@@ -55,6 +51,7 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
     Spinner spinner;
     final static String LOGG = "HistoryPage";
     DatabaseHelper myDb;
+    Energy energy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +75,10 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(spinnerHandler);
 
+        energy = new Energy(this);
+
         myDb = new DatabaseHelper(this);
-        displayGraph();
+        displayEnergyConsumptionGraph();
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -162,6 +161,61 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
         }
     }
 
+    public ArrayList<String> getWeekLabels(){
+        ArrayList<String> weekLabels = new ArrayList<>();
+        Calendar calendar = Calendar.getInstance();
+        int today = calendar.get(Calendar.DAY_OF_WEEK);
+        String[] ref = getResources().getStringArray(R.array.week_days);
+
+        for (int i=7; i>0; i--){
+            weekLabels.add(ref[(today-i)>=0 ? today-i : today-i+7]);
+        }
+
+        return weekLabels;
+    }
+
+    public void displayEnergyConsumptionGraph() {
+
+        StackBarChart stackBarChart = (StackBarChart) findViewById(R.id.chart);
+
+        List<ChartData> value = new ArrayList<>();
+
+        float[] weekEnergyConsumption = energy.generateArrayWeekEnergyConsumption();
+        Float[] value1 = new Float[7];
+        for (int i=0; i<7; i++)
+            value1[i] = weekEnergyConsumption[i];
+
+        String barColor1 = "#FF53BCD6";
+
+        String labelText1 = "Energy consumption (kWh)";
+
+
+        value.add(new ChartData(value1, labelText1, barColor1));
+
+        List<String> h_lables = getWeekLabels();
+
+        stackBarChart.setHorizontal_label(h_lables);
+        stackBarChart.setBarIndent(50);
+        Log.i(LOGG, "før setData");
+
+        stackBarChart.setData(value);
+
+        // stackBarChart.setDescription("Travel distance");
+
+
+        StackedBarLabel labelOrganizer = (StackedBarLabel) findViewById(R.id.labelStackedBar);
+        // Set color on labels
+        labelOrganizer.addColorLabels(barColor1);
+
+        // Set label text
+        labelOrganizer.addLabelText(labelText1);
+
+        Yaxis yaxis = (Yaxis) findViewById(R.id.y_axis);
+        yaxis.setBorder(60);
+        yaxis.setFirstValueSet(value);
+
+    }
+
     public void displayGraph() {
 
         Cursor dist = myDb.getDistance();
@@ -218,15 +272,15 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
 
         StackedBarLabel labelOrganizer = (StackedBarLabel) findViewById(R.id.labelStackedBar);
         // Set color on labels
-        labelOrganizer.setColorLabels(barColor1);
-        labelOrganizer.setColorLabels(barColor2);
-        labelOrganizer.setColorLabels(barColor3);
+        labelOrganizer.addColorLabels(barColor1);
+        labelOrganizer.addColorLabels(barColor2);
+        labelOrganizer.addColorLabels(barColor3);
 
 
         // Set label text
-        labelOrganizer.setLabelText(labelText1);
-        labelOrganizer.setLabelText(labelText2);
-        labelOrganizer.setLabelText(labelText3);
+        labelOrganizer.addLabelText(labelText1);
+        labelOrganizer.addLabelText(labelText2);
+        labelOrganizer.addLabelText(labelText3);
 
         Yaxis yaxis = (Yaxis) findViewById(R.id.y_axis);
         yaxis.setBorder(60);

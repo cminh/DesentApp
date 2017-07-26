@@ -34,15 +34,18 @@
     </LinearLayout>
 
     <RadioGroup
+        android:id="@+id/radio_group_gender"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <RadioButton
+            android:id="@+id/radio_button_female"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Female"/>
-        <RadioButton android:id="@+id/radio_ninjas"
+        <RadioButton
+            android:id="@+id/radio_button_male"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

@@ -13,6 +13,10 @@ import java.util.ArrayList;
 
 public class Expenses extends Indicator {
 
+    //TODO: make it accurate
+    final static int SOLAR_PANEL_PRICE = 100000;
+    float savings;
+
     public Expenses(Context context, Energy energy, InputStream inputStream, ArrayList<String> columnNames) {
         super(inputStream,
                 context.getResources().getString(R.string.expenses_name),
@@ -24,7 +28,7 @@ public class Expenses extends Indicator {
 
     //TODO: optimize
     public float calculateSavings() {
-        float savings = 0;
+        savings = 0;
 
         switch (estimationType) {
             case SOLAR_INSTALLATION:
@@ -32,6 +36,10 @@ public class Expenses extends Indicator {
         }
 
         return (savings>0) ? savings : 0;
+    }
+
+    public int calculateDaysLeftForSolarRoof() {
+        return ((int) savings>0) ? SOLAR_PANEL_PRICE / (int) savings : -1;
     }
 
     @Override

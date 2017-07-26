@@ -243,4 +243,20 @@ public class Energy {
         return calculateDailyAverage(load, indexes[0], indexes[1]);
 
     }
+
+    //TODO: check
+    public float[] generateArrayWeekEnergyConsumption() {
+        float[] weekEnergyConsumption = new float[7];
+        Calendar calendar = Calendar.getInstance();
+
+        int start = (calendar.get(Calendar.DAY_OF_YEAR)-8) * 24;
+        int stop = start +24*6 + calendar.get(Calendar.HOUR_OF_DAY);
+
+        for (int i = start; i < stop; i++){
+            int j = (i-start) / 24;
+            weekEnergyConsumption[j] += load[i];
+        }
+
+        return weekEnergyConsumption;
+    }
 }

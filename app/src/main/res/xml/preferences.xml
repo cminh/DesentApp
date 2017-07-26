@@ -42,7 +42,8 @@
             android:key="pref_key_car_fuel"
             android:summary="@string/pref_car_summary_fuel"
             android:title="@string/pref_car_fuel"
-            android:defaultValue="@string/pref_car_default_fuel"/>
+            android:defaultValue="@string/pref_car_default_fuel"
+            android:dependency="pref_key_car_owner"/>
         <EditTextPreference
             android:dialogTitle="@string/pref_car_dialog_price"
             android:key="pref_key_car_price"

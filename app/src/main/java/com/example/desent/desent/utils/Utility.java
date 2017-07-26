@@ -9,6 +9,9 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.util.TypedValue;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+
 /**
  * Created by celine on 04/05/17.
  */

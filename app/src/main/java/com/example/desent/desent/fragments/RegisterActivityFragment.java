@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.example.desent.desent.R;
@@ -21,6 +22,7 @@ public class RegisterActivityFragment extends Fragment {
     private EditText ageTextView;
     private EditText weightTextView;
     private SharedPreferences sharedPreferences;
+    private RadioGroup genderRadioGroup;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,6 +33,7 @@ public class RegisterActivityFragment extends Fragment {
         ViewGroup rootView = (ViewGroup) inflater.inflate(
                 R.layout.fragment_register_activity, container, false);
 
+        genderRadioGroup = rootView.findViewById(R.id.radio_group_gender);
         ageTextView = rootView.findViewById(R.id.age);
         weightTextView = rootView.findViewById(R.id.weight);
 
@@ -46,7 +49,7 @@ public class RegisterActivityFragment extends Fragment {
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        //TODO: gender
+        editor.putString("pref_key_gender", (genderRadioGroup.getCheckedRadioButtonId() == R.id.radio_button_female) ? "Female" : "Male");
         editor.putString("pref_key_personal_age", String.valueOf(ageTextView.getText()));
         editor.putString("pref_key_personal_weight", String.valueOf(weightTextView.getText()));
 
@@ -56,7 +59,11 @@ public class RegisterActivityFragment extends Fragment {
 
     private void restorePreferences(){
 
-        //TODO: gender
+        if (sharedPreferences.getString("pref_key_gender", "").equals("Female"))
+            genderRadioGroup.check(R.id.radio_button_female);
+        else
+            genderRadioGroup.check(R.id.radio_button_male);
+
         ageTextView.setText(sharedPreferences.getString("pref_key_personal_age", ""), TextView.BufferType.EDITABLE);
         weightTextView.setText(sharedPreferences.getString("pref_key_personal_weight", ""), TextView.BufferType.EDITABLE);
 

@@ -54,11 +54,11 @@ public class StackedBarLabel extends View {
         this.canvas = canvas;
     }
 
-    public void setColorLabels(String color){
+    public void addColorLabels(String color){
         colorLabels.add(color);
     }
 
-    public void setLabelText(String labelText){
+    public void addLabelText(String labelText){
         labels.add(labelText);
     }
 

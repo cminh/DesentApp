@@ -1,5 +1,7 @@
 <resources>
 
+    <string name="infinity">&#8734;</string>
+
     <string name="estimation_solar_panel_title">Solar panel</string>
     <string name="estimation_walking_title">Walking</string>
     <string name="estimation_cycling_title">Cycling</string>
@@ -21,7 +23,7 @@
 
     <string name="information_co2_left">You have %1$s kgCO&#x2082; left!</string>
     <string name="information_savings">%1$s daily savings</string>
-    <string name="information_days_left_solar_panel">1253 days to finance your solar roof</string>
+    <string name="information_days_left_solar_panel">%1$s days to finance your solar roof</string>
     <string name="information_own_energy">%1$s your own energy</string>
 
     <string name="app_name">DESENT</string>
@@ -147,6 +149,16 @@
     <string-array name="pref_gender_values">
         <item>Male</item>
         <item>Female</item>
+    </string-array>
+
+    <string-array name="week_days">
+        <item>Sun</item>
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
     </string-array>
 
     <string name="pref_car_default_consumption" format="float">0.5</string>

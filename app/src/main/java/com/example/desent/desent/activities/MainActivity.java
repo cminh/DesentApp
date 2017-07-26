@@ -487,6 +487,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     };
 
+    public void updateDaysLeftSolarPanel() {
+        int days = expenses.calculateDaysLeftForSolarRoof();
+        ((TextView) findViewById(R.id.text_view_information_days_left_solar_panel)).setText(String.format(getResources().getString(R.string.information_days_left_solar_panel), (days == -1) ? getString(R.string.infinity) : String.valueOf(days)));
+    }
+
     public void updateCO2left() {
         TextView co2Left = (TextView) findViewById(R.id.text_view_information_co2_left);
         if (carbonFootprint.getDailyValue() < carbonFootprint.getLimitValue()) {
@@ -517,6 +522,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         updateSavings();
         updateOwnEnergy();
         updateCO2left();
+        updateDaysLeftSolarPanel();
     }
 
     protected void setUp() {

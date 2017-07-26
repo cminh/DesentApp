@@ -80,8 +80,8 @@ public class RegisterTransportationFragment extends Fragment {
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        //TODO: fuel type
         editor.putBoolean("pref_key_car_owner", carOwner.isChecked());
+        editor.putString("pref_key_car_fuel", carFuelSpinner.getSelectedItem().toString());
         editor.putString("pref_key_car_price", String.valueOf(priceTextView.getText()));
         editor.putString("pref_key_car_fuel_consumption", String.valueOf(averageConsumptionTextView.getText()));
         editor.putString("pref_key_car_ownership_period", String.valueOf(ownershipPeriodTextView.getText()));
@@ -92,8 +92,8 @@ public class RegisterTransportationFragment extends Fragment {
 
     private void restorePreferences(){
 
-        //TODO: fuel type
         carOwner.setChecked(sharedPreferences.getBoolean("pref_key_car_owner", false));
+        carFuelSpinner.setSelection(((ArrayAdapter<String>)carFuelSpinner.getAdapter()).getPosition(sharedPreferences.getString("pref_key_car_fuel", "Gasoline")));
         priceTextView.setText(sharedPreferences.getString("pref_key_car_price", ""), TextView.BufferType.EDITABLE);
         averageConsumptionTextView.setText(sharedPreferences.getString("pref_key_car_fuel_consumption", ""), TextView.BufferType.EDITABLE);
         ownershipPeriodTextView.setText(sharedPreferences.getString("pref_key_car_ownership_period", ""), TextView.BufferType.EDITABLE);
