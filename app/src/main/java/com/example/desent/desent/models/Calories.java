@@ -29,7 +29,7 @@ public class Calories extends Indicator {
         this.explanation = context.getResources().getString(R.string.calories_explanation);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        //TODO: gender
+        gender = prefs.getString("pref_key_gender", "Female");
         weight = Float.parseFloat(prefs.getString("pref_key_personal_weight", "70"));
         age = Integer.parseInt(prefs.getString("pref_key_personal_age", "25"));
     }

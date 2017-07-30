@@ -310,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ft.commit();
 
         //DistanceTracker
-        Activity activityContext = (Activity) this;
+        Activity activityContext = this;
         distanceTracking = new DistanceTracker(activityContext, this);
         distanceTracking.setActivity(activity);
 
@@ -510,7 +510,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void refreshAll(){
-        //TODO: finish to implement
 
         for (Indicator indicator: indicators)
             indicator.calculateValues();
@@ -541,7 +540,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         categoriesBar = findViewById(R.id.categories_bar);
 
         //Colors
-        int mRed = ContextCompat.getColor(getApplicationContext(), R.color.red);
         int mGreen = ContextCompat.getColor(getApplicationContext(), R.color.green);
         int mBlue = ContextCompat.getColor(getApplicationContext(), R.color.blue);
 
@@ -557,11 +555,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         indicatorsBarFragment = (IndicatorsBarFragment) getFragmentManager().findFragmentById(R.id.indicators_bar);
 
-        //Date
+        //Data
         InputStream inputStream = getResources().openRawResource(R.raw.data);
 
         //Indicators
-        energy = new Energy(getApplicationContext());
+        energy = new Energy(this);
         transport = new Transportation(this);
 
         ArrayList<String> columnNames = new ArrayList<>();
@@ -587,7 +585,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         energyTransportationColors.add(mGreen);
         energyTransportationColors.add(mBlue);
         carbonFootprint.setColors(energyTransportationColors);
-        carbonFootprint.setLimitColor(mRed);
 
         for (Indicator indicator : indicators) {
             indicator.setTimeScale(TimeScale.TODAY); //TODO: SharedPreferences?
@@ -621,7 +618,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         cyclingDistanceFragment.setUp();
         solarPanelSizeFragment.setUp();
 
-        int[] pvSystemSizes = {3,4,5,6};
+        float[] pvSystemSizes = {3,4,5,6};
         solarPanelSizeFragment.addButtons(pvSystemSizes);
 
         setUpNavigationView();

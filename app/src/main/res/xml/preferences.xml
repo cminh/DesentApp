@@ -11,6 +11,12 @@
             android:key="pref_key_personal_email"
             android:summary="@string/pref_personal_summary_email"
             android:title="@string/pref_personal_email" />
+        <!--<EditTextPreference
+            android:dialogTitle="@string/pref_personal_dialog_password"
+            android:key="pref_key_personal_password"
+            android:summary="@string/pref_personal_summary_password"
+            android:title="@string/pref_personal_password"
+            android:password="true"/>-->
         <ListPreference
             android:entries="@array/pref_gender_list"
             android:entryValues="@array/pref_gender_values"

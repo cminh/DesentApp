@@ -30,25 +30,12 @@ public class CircleFragment extends Fragment {
     protected int sweepAngle = 360;
     protected String imgName = "earth";
     protected int numberOfStates = 5;
-    protected int decimalsNumber;
-
-    public int getDecimalsNumber() {
-        return decimalsNumber;
-    }
-
-    public void setDecimalsNumber(int decimalsNumber) {
-        this.decimalsNumber = decimalsNumber;
-    }
 
     public void setIndicator(Indicator indicator) {
         this.indicator = indicator;
     }
 
     public Indicator getIndicator() {return this.indicator;}
-
-    public void setCircularIndicator (CircularIndicator circularIndicator) {this.circularIndicator = circularIndicator;}
-
-    public CircularIndicator getCircularIndicator() {return this.circularIndicator;}
 
     public int getStartAngle() {
         return startAngle;
@@ -116,7 +103,6 @@ public class CircleFragment extends Fragment {
         circularIndicator.setStartAngle(this.startAngle);
         circularIndicator.setSweepAngle(this.sweepAngle);
         circularIndicator.setDecimalsNumber(indicator.getDecimalsNumber());
-        circularIndicator.setLimitColor(indicator.getLimitColor());
 
         caption = getView().findViewById(R.id.caption);
         caption.setText(Utility.floatToStringNDecimals(indicator.getSumValues(), indicator.getDecimalsNumber()) + " " + indicator.getUnit());

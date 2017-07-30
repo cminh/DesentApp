@@ -92,17 +92,20 @@
 
     <string name="pref_personal_name">Name</string>
     <string name="pref_personal_email">Email</string>
+    <string name="pref_personal_password">Password</string>
     <string name="pref_personal_gender">Gender</string>
     <string name="pref_personal_age">Age</string>
     <string name="pref_personal_weight">Weight</string>
 
     <string name="pref_personal_dialog_name">Please enter your name</string>
     <string name="pref_personal_dialog_email">Please enter your email</string>
+    <string name="pref_personal_dialog_password">Please enter your password</string>
     <string name="pref_personal_dialog_age">Please enter your age</string>
     <string name="pref_personal_dialog_weight">Please enter your weight</string>
 
     <string name="pref_personal_summary_name">Please enter your name</string>
     <string name="pref_personal_summary_email">Please enter your email</string>
+    <string name="pref_personal_summary_password">Plase enter your password</string>
     <string name="pref_personal_summary_age">Please enter your age</string>
     <string name="pref_personal_summary_weight">Please enter your weight</string>
 
@@ -171,13 +174,18 @@
     <string name="action_sign_in">Sign in</string>
     <string name="action_sign_up">Sign up</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <string name="error_invalid_name">Please enter your name</string>
+    <string name="error_invalid_email">The email address is invalid</string>
+    <string name="error_password_too_short">The password must be at least 8 characters long</string>
+    <string name="error_password_not_match">The passwords do not match</string>
+    <string name="error_invalid_price">The price must be a number</string>
 
 
 </resources>

@@ -176,7 +176,7 @@ public class Energy {
         return calculateDailyAverage(electricityCost, indexes[0], indexes[1]);
     }
 
-    public double calculateElectricityCost(TimeScale timeScale, int pvSystemSize) {
+    public double calculateElectricityCost(TimeScale timeScale, float pvSystemSize) {
         double[] hourlyCost;
         double electricityCost = 0;
         int[] indexes = indexesFromTimeScale(timeScale);
@@ -204,7 +204,7 @@ public class Energy {
         return CO2Factor*load;
     }
 
-    public double calculateCO2FromElectricity(TimeScale timeScale, int pvSystemSize) {
+    public double calculateCO2FromElectricity(TimeScale timeScale, float pvSystemSize) {
         double co2 = 0;
         double[] hourlyCO2;
         int[] indexes = indexesFromTimeScale(timeScale);
@@ -232,7 +232,7 @@ public class Energy {
     }
 
     //TODO: check
-    public double calculateEnergyConsumption(TimeScale timeScale, int pvSystemSize) {
+    public double calculateEnergyConsumption(TimeScale timeScale, float pvSystemSize) {
         double load = 0;
         int[] indexes = indexesFromTimeScale(timeScale);
 

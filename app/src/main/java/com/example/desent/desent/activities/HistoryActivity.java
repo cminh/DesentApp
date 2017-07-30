@@ -78,7 +78,8 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
         energy = new Energy(this);
 
         myDb = new DatabaseHelper(this);
-        displayEnergyConsumptionGraph();
+        myDb.getWeekDrivingDistance();
+        displayDistanceGraph();
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -192,9 +193,9 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
 
         value.add(new ChartData(value1, labelText1, barColor1));
 
-        List<String> h_lables = getWeekLabels();
+        List<String> h_labels = getWeekLabels();
 
-        stackBarChart.setHorizontal_label(h_lables);
+        stackBarChart.setHorizontal_label(h_labels);
         stackBarChart.setBarIndent(50);
         Log.i(LOGG, "før setData");
 
@@ -214,6 +215,68 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
         yaxis.setBorder(60);
         yaxis.setFirstValueSet(value);
 
+    }
+
+    public void displayDistanceGraph() {
+
+        StackBarChart stackBarChart = (StackBarChart) findViewById(R.id.chart);
+
+
+        List<ChartData> value = new ArrayList<>();
+
+        float[] walkingDistance = myDb.getWeekWalkingDistance();
+        float[] cyclingDistance = myDb.getWeekCyclingDistance();
+        float[] drivingDistance = myDb.getWeekDrivingDistance();
+
+        Float[] value1 = new Float[7];
+        Float[] value2 = new Float[7];
+        Float[] value3 = new Float[7];
+
+        for (int i=0; i<7; i++) {
+            value1[i] = walkingDistance[i];
+            value2[i] = cyclingDistance[i];
+            value3[i] = drivingDistance[i];
+        }
+
+        String barColor1 = "#00ff00";
+        String barColor2 = "#4f8714";
+        String barColor3 = "#875c14";
+
+        String labelText1 = "Walking";
+        String labelText2 = "Cycling";
+        String labelText3 = "Driving";
+
+
+        value.add(new ChartData(value1, labelText1, barColor1));
+        value.add(new ChartData(value2, labelText2, barColor2));
+        value.add(new ChartData(value3, labelText3, barColor3));
+
+        List<String> h_labels = getWeekLabels();
+
+        stackBarChart.setHorizontal_label(h_labels);
+        stackBarChart.setBarIndent(50);
+        Log.i(LOGG, "før setData");
+
+        stackBarChart.setData(value);
+
+        // stackBarChart.setDescription("Travel distance");
+
+
+        StackedBarLabel labelOrganizer = (StackedBarLabel) findViewById(R.id.labelStackedBar);
+        // Set color on labels
+        labelOrganizer.addColorLabels(barColor1);
+        labelOrganizer.addColorLabels(barColor2);
+        labelOrganizer.addColorLabels(barColor3);
+
+
+        // Set label text
+        labelOrganizer.addLabelText(labelText1);
+        labelOrganizer.addLabelText(labelText2);
+        labelOrganizer.addLabelText(labelText3);
+
+        Yaxis yaxis = (Yaxis) findViewById(R.id.y_axis);
+        yaxis.setBorder(60);
+        yaxis.setFirstValueSet(value);
     }
 
     public void displayGraph() {

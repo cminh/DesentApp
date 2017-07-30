@@ -75,6 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/pref_car_price"
+            android:inputType="numberDecimal"
             android:maxLines="1" />
 
     </android.support.design.widget.TextInputLayout>
@@ -88,6 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/pref_car_fuel_consumption"
+            android:inputType="numberDecimal"
             android:maxLines="1" />
 
     </android.support.design.widget.TextInputLayout>
@@ -101,6 +103,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/pref_car_ownership_period"
+            android:inputType="numberDecimal"
             android:maxLines="1" />
 
     </android.support.design.widget.TextInputLayout>

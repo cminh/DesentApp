@@ -61,6 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/pref_personal_age"
+        android:inputType="number"
         android:maxLines="1" />
 
 </android.support.design.widget.TextInputLayout>
@@ -74,6 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/pref_personal_weight"
+            android:inputType="numberDecimal"
             android:maxLines="1" />
 
     </android.support.design.widget.TextInputLayout>

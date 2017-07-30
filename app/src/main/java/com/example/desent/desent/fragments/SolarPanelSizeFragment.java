@@ -20,7 +20,7 @@ public class SolarPanelSizeFragment extends Fragment implements View.OnClickList
 
     private ViewGroup buttonsContainer;
     private Button activeButton = null;
-    private int[] pvSystemSizes;
+    private float[] pvSystemSizes;
     int buttonsSpacing;
     int buttonSize;
 
@@ -68,7 +68,7 @@ public class SolarPanelSizeFragment extends Fragment implements View.OnClickList
         buttonSize = (int) getResources().getDimension(R.dimen.circular_button_size);
     }
 
-    public void addButtons(int[] pvSystemSizes){
+    public void addButtons(float[] pvSystemSizes){
         this.pvSystemSizes = pvSystemSizes;
         for(int i=0; i<pvSystemSizes.length; i++)
             addButton(String.valueOf(pvSystemSizes[i]) + " kWh");

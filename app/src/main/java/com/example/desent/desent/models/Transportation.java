@@ -20,7 +20,6 @@ public class Transportation {
     private float kgCo2FromDriving;
     private float consumptionPr10km;
     private float co2Today;
-    private float co2Last24;
     private float co2Week;
     private float co2Month;
     private  boolean combustionEngine = true;
@@ -57,19 +56,20 @@ public class Transportation {
     private void isCarOwner(){
        if(prefs.getBoolean("pref_key_car_owner", true)){
            co2Today = calculateKgCo2FromDriving(getDrivingDistanceToday(), getEmissionsPrLitre(), getLitrePer10km());
-           co2Last24 = 0f;
-           co2Week = 0f;
-           co2Month = 0f;
+           co2Week = calculateKgCo2FromDriving(db.getWeekAverageDrivingDistance(), getEmissionsPrLitre(), getLitrePer10km());
+           co2Month = calculateKgCo2FromDriving(db.getMonthAverageDrivingDistance(), getEmissionsPrLitre(), getLitrePer10km());
         }else{
            co2Today = 0f;
-           co2Last24 = 0f;
            co2Week = 0f;
            co2Month = 0f;
        }
     }
 
     private float getEmissionsPrLitre(){
-        String fuelType = prefs.getString("pref_key_car_fuel", "Gasoline");
+        return getEmissionsPrLitre(prefs.getString("pref_key_car_fuel", "Gasoline"));
+    }
+
+    public float getEmissionsPrLitre(String fuelType){
         float emissionsPrLitre;
         switch (fuelType){
             case "Gasoline":
@@ -101,6 +101,10 @@ public class Transportation {
 
     protected float calculateKgCo2FromDriving(float drivingDistance){
         return ((prefs.getBoolean("pref_key_car_owner", true) ? calculateKgCo2FromDriving(drivingDistance, getEmissionsPrLitre(), getLitrePer10km()) : 0));
+    }
+
+    protected float calculateKgCo2FromDriving(float drivingDistance, float emission){
+        return ((prefs.getBoolean("pref_key_car_owner", true) ? calculateKgCo2FromDriving(drivingDistance, emission, getLitrePer10km()) : 0));
     }
 
     private float calculateKgCo2FromDriving(float drivingDistance, float emission, float consumption){

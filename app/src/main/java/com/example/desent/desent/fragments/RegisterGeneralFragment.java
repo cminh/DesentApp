@@ -13,6 +13,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,10 +39,12 @@ import static android.app.Activity.RESULT_OK;
 
 public class RegisterGeneralFragment extends Fragment {
 
+    private boolean isProfileValid;
     private ImageView profilePic;
     private EditText nameTextView;
     private EditText emailTextView;
     private EditText passwordTextView;
+    private EditText confirmPasswordTextView;
     private SharedPreferences sharedPreferences;
     private Uri imageUri;
 
@@ -56,7 +61,7 @@ public class RegisterGeneralFragment extends Fragment {
         nameTextView = rootView.findViewById(R.id.name);
         emailTextView = rootView.findViewById(R.id.email);
         passwordTextView = rootView.findViewById(R.id.password);
-
+        confirmPasswordTextView = rootView.findViewById(R.id.confirm_password);
 
         profilePic.setOnClickListener(new View.OnClickListener(){ //TODO:request permission
             @Override
@@ -70,6 +75,8 @@ public class RegisterGeneralFragment extends Fragment {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         restorePreferences();
+
+        setErrors();
 
         return rootView;
     }
@@ -99,6 +106,100 @@ public class RegisterGeneralFragment extends Fragment {
         }
     }
 
+    private void setErrors(){
+
+        nameTextView.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                if (String.valueOf(nameTextView.getText()).equals(""))
+                    nameTextView.setError(getString(R.string.error_invalid_name));
+                else
+                    nameTextView.setError(null);
+
+            }
+        });
+
+        emailTextView.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                String email = String.valueOf(emailTextView.getText());
+                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches())
+                    emailTextView.setError(getString(R.string.error_invalid_email));
+                else
+                    emailTextView.setError(null);
+
+            }
+        });
+
+        passwordTextView.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                String password = String.valueOf(passwordTextView.getText());
+                if (password.length() < 8)
+                    passwordTextView.setError(getString(R.string.error_password_too_short));
+                else
+                    passwordTextView.setError(null);
+
+            }
+        });
+
+        confirmPasswordTextView.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                if (!(String.valueOf(confirmPasswordTextView.getText()).equals(String.valueOf(passwordTextView.getText()))))
+                    confirmPasswordTextView.setError(getString(R.string.error_password_not_match));
+                else
+                    passwordTextView.setError(null);
+
+            }
+        });
+
+    }
+
     private void pickImage() {
         Crop.pickImage(getContext(), this, Crop.REQUEST_PICK);
     }
@@ -124,26 +225,6 @@ public class RegisterGeneralFragment extends Fragment {
             Toast.makeText(getActivity(), Crop.getError(result).getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
-
-
-    /**@Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO Auto-generated method stub
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK) {
-            Uri targetUri = data.getData();
-            beginCrop(targetUri);
-            Bitmap bitmap;
-            try {
-                bitmap = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(targetUri));
-                profilePic.setImageBitmap(getCroppedBitmap(bitmap));
-            } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-    }**/
 
     private void restorePreferences(){
 

@@ -324,6 +324,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return walkedToday;
     }
 
+    public float getWalkingDistance(String date) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select " + D_COL_2 + " from " + TABLE_DISTANCE + " where "+ D_COL_1 +" = '" + date + "'", null);
+        cursor.moveToFirst();
+        float walkedToday;
+
+        if (cursor.getCount()>0){
+            cursor.moveToLast();
+            walkedToday = cursor.getFloat(0);
+        }else{
+            walkedToday = 0;
+        }
+        return walkedToday;
+    }
+
+    public float[] getWeekWalkingDistance() {
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+
+        int length = 7;
+
+        float[] weekWalkingDistance = new float[length];
+        weekWalkingDistance[length-1] = getWalkingDistance(df.format(calendar.getTime()));
+        for (int i = 1; i<length; i++){
+            calendar.add(Calendar.DAY_OF_YEAR, -1);
+            weekWalkingDistance[length-i-1] = getWalkingDistance(df.format(calendar.getTime()));
+        }
+
+        return weekWalkingDistance;
+
+    }
+
     public float getCyclingDistanceToday() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("select " + D_COL_3 +" from " + TABLE_DISTANCE + " where "+ D_COL_1 +" = '" + date + "'", null);cursor.moveToFirst();
@@ -338,6 +371,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cycleToday;
     }
 
+    public float getCyclingDistance(String date) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select " + D_COL_3 +" from " + TABLE_DISTANCE + " where "+ D_COL_1 +" = '" + date + "'", null);cursor.moveToFirst();
+        float cycleToday;
+
+        if (cursor.getCount()>0){
+            cursor.moveToLast();
+            cycleToday = cursor.getFloat(0);
+        }else{
+            cycleToday = 0;
+        }
+        return cycleToday;
+    }
+
+    public float[] getWeekCyclingDistance() {
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+
+        int length = 7;
+
+        float[] weekCyclingDistance = new float[length];
+        weekCyclingDistance[length-1] = getCyclingDistance(df.format(calendar.getTime()));
+        for (int i = 1; i<length; i++){
+            calendar.add(Calendar.DAY_OF_YEAR, -1);
+            weekCyclingDistance[length-i-1] = getCyclingDistance(df.format(calendar.getTime()));
+        }
+
+        return weekCyclingDistance;
+
+    }
+
     public float getDrivingDistanceToday() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("select " + D_COL_4 +" from " + TABLE_DISTANCE + " where "+ D_COL_1 +" = '" + date + "'", null);
@@ -350,6 +415,72 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             drivenToday = 0;
         }
         return drivenToday;
+    }
+
+    public float getDrivingDistance(String date) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select " + D_COL_4 +" from " + TABLE_DISTANCE + " where "+ D_COL_1 +" = '" + date + "'", null);
+        float drivingDistance;
+        cursor.moveToFirst();
+        if (cursor.getCount()>0){
+            cursor.moveToLast();
+            drivingDistance = cursor.getFloat(0);
+        }else{
+            drivingDistance = 0;
+        }
+        return drivingDistance;
+    }
+
+    public float[] getWeekDrivingDistance() {
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+
+        int length = 7;
+
+        float[] weekDrivingDistance = new float[length];
+        weekDrivingDistance[length-1] = getDrivingDistance(df.format(calendar.getTime()));
+        for (int i = 1; i<length; i++){
+            calendar.add(Calendar.DAY_OF_YEAR, -1);
+            weekDrivingDistance[length-i-1] = getDrivingDistance(df.format(calendar.getTime()));
+        }
+
+        return weekDrivingDistance;
+
+    }
+
+    public float getWeekAverageDrivingDistance() {
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+
+        int length = calendar.get(Calendar.DAY_OF_WEEK);
+
+        float weekDrivingDistance = getDrivingDistance(df.format(calendar.getTime()));
+        for (int i = 1; i<length; i++){
+            calendar.add(Calendar.DAY_OF_YEAR, -1);
+            weekDrivingDistance += getDrivingDistance(df.format(calendar.getTime()));
+        }
+
+        return weekDrivingDistance/length;
+
+    }
+
+    public float getMonthAverageDrivingDistance() {
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+
+        int length = calendar.get(Calendar.DAY_OF_MONTH);
+
+        float weekDrivingDistance = getDrivingDistance(df.format(calendar.getTime()));
+        for (int i = 1; i<length; i++){
+            calendar.add(Calendar.DAY_OF_YEAR, -1);
+            weekDrivingDistance += getDrivingDistance(df.format(calendar.getTime()));
+        }
+
+        return weekDrivingDistance/length;
+
     }
 
     public boolean updateData(String name, String surname, String weight, String carMake, String elCons) {

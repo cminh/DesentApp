@@ -21,7 +21,7 @@ public class Indicator {
 
     protected TimeScale timeScale;
     protected EstimationType estimationType;
-    protected int pvSystemSize;
+    protected float pvSystemSize;
     protected float walkingDistance;
     protected float cyclingDistance;
     protected float drivingDistance;
@@ -33,7 +33,6 @@ public class Indicator {
 
     //Charts configs
     protected ArrayList<Integer> colors;
-    protected int limitColor;
 
     protected float maxValue;
     protected float limitValue;
@@ -77,11 +76,11 @@ public class Indicator {
         this.drivingDistance = drivingDistance;
     }
 
-    public int getPvSystemSize() {
+    public float getPvSystemSize() {
         return pvSystemSize;
     }
 
-    public void setPvSystemSize(int pvSystemSize) {
+    public void setPvSystemSize(float pvSystemSize) {
         this.pvSystemSize = pvSystemSize;
     }
 
@@ -107,14 +106,6 @@ public class Indicator {
 
     public void setLimitValue(float limitValue) {
         this.limitValue = limitValue;
-    }
-
-    public int getLimitColor() {
-        return limitColor;
-    }
-
-    public void setLimitColor(int limitColor) {
-        this.limitColor = limitColor;
     }
 
     public int getDecimalsNumber() {
@@ -312,44 +303,6 @@ public class Indicator {
 
     }
 
-    /**public void readTodaysValues(){
-        averageValues.clear();
-        ArrayList<Integer> columnIndexes = new ArrayList<>();
-        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-        BufferedReader reader = new BufferedReader(inputStreamReader);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); //TODO: move, maybe
-
-        try{
-
-            String line;
-            while((!((line = reader.readLine()).startsWith(name))) || (line == null)){
-            }
-            line = reader.readLine();;
-            ArrayList<String> raw = new ArrayList<>(Arrays.asList(line.split(",")));
-
-            for (String columnName: columnNames) {
-                if (raw.contains(columnName))
-                    columnIndexes.add(raw.indexOf(columnName));
-            }
-            while(!((line = reader.readLine()).startsWith(dateFormat.format(date))) || (line == null)) {
-            }
-            raw = new ArrayList<>(Arrays.asList(line.split(",")));
-
-            for (Integer columnIndex: columnIndexes) {
-                averageValues.add(Float.parseFloat(raw.get(columnIndex)));
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace(); //TODO: see errors
-        } finally {
-            try {
-                inputStream.reset();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }**/
 
     public void estimateWeeklyValues(String columnName, int categoryIndex){
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));

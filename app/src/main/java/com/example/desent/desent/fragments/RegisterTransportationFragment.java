@@ -4,6 +4,9 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +25,7 @@ import com.example.desent.desent.R;
 
 public class RegisterTransportationFragment extends Fragment {
 
+    private boolean isProfileValid;
     private CheckBox carOwner;
     private Spinner carFuelSpinner;
     private EditText priceTextView;
