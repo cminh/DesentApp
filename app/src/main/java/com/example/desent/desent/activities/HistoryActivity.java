@@ -229,9 +229,11 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
         labelOrganizer = (StackedBarLabel) findViewById(R.id.labelStackedBar);
         // Set color on labels
         labelOrganizer.addColorLabels(barColor1);
+        labelOrganizer.addColorLabels(barColor2);
 
         // Set label text
         labelOrganizer.addLabelText(labelText1);
+        labelOrganizer.addLabelText(labelText2);
 
         yaxis = (Yaxis) findViewById(R.id.y_axis);
         yaxis.setBorder(60);
