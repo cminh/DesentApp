@@ -43,6 +43,14 @@ public class WalkingDistanceFragment extends Fragment {
         walkingTextView.setText(String.valueOf(walkingDistance) + " km");
         drivingTextView.setText(String.valueOf(drivingDistance) + " km");
 
+        //TODO: don't think is a good way to do it
+        MainActivity main = (MainActivity) getActivity();
+        for(Indicator indicator : main.getIndicators()) {
+            indicator.setWalkingDistance((float) walkingDistance);
+            indicator.setDrivingDistance((float) drivingDistance);
+        }
+        main.refreshAll();
+
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
             @Override

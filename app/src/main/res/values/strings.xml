@@ -21,6 +21,9 @@
     <string name="energy_consumption_name">Energy consumption</string>
     <string name="energy_consumption_unit">kWh</string>
 
+    <string name="distance_name">Driving distance</string>
+    <string name="distance_unit">km</string>
+
     <string name="information_co2_left">You have %1$s kgCO&#x2082; left!</string>
     <string name="information_savings">%1$s daily savings</string>
     <string name="information_days_left_solar_panel">%1$s days to finance your solar roof</string>

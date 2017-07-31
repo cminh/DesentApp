@@ -8,7 +8,9 @@ import com.example.desent.desent.utils.TimeScale;
 import com.example.desent.desent.utils.Utility;
 
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by celine on 29/06/17.
@@ -39,11 +41,11 @@ public class CarbonFootprint extends Indicator {
                 averageValues[1] = (float) energy.calculateCO2FromElectricity(timeScale, pvSystemSize);
                 break;
             case WALKING:
-                averageValues[0] = transport.calculateKgCo2FromDriving(transport.getDrivingDistance(timeScale));
+                averageValues[0] = transport.calculateKgCo2FromDriving(this.drivingDistance);
                 averageValues[1] = (float) energy.calculateCO2FromElectricity(timeScale);
                 break;
             case CYCLING:
-                averageValues[0] = transport.calculateKgCo2FromDriving(transport.getDrivingDistance(timeScale));
+                averageValues[0] = transport.calculateKgCo2FromDriving(this.drivingDistance);
                 averageValues[1] = (float) energy.calculateCO2FromElectricity(timeScale);
                 break;
             case ELECTRIC_CAR:

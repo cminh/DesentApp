@@ -259,4 +259,17 @@ public class Energy {
 
         return weekEnergyConsumption;
     }
+    public float[] generateArrayWeekCarbonFootprint() {
+
+        float[] weekEnergyConsumption = generateArrayWeekEnergyConsumption();
+
+        int length = weekEnergyConsumption.length;
+        float[] weekCarbonFootprint = new float[length];
+
+        for (int i = 0; i < length; i++){
+            weekCarbonFootprint[i] = ((float) CO2Factor)*weekEnergyConsumption[i];
+        }
+
+        return weekCarbonFootprint;
+    }
 }

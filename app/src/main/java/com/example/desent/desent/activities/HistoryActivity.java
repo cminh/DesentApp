@@ -28,6 +28,7 @@ import android.widget.TextView;
 import com.example.desent.desent.R;
 import com.example.desent.desent.models.DatabaseHelper;
 import com.example.desent.desent.models.Energy;
+import com.example.desent.desent.models.Transportation;
 import com.example.desent.desent.utils.ChartData;
 import com.example.desent.desent.utils.GraphPoints;
 import com.example.desent.desent.utils.Utility;
@@ -52,6 +53,7 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
     final static String LOGG = "HistoryPage";
     DatabaseHelper myDb;
     Energy energy;
+    Transportation transportation;
     StackBarChart stackBarChart;
     StackedBarLabel labelOrganizer;
     Yaxis yaxis;
@@ -79,6 +81,7 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
         spinner.setOnItemSelectedListener(spinnerHandler);
 
         energy = new Energy(this);
+        transportation = new Transportation(this);
 
         myDb = new DatabaseHelper(this);
         myDb.getWeekDrivingDistance();
@@ -121,6 +124,7 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
             //TODO: implement
             switch (pos) {
                 case 0:
+                    displayCarbonFootprintGraph();
                     break;
                 case 1:
                     displayDistanceGraph();
@@ -186,6 +190,53 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
         }
 
         return weekLabels;
+    }
+
+    public void displayCarbonFootprintGraph() {
+
+        List<ChartData> value = new ArrayList<>();
+
+        float[] carbonFootprintTransportation = transportation.getWeekCarbonFootprint();
+        float[] carbonFootprintEnergy = energy.generateArrayWeekCarbonFootprint();
+
+        Float[] value1 = new Float[7];
+        Float[] value2 = new Float[7];
+        for (int i=0; i<7; i++) {
+            value1[i] = carbonFootprintEnergy[i];
+            value2[i] = carbonFootprintTransportation[i];
+        }
+
+        String barColor1 = "#03a9f4";
+        String barColor2 = "#64dd17";
+
+        String labelText1 = "Energy";
+        String labelText2 = "Transportation"; //TODO: string
+
+
+        value.add(new ChartData(value1, labelText1, barColor1));
+        value.add(new ChartData(value2, labelText2, barColor2));
+
+        List<String> h_labels = getWeekLabels();
+
+        stackBarChart.setHorizontal_label(h_labels);
+        stackBarChart.setBarIndent(50);
+        Log.i(LOGG, "før setData");
+
+        stackBarChart.setData(value);
+
+        labelOrganizer.clear();
+
+        labelOrganizer = (StackedBarLabel) findViewById(R.id.labelStackedBar);
+        // Set color on labels
+        labelOrganizer.addColorLabels(barColor1);
+
+        // Set label text
+        labelOrganizer.addLabelText(labelText1);
+
+        yaxis = (Yaxis) findViewById(R.id.y_axis);
+        yaxis.setBorder(60);
+        yaxis.setFirstValueSet(value);
+
     }
 
     public void displayEnergyConsumptionGraph() {

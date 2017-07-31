@@ -7,6 +7,9 @@ import android.preference.PreferenceManager;
 
 import com.example.desent.desent.utils.TimeScale;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 /**
  * Created by magnust on 07.07.2017.
  */
@@ -34,6 +37,14 @@ public class Transportation {
         this.context = context;
         db = new DatabaseHelper(context);
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
+    }
+
+    public DatabaseHelper getDb() {
+        return db;
+    }
+
+    public void setDb(DatabaseHelper db) {
+        this.db = db;
     }
 
     public float getCo2(TimeScale timeScale) {
@@ -159,6 +170,35 @@ public class Transportation {
            co2Week = 0f;
            co2Month = 0f;
        }
+    }
+
+    public float[] getWeekCarbonFootprint() {
+
+        float[] weekDistance = db.getWeekDrivingDistance();
+        int length = weekDistance.length;
+
+        float[] weekCarbonFootprint = new float[length];
+        for (int i = 0; i<length; i++){
+            weekCarbonFootprint[i] = calculateKgCo2FromDriving(weekDistance[i]);
+        }
+
+        return weekCarbonFootprint;
+
+    }
+
+    public float[] getMonthCarbonFootprint() {
+
+        float[] monthDistance = db.getWeekDrivingDistance();
+        int length = monthDistance.length;
+
+        float[] monthCarbonFootprint = new float[length];
+
+        for (int i = 0; i<length; i++){
+            monthCarbonFootprint[i] = calculateKgCo2FromDriving(monthCarbonFootprint[i]);
+        }
+
+        return monthCarbonFootprint;
+
     }
 
     private float getEmissionsPrLitre(){

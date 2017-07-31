@@ -2,15 +2,12 @@ package com.example.desent.desent.activities;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
-import android.content.ContentResolver;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -19,7 +16,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -43,6 +39,7 @@ import com.example.desent.desent.fragments.WalkingDistanceFragment;
 import com.example.desent.desent.models.Calories;
 import com.example.desent.desent.models.CarbonFootprint;
 import com.example.desent.desent.models.DistanceTracker;
+import com.example.desent.desent.models.DrivingDistance;
 import com.example.desent.desent.models.Energy;
 import com.example.desent.desent.models.EnergyConsumption;
 import com.example.desent.desent.models.Expenses;
@@ -78,10 +75,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //Indicators
     protected ArrayList<Indicator> indicators = new ArrayList<>();
-    protected Indicator calories;
+    protected Calories calories;
     protected Expenses expenses;
     protected CarbonFootprint carbonFootprint;
-    protected Indicator transportation;
+    protected DrivingDistance drivingDistance;
     protected EnergyConsumption energyConsumption;
     protected Energy energy;
     protected Transportation transport;
@@ -568,12 +565,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         indicators.add(carbonFootprint = new CarbonFootprint(getApplicationContext(),transport, energy, inputStream, columnNames));
         indicators.add(calories = new Calories(getApplicationContext(), transport, inputStream, columnNames));
         indicators.add(expenses = new Expenses(getApplicationContext(), energy, inputStream, columnNames));
-        indicators.add(transportation = new Indicator(inputStream, "Transportation", "km", "Distance"));
+        indicators.add(drivingDistance = new DrivingDistance(getApplicationContext(), transport, inputStream, columnNames));
         indicators.add(energyConsumption = new EnergyConsumption(getApplicationContext(), energy, inputStream, columnNames));
 
         indicatorsBarFragment.addIndicator(calories);
         indicatorsBarFragment.addIndicator(expenses);
-        indicatorsBarFragment.addIndicator(transportation);
+        indicatorsBarFragment.addIndicator(drivingDistance);
         indicatorsBarFragment.addIndicator(energyConsumption);
 
         carbonFootprintCircleFragment.setStartAngle(135);
@@ -597,7 +594,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         calories.setDecimalsNumber(0);
         expenses.setDecimalsNumber(0);
         carbonFootprint.setDecimalsNumber(1);
-        transportation.setDecimalsNumber(1);
+        drivingDistance.setDecimalsNumber(1);
         energyConsumption.setDecimalsNumber(1);
 
         carbonFootprintCircleFragment.setIndicator(carbonFootprint);

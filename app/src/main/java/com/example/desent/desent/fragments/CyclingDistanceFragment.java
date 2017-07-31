@@ -43,6 +43,15 @@ public class CyclingDistanceFragment extends Fragment {
         cyclingTextView.setText(String.valueOf(cyclingDistance) + " km");
         drivingTextView.setText(String.valueOf(drivingDistance) + " km");
 
+        //TODO: don't think is a good way to do it
+        MainActivity main = (MainActivity) getActivity();
+        for(Indicator indicator : main.getIndicators()) {
+            indicator.setCyclingDistance((float) cyclingDistance);
+            indicator.setDrivingDistance((float) drivingDistance);
+        }
+        main.refreshAll();
+
+
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
             @Override
