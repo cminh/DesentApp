@@ -52,6 +52,9 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
     final static String LOGG = "HistoryPage";
     DatabaseHelper myDb;
     Energy energy;
+    StackBarChart stackBarChart;
+    StackedBarLabel labelOrganizer;
+    Yaxis yaxis;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +82,10 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
 
         myDb = new DatabaseHelper(this);
         myDb.getWeekDrivingDistance();
+
+        stackBarChart = (StackBarChart) findViewById(R.id.chart);
+        labelOrganizer = (StackedBarLabel) findViewById(R.id.labelStackedBar);
+        yaxis = (Yaxis) findViewById(R.id.y_axis);
         displayDistanceGraph();
     }
 
@@ -116,10 +123,16 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
                 case 0:
                     break;
                 case 1:
+                    displayDistanceGraph();
                     break;
                 case 2:
+                    displayEnergyConsumptionGraph();
                     break;
             }
+
+            stackBarChart.invalidate();
+            labelOrganizer.invalidate();
+            yaxis.invalidate();
 
         }
 
@@ -177,8 +190,6 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
 
     public void displayEnergyConsumptionGraph() {
 
-        StackBarChart stackBarChart = (StackBarChart) findViewById(R.id.chart);
-
         List<ChartData> value = new ArrayList<>();
 
         float[] weekEnergyConsumption = energy.generateArrayWeekEnergyConsumption();
@@ -201,26 +212,22 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
 
         stackBarChart.setData(value);
 
-        // stackBarChart.setDescription("Travel distance");
+        labelOrganizer.clear();
 
-
-        StackedBarLabel labelOrganizer = (StackedBarLabel) findViewById(R.id.labelStackedBar);
+        labelOrganizer = (StackedBarLabel) findViewById(R.id.labelStackedBar);
         // Set color on labels
         labelOrganizer.addColorLabels(barColor1);
 
         // Set label text
         labelOrganizer.addLabelText(labelText1);
 
-        Yaxis yaxis = (Yaxis) findViewById(R.id.y_axis);
+        yaxis = (Yaxis) findViewById(R.id.y_axis);
         yaxis.setBorder(60);
         yaxis.setFirstValueSet(value);
 
     }
 
     public void displayDistanceGraph() {
-
-        StackBarChart stackBarChart = (StackBarChart) findViewById(R.id.chart);
-
 
         List<ChartData> value = new ArrayList<>();
 
@@ -261,8 +268,8 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
 
         // stackBarChart.setDescription("Travel distance");
 
+        labelOrganizer.clear();
 
-        StackedBarLabel labelOrganizer = (StackedBarLabel) findViewById(R.id.labelStackedBar);
         // Set color on labels
         labelOrganizer.addColorLabels(barColor1);
         labelOrganizer.addColorLabels(barColor2);
@@ -274,7 +281,6 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
         labelOrganizer.addLabelText(labelText2);
         labelOrganizer.addLabelText(labelText3);
 
-        Yaxis yaxis = (Yaxis) findViewById(R.id.y_axis);
         yaxis.setBorder(60);
         yaxis.setFirstValueSet(value);
     }
@@ -292,9 +298,6 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
         GraphPoints gp = new GraphPoints(dist);
         double maxY = gp.getMaxY();
         DataPoint[] dp = gp.generatePoints();
-
-        StackBarChart stackBarChart = (StackBarChart) findViewById(R.id.chart);
-
 
         List<ChartData> value = new ArrayList<>();
 
@@ -332,8 +335,8 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
 
         // stackBarChart.setDescription("Travel distance");
 
+        labelOrganizer.clear();
 
-        StackedBarLabel labelOrganizer = (StackedBarLabel) findViewById(R.id.labelStackedBar);
         // Set color on labels
         labelOrganizer.addColorLabels(barColor1);
         labelOrganizer.addColorLabels(barColor2);
@@ -345,7 +348,6 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
         labelOrganizer.addLabelText(labelText2);
         labelOrganizer.addLabelText(labelText3);
 
-        Yaxis yaxis = (Yaxis) findViewById(R.id.y_axis);
         yaxis.setBorder(60);
         yaxis.setFirstValueSet(value);
     }

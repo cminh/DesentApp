@@ -357,6 +357,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    public float getWeekAverageWalkingDistance() {
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+
+        int length = calendar.get(Calendar.DAY_OF_WEEK);
+
+        float weekWalkingDistance = getWalkingDistance(df.format(calendar.getTime()));
+        for (int i = 1; i<length; i++){
+            calendar.add(Calendar.DAY_OF_YEAR, -1);
+            weekWalkingDistance += getDrivingDistance(df.format(calendar.getTime()));
+        }
+
+        return weekWalkingDistance/length;
+
+    }
+
+    public float getMonthAverageWalkingDistance() {
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+
+        int length = calendar.get(Calendar.DAY_OF_MONTH);
+
+        float monthWalkingDistance = getDrivingDistance(df.format(calendar.getTime()));
+        for (int i = 1; i<length; i++){
+            calendar.add(Calendar.DAY_OF_YEAR, -1);
+            monthWalkingDistance += getWalkingDistance(df.format(calendar.getTime()));
+        }
+
+        return monthWalkingDistance/length;
+
+    }
+
     public float getCyclingDistanceToday() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("select " + D_COL_3 +" from " + TABLE_DISTANCE + " where "+ D_COL_1 +" = '" + date + "'", null);cursor.moveToFirst();
@@ -400,6 +434,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         return weekCyclingDistance;
+
+    }
+
+    public float getWeekAverageCyclingDistance() {
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+
+        int length = calendar.get(Calendar.DAY_OF_WEEK);
+
+        float weekCyclingDistance = getDrivingDistance(df.format(calendar.getTime()));
+        for (int i = 1; i<length; i++){
+            calendar.add(Calendar.DAY_OF_YEAR, -1);
+            weekCyclingDistance += getWalkingDistance(df.format(calendar.getTime()));
+        }
+
+        return weekCyclingDistance/length;
+
+    }
+
+    public float getMonthAverageCyclingDistance() {
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+
+        int length = calendar.get(Calendar.DAY_OF_MONTH);
+
+        float monthWalkingDistance = getDrivingDistance(df.format(calendar.getTime()));
+        for (int i = 1; i<length; i++){
+            calendar.add(Calendar.DAY_OF_YEAR, -1);
+            monthWalkingDistance += getCyclingDistance(df.format(calendar.getTime()));
+        }
+
+        return monthWalkingDistance/length;
 
     }
 

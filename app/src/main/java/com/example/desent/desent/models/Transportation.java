@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.example.desent.desent.utils.TimeScale;
+
 /**
  * Created by magnust on 07.07.2017.
  */
@@ -17,6 +19,8 @@ public class Transportation {
     private Context context;
     private DatabaseHelper db;
     private float drivingDistanceToday;
+    private float drivingDistanceWeek;
+    private float drivingDistanceMonth;
     private float kgCo2FromDriving;
     private float consumptionPr10km;
     private float co2Today;
@@ -32,8 +36,96 @@ public class Transportation {
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
+    public float getCo2(TimeScale timeScale) {
+        float co2 = 0;
+
+        switch(timeScale){
+            case TODAY:
+                co2 = co2Today;
+                break;
+            case WEEK:
+                co2 = co2Week;
+                break;
+            case MONTH:
+                co2 = co2Month;
+                break;
+        }
+
+        return co2;
+    }
+
     public float getCo2Today(){
         return co2Today;
+    }
+
+    public float getCo2Week() {
+        return co2Week;
+    }
+
+    public void setCo2Week(float co2Week) {
+        this.co2Week = co2Week;
+    }
+
+    public float getCo2Month() {
+        return co2Month;
+    }
+
+    public void setCo2Month(float co2Month) {
+        this.co2Month = co2Month;
+    }
+
+    public float getWalkingDistance(TimeScale timeScale) {
+        float distance = 0;
+
+        switch (timeScale){
+            case TODAY:
+                distance = db.getWalkingDistanceToday();
+                break;
+            case WEEK:
+                distance = db.getWeekAverageWalkingDistance();
+                break;
+            case MONTH:
+                distance = db.getMonthAverageWalkingDistance();
+                break;
+        }
+
+        return distance;
+    }
+
+    public float getCyclingDistance(TimeScale timeScale) {
+        float distance = 0;
+
+        switch (timeScale){
+            case TODAY:
+                distance = db.getCyclingDistanceToday();
+                break;
+            case WEEK:
+                distance = db.getWeekAverageCyclingDistance();
+                break;
+            case MONTH:
+                distance = db.getMonthAverageCyclingDistance();
+                break;
+        }
+
+        return distance;
+    }
+
+    public float getDrivingDistance(TimeScale timeScale) {
+        float distance = 0;
+
+        switch (timeScale){
+            case TODAY:
+                distance = db.getDrivingDistanceToday();
+                break;
+            case WEEK:
+                distance = db.getWeekAverageDrivingDistance();
+                break;
+            case MONTH:
+                distance = db.getMonthAverageDrivingDistance();
+                break;
+        }
+
+        return distance;
     }
 
     public float getWalkingDistanceToday(){
@@ -55,9 +147,13 @@ public class Transportation {
 
     private void isCarOwner(){
        if(prefs.getBoolean("pref_key_car_owner", true)){
-           co2Today = calculateKgCo2FromDriving(getDrivingDistanceToday(), getEmissionsPrLitre(), getLitrePer10km());
-           co2Week = calculateKgCo2FromDriving(db.getWeekAverageDrivingDistance(), getEmissionsPrLitre(), getLitrePer10km());
-           co2Month = calculateKgCo2FromDriving(db.getMonthAverageDrivingDistance(), getEmissionsPrLitre(), getLitrePer10km());
+           drivingDistanceToday = db.getDrivingDistanceToday();
+           drivingDistanceWeek = db.getWeekAverageDrivingDistance();
+           drivingDistanceMonth = db.getMonthAverageDrivingDistance();
+
+           co2Today = calculateKgCo2FromDriving(drivingDistanceToday, getEmissionsPrLitre(), getLitrePer10km());
+           co2Week = calculateKgCo2FromDriving(drivingDistanceWeek, getEmissionsPrLitre(), getLitrePer10km());
+           co2Month = calculateKgCo2FromDriving(drivingDistanceMonth, getEmissionsPrLitre(), getLitrePer10km());
         }else{
            co2Today = 0f;
            co2Week = 0f;

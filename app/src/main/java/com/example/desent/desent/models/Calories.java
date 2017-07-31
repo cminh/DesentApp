@@ -43,10 +43,24 @@ public class Calories extends Indicator {
     }
 
     @Override
-    public void calculateValues() {
+    public void calculateValues() {switch (estimationType) {
 
-        //TODO: time scale
-        averageValues[0] = calculateCaloriesFromWalking(this.walkingDistance) + calculateCaloriesFromCycling(this.cyclingDistance);
+        case NONE:
+            averageValues[0] = calculateCaloriesFromWalking(transport.getWalkingDistance(timeScale)) + calculateCaloriesFromCycling(transport.getCyclingDistance(timeScale));
+            break;
+        case SOLAR_INSTALLATION:
+            averageValues[0] = calculateCaloriesFromWalking(transport.getWalkingDistance(timeScale)) + calculateCaloriesFromCycling(transport.getCyclingDistance(timeScale));
+            break;
+        case WALKING:
+            averageValues[0] = calculateCaloriesFromWalking(this.walkingDistance) + calculateCaloriesFromCycling(transport.getCyclingDistance(timeScale));
+            break;
+        case CYCLING:
+            averageValues[0] = calculateCaloriesFromWalking(transport.getWalkingDistance(timeScale)) + calculateCaloriesFromCycling(this.cyclingDistance);
+            break;
+        case ELECTRIC_CAR:
+            averageValues[0] = calculateCaloriesFromWalking(transport.getWalkingDistance(timeScale)) + calculateCaloriesFromCycling(transport.getCyclingDistance(timeScale));
+            break;
 
+    }
     }
 }

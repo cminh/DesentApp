@@ -32,6 +32,11 @@ public class StackedBarLabel extends View {
 
     }
 
+    public void clear(){
+        colorLabels.clear();
+        labels.clear();
+    }
+
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
         parentWidth = MeasureSpec.getSize(widthMeasureSpec);
