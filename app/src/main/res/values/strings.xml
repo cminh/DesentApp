@@ -9,6 +9,7 @@
 
     <string name="carbon_footprint_name">Carbon footprint</string>
     <string name="carbon_footprint_unit">kgCO&#x2082;</string>
+    <string name="carbon_footprint_default">-- kgCO&#x2082;</string>
 
     <string name="expenses_name">Expenses</string>
     <string name="expenses_unit">kr</string>
@@ -24,6 +25,7 @@
     <string name="distance_name">Driving distance</string>
     <string name="distance_unit">km</string>
 
+    <string name="information_co2_left_default">You have -- kgCO&#x2082; left!</string>
     <string name="information_co2_left">You have %1$s kgCO&#x2082; left!</string>
     <string name="information_savings">%1$s daily savings</string>
     <string name="information_days_left_solar_panel">%1$s days to finance your solar roof</string>

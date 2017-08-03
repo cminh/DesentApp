@@ -4,7 +4,11 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.*;
 import android.graphics.Paint.Style;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.view.View;
+
+import com.example.desent.desent.R;
 import com.example.desent.desent.utils.Utility;
 
 import java.util.ArrayList;
@@ -13,9 +17,12 @@ import java.util.List;
 /**
  * Created by celine on 10/03/17.
  */
-public class CircularIndicator extends Chart {
+public class CircularIndicator extends View {
 
     protected float[] values;
+
+    protected List<Integer> colors = new ArrayList<>();
+    protected final int mLightGrey = ContextCompat.getColor(getContext(), R.color.light_grey);
 
     //Rectangles
     protected RectF mCircleBounds;
@@ -31,6 +38,7 @@ public class CircularIndicator extends Chart {
 
     //Paints
     private Paint mProgressPaint = new Paint();
+    protected Paint mBackgroundPaint = new Paint();
 
     //Text
     protected float maxValue;
@@ -41,7 +49,7 @@ public class CircularIndicator extends Chart {
     public float getMaxValue() {return this.maxValue; }
 
     public void setColor(int color) {
-        this.colors = new ArrayList<Integer>();
+        this.colors = new ArrayList<>();
         colors.add(color);
     }
 
@@ -101,12 +109,10 @@ public class CircularIndicator extends Chart {
 
     }
 
-    @Override
     protected void updateValues() {
         this.updateTotalValue();
     }
 
-    @Override
     protected void init(Context context, AttributeSet attrs){
     }
 
@@ -136,14 +142,8 @@ public class CircularIndicator extends Chart {
 
     }
 
-    @Override
     protected void drawBackground(Canvas canvas) {
         canvas.drawArc(mCircleBounds, startAngle, sweepAngle, false, mBackgroundPaint);
-    }
-
-
-    @Override
-    protected void drawCaption(Canvas canvas) {
     }
 
     @Override
@@ -158,5 +158,15 @@ public class CircularIndicator extends Chart {
         setMeasuredDimension(r,r);
 
 
+    }
+
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        setUpBounds(canvas);
+        drawBackground(canvas);
+        drawValues(canvas);
     }
 }

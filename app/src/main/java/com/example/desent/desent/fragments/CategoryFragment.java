@@ -28,6 +28,15 @@ public class CategoryFragment extends Fragment {
     protected int categoryIndex;
     protected int startAngle = 270;
     protected int sweepAngle = 360;
+    protected int color;
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
 
     public String getCategoryName() {
         return categoryName;
@@ -83,13 +92,20 @@ public class CategoryFragment extends Fragment {
     }
 
     public void setUp() {
+        circularIndicator.setMaxValue(indicator.getMaxValue());
+    }
+
+    public void init() {
 
         categoryImage = getView().findViewById(R.id.image_view_category);
         Resources res = getResources();
         categoryImage.setImageBitmap(BitmapFactory.decodeResource(res, res.getIdentifier(categoryName.toLowerCase(), "drawable", getActivity().getPackageName())));
 
+        float[] values = {0};
+
         circularIndicator = getView().findViewById(R.id.category_image);
-        circularIndicator.setColor(indicator.getColors().get(categoryIndex));
+        circularIndicator.setValues(values);
+        circularIndicator.setColor(color);
         circularIndicator.setStartAngle(this.startAngle);
         circularIndicator.setSweepAngle(this.sweepAngle);
 
@@ -102,12 +118,9 @@ public class CategoryFragment extends Fragment {
         tempParams.width = Utility.dpToPx(60);
         circularIndicator.setLayoutParams(tempParams);
 
-        circularIndicator.setMaxValue(indicator.getMaxValue());
-        circularIndicator.setDecimalsNumber(indicator.getDecimalsNumber());
-
         ((TextView) getView().findViewById(R.id.category_name)).setText(categoryName);
-        ((TextView) getView().findViewById(R.id.category_name)).setTextColor(indicator.getColors().get(categoryIndex));
-        ((TextView) getView().findViewById(R.id.category_content)).setTextColor(indicator.getColors().get(categoryIndex));
+        ((TextView) getView().findViewById(R.id.category_name)).setTextColor(color);
+        ((TextView) getView().findViewById(R.id.category_content)).setTextColor(color);
 
     }
 }

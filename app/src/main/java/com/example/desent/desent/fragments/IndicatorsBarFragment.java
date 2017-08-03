@@ -24,6 +24,8 @@ import java.util.ArrayList;
 public class IndicatorsBarFragment extends Fragment {
 
     protected ArrayList<Indicator> indicators = new ArrayList<>();
+    protected ArrayList<IndicatorsBarItem> indicatorsBarItems = new ArrayList<>();
+    protected int length;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -31,6 +33,14 @@ public class IndicatorsBarFragment extends Fragment {
         view.setOrientation(LinearLayout.HORIZONTAL);
         view.setGravity(Gravity.CENTER);
         return view;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
     }
 
     public ArrayList<Indicator> getIndicators() {
@@ -42,7 +52,8 @@ public class IndicatorsBarFragment extends Fragment {
     }
 
     public void addIndicator(Indicator indicator) {
-        indicators.add(indicator);
+        if (indicators.size() < length)
+            indicators.add(indicator);
     }
 
     public void showExplanation(String title,String Message){

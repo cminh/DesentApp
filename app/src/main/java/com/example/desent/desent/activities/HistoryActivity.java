@@ -75,7 +75,7 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
         setUpNavigationView();
 
         spinner = (Spinner) findViewById(R.id.history_spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.history_array, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getApplicationContext(), R.array.history_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(spinnerHandler);
@@ -119,9 +119,6 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
 
         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 
-            ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE);
-
-            //TODO: implement
             switch (pos) {
                 case 0:
                     displayCarbonFootprintGraph();

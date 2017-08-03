@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import com.example.desent.desent.R;
 import com.example.desent.desent.models.Indicator;
 import com.example.desent.desent.utils.Utility;
 import com.example.desent.desent.views.CircularIndicator;
+
+import java.util.ArrayList;
 
 /**
  * Created by celine on 28/04/17.
@@ -30,6 +33,8 @@ public class CircleFragment extends Fragment {
     protected int sweepAngle = 360;
     protected String imgName = "earth";
     protected int numberOfStates = 5;
+
+    String captionText;
 
     public void setIndicator(Indicator indicator) {
         this.indicator = indicator;
@@ -74,8 +79,6 @@ public class CircleFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_circle, container, false);
     }
 
-
-
     public void updateImgState(){
         int state = (int) (((numberOfStates - 1) * indicator.getSumValues()) / indicator.getMaxValue()) + 1;
         state = (state < numberOfStates) ? state : numberOfStates;
@@ -94,20 +97,42 @@ public class CircleFragment extends Fragment {
         updateImgState();
     }
 
+    public void updateViews(){
+        caption.setText(Utility.floatToStringNDecimals(indicator.getSumValues(), indicator.getDecimalsNumber()) + " " + indicator.getUnit());
+        updateImgState();
+
+        circularIndicator.invalidate();
+    }
+
     public void setUp(){
 
-        circularIndicator = getView().findViewById(R.id.circular_indicator);
         circularIndicator.setMaxValue((int) indicator.getMaxValue()); //TODO: change
-        circularIndicator.setColors(indicator.getColors());
         circularIndicator.setValues(indicator.getAverageValues());
+
+        captionText = Utility.floatToStringNDecimals(indicator.getSumValues(), indicator.getDecimalsNumber()) + " " + indicator.getUnit();
+
+    }
+
+    public void init(){
+
+        //Colors
+        int mGreen = ContextCompat.getColor(getActivity(), R.color.green);
+        int mBlue = ContextCompat.getColor(getActivity(), R.color.blue);
+
+        ArrayList<Integer> energyTransportationColors = new ArrayList<>();
+        energyTransportationColors.add(mGreen);
+        energyTransportationColors.add(mBlue);
+
+        float[] values = {0,0};
+
+        circularIndicator = getView().findViewById(R.id.circular_indicator);
+        circularIndicator.setValues(values);
+        circularIndicator.setColors(energyTransportationColors);
         circularIndicator.setStartAngle(this.startAngle);
         circularIndicator.setSweepAngle(this.sweepAngle);
-        circularIndicator.setDecimalsNumber(indicator.getDecimalsNumber());
 
         caption = getView().findViewById(R.id.caption);
-        caption.setText(Utility.floatToStringNDecimals(indicator.getSumValues(), indicator.getDecimalsNumber()) + " " + indicator.getUnit());
 
         earthImage = getView().findViewById(R.id.image_view_earth);
-        updateImgState();
     }
 }

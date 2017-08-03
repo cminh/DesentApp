@@ -19,8 +19,8 @@ import java.util.Date;
  */
 public class Indicator {
 
-    protected TimeScale timeScale;
-    protected EstimationType estimationType;
+    protected TimeScale timeScale = TimeScale.TODAY;
+    protected EstimationType estimationType = EstimationType.NONE;
     protected float pvSystemSize;
     protected float walkingDistance;
     protected float cyclingDistance;
@@ -30,9 +30,6 @@ public class Indicator {
     protected String name;
     protected String explanation = "";
     protected ArrayList<String> columnNames;
-
-    //Charts configs
-    protected ArrayList<Integer> colors;
 
     protected float maxValue;
     protected float limitValue;
@@ -146,11 +143,6 @@ public class Indicator {
         }
     }
 
-    public void setColor(int color) {
-        this.colors = new ArrayList<>();
-        this.colors.add(color);
-    }
-
     public String getName() {
         return name;
     }
@@ -165,12 +157,6 @@ public class Indicator {
 
     public void setExplanation(String explanation) {
         this.explanation = explanation;
-    }
-
-    public void setColors(ArrayList<Integer> colors) {this.colors = colors;}
-
-    public ArrayList<Integer> getColors() {
-        return colors;
     }
 
     public String getUnit() {
@@ -241,19 +227,6 @@ public class Indicator {
         return weekAverage;
     }
 
-    public float[] calculateWeekAverage() {
-        return calculateAverage(weeklyValues);
-    }
-
-    public float[] calculateMonthAverage() {
-        return calculateAverage(monthlyValues);
-    }
-
-    public void estimateValues(String columnName, int categoryIndex) {
-        estimateDailyValues(columnName, categoryIndex);
-        estimateWeeklyValues(columnName, categoryIndex);
-        estimateMonthlyValues(columnName, categoryIndex);
-    }
 
     public void estimateDailyValues(String columnName, int categoryIndex) {
         int columnIndex;
@@ -348,45 +321,6 @@ public class Indicator {
 
     }
 
-    public void readWeeklyValues() {
-        weeklyValues.clear();
-        ArrayList<Integer> columnIndexes = new ArrayList<Integer>();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); //TODO: move, maybe
-        try{
-            String line;
-            while((!((line = reader.readLine()).startsWith(name))) || (line == null)){
-            }
-            line = reader.readLine();
-            ArrayList<String> raw = new ArrayList<String>(Arrays.asList(line.split(",")));
-
-            for (String columnName: columnNames) {
-                if (raw.contains(columnName)) {
-                    columnIndexes.add(raw.indexOf(columnName));
-                    weeklyValues.add(new ArrayList<Float>());
-                }
-            }
-            while(!((line = reader.readLine()).startsWith(dateFormat.format(date))) || (line == null)) {
-            }
-            for (int i=0; i<7; i++){ //TODO: prevent missing data
-                raw = new ArrayList<String>(Arrays.asList(line.split(",")));
-                for (int j=0; j < columnIndexes.size(); j++)
-                    weeklyValues.get(j).add(Float.parseFloat(raw.get(columnIndexes.get(j))));
-                line = reader.readLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                inputStream.reset();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-
-
     public void estimateMonthlyValues(String columnName, int categoryIndex){
         int columnIndex;
         int i = 0;
@@ -421,43 +355,6 @@ public class Indicator {
                     line = reader.readLine();
                     i++;
                 }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                inputStream.reset();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void readMonthlyValues(){
-        monthlyValues.clear();
-        ArrayList<Integer> columnIndexes = new ArrayList<Integer>();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
-        try{
-            String line;
-            while((!((line = reader.readLine()).startsWith(name))) || (line == null)){
-            }
-            line = reader.readLine();
-            ArrayList<String> raw = new ArrayList<String>(Arrays.asList(line.split(",")));
-
-            for (String columnName: columnNames) {
-                if (raw.contains(columnName)) {
-                    columnIndexes.add(raw.indexOf(columnName));
-                    monthlyValues.add(new ArrayList<Float>());
-                }
-            }
-            while(!((line = reader.readLine()).startsWith(dateFormat.format(date))) || (line == null)) {
-            }
-            while((line.startsWith(dateFormat.format(date))) && (line != null)) {
-                raw = new ArrayList<>(Arrays.asList(line.split(",")));
-                for (int j = 0; j < columnIndexes.size(); j++)
-                    monthlyValues.get(j).add(Float.parseFloat(raw.get(columnIndexes.get(j))));
-                line = reader.readLine();
             }
         } catch (IOException e) {
             e.printStackTrace();

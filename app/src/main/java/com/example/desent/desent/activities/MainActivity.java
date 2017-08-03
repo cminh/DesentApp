@@ -25,6 +25,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -101,6 +102,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private boolean gpsFlag;
     private static final String FENCE_RECEIVER_ACTION = "FENCE_RECEIVE";
 
+    private boolean isFirstDisplay = true;
+
+    public boolean isFirstDisplay() {
+        return isFirstDisplay;
+    }
+
+    public void setFirstDisplay(boolean firstDisplay) {
+        isFirstDisplay = firstDisplay;
+    }
 
     public ArrayList<Indicator> getIndicators() {
         return indicators;
@@ -108,6 +118,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void setIndicators(ArrayList<Indicator> indicators) {
         this.indicators = indicators;
+    }
+
+    public Calories getCalories() {
+        return calories;
+    }
+
+    public void setCalories(Calories calories) {
+        this.calories = calories;
     }
 
     public Expenses getExpenses() {
@@ -124,6 +142,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void setCarbonFootprint(CarbonFootprint carbonFootprint) {
         this.carbonFootprint = carbonFootprint;
+    }
+
+    public DrivingDistance getDrivingDistance() {
+        return drivingDistance;
+    }
+
+    public void setDrivingDistance(DrivingDistance drivingDistance) {
+        this.drivingDistance = drivingDistance;
+    }
+
+    public EnergyConsumption getEnergyConsumption() {
+        return energyConsumption;
+    }
+
+    public void setEnergyConsumption(EnergyConsumption energyConsumption) {
+        this.energyConsumption = energyConsumption;
     }
 
     @Override
@@ -159,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //Spinners
         timeSpinner = (Spinner) findViewById(R.id.time_spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.time_spinner_array, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getApplicationContext(), R.array.time_spinner_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         timeSpinner.setAdapter(adapter);
 
@@ -296,9 +330,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
 
 
-        setUp();
-
-        timeSpinner.setOnItemSelectedListener(timeSpinnerHandler);
+        init();
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.hide(walkingDistanceFragment);
@@ -318,6 +350,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onStart();
         distanceTracking.start();
         registerReceiver(distanceTracking.getFenceReceiver(), new IntentFilter(FENCE_RECEIVER_ACTION));
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+
+        AsyncSetup asyncSetup = new AsyncSetup(this,
+                progressBar,
+                indicators,
+                carbonFootprintCircleFragment,
+                indicatorsBarFragment,
+                transportationDashboardFragment,
+                housingDashboardFragment,
+                walkingDistanceFragment,
+                cyclingDistanceFragment,
+                solarPanelSizeFragment);
+
+        asyncSetup.execute();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //setUp();
     }
 
     @Override
@@ -455,8 +507,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 
-            ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE);
-
             switch (pos) {
                 case 0:
                     if (carbonFootprint.getEstimationType() == EstimationType.NONE)
@@ -508,51 +558,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void refreshAll(){
 
-        for (Indicator indicator: indicators)
-            indicator.calculateValues();
+        if (!isFirstDisplay) {
 
-        carbonFootprintCircleFragment.refresh();
-        housingDashboardFragment.refresh();
-        transportationDashboardFragment.refresh();
-        indicatorsBarFragment.refresh();
-        updateSavings();
-        updateOwnEnergy();
-        updateCO2left();
-        updateDaysLeftSolarPanel();
+            for (Indicator indicator : indicators)
+                indicator.calculateValues();
+
+            carbonFootprintCircleFragment.refresh();
+            housingDashboardFragment.refresh();
+            transportationDashboardFragment.refresh();
+            indicatorsBarFragment.refresh();
+            updateSavings();
+            updateOwnEnergy();
+            updateCO2left();
+            updateDaysLeftSolarPanel();
+        }
     }
 
-    protected void setUp() {
-
-        //Information text views
-        informationCO2Left = findViewById(R.id.information_co2_left);
-        informationSavings = findViewById(R.id.information_daily_savings);
-        informationDaysLeftSolarPanel = findViewById(R.id.information_days_left_solar_panel);
-        informationOwnEnergy = findViewById(R.id.information_own_energy);
-        informationSeparator = findViewById(R.id.separator_information);
-
-        walkingDistanceFragment = (WalkingDistanceFragment) getFragmentManager().findFragmentById(R.id.walking_distance);
-        cyclingDistanceFragment = (CyclingDistanceFragment) getFragmentManager().findFragmentById(R.id.cycling_distance);
-        solarPanelSizeFragment = (SolarPanelSizeFragment) getFragmentManager().findFragmentById(R.id.solar_panel_size);
-
-        categoriesBar = findViewById(R.id.categories_bar);
-
-        //Colors
-        int mGreen = ContextCompat.getColor(getApplicationContext(), R.color.green);
-        int mBlue = ContextCompat.getColor(getApplicationContext(), R.color.blue);
+    protected void setUp(){
 
         //Limit values
-        int limitCarbonFootprint = 4;
-
-        //Fragments
-
-        carbonFootprintCircleFragment = (CircleFragment) getFragmentManager().findFragmentById(R.id.dailyCarbonFootprint);
-
-        transportationDashboardFragment = (CategoryFragment) getFragmentManager().findFragmentById(R.id.transportation_dashboard_fragment);
-        housingDashboardFragment = (CategoryFragment) getFragmentManager().findFragmentById(R.id.housing_dashboard_fragment);
-
-        indicatorsBarFragment = (IndicatorsBarFragment) getFragmentManager().findFragmentById(R.id.indicators_bar);
-
-        //Data
+        int limitCarbonFootprint = 4;//Data
         InputStream inputStream = getResources().openRawResource(R.raw.data);
 
         //Indicators
@@ -573,15 +598,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         indicatorsBarFragment.addIndicator(drivingDistance);
         indicatorsBarFragment.addIndicator(energyConsumption);
 
-        carbonFootprintCircleFragment.setStartAngle(135);
-        carbonFootprintCircleFragment.setSweepAngle(270);
         carbonFootprintCircleFragment.setImgName("earth");
         carbonFootprintCircleFragment.setNumberOfStates(5);
-
-        ArrayList<Integer> energyTransportationColors = new ArrayList<>();
-        energyTransportationColors.add(mGreen);
-        energyTransportationColors.add(mBlue);
-        carbonFootprint.setColors(energyTransportationColors);
 
         for (Indicator indicator : indicators) {
             indicator.setTimeScale(TimeScale.TODAY); //TODO: SharedPreferences?
@@ -600,12 +618,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         carbonFootprintCircleFragment.setIndicator(carbonFootprint);
         carbonFootprintCircleFragment.setUp();
 
-        transportationDashboardFragment.setCategoryName("Transportation");
         transportationDashboardFragment.setCategoryIndex(0);
         transportationDashboardFragment.setIndicator(carbonFootprint);
         transportationDashboardFragment.setUp();
 
-        housingDashboardFragment.setCategoryName("Housing");
         housingDashboardFragment.setCategoryIndex(1);
         housingDashboardFragment.setIndicator(carbonFootprint);
         housingDashboardFragment.setUp();
@@ -617,6 +633,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         float[] pvSystemSizes = {3,4,5,6};
         solarPanelSizeFragment.addButtons(pvSystemSizes);
+
+        //timeSpinner.setOnItemSelectedListener(timeSpinnerHandler);
+    }
+
+    public void initTimeSpinner(){
+        timeSpinner.setOnItemSelectedListener(timeSpinnerHandler);
+    }
+
+    protected void init() {
+
+        //Colors
+        int mGreen = ContextCompat.getColor(this, R.color.green);
+        int mBlue = ContextCompat.getColor(this, R.color.blue);
+
+        //Information text views
+        informationCO2Left = findViewById(R.id.information_co2_left);
+        informationSavings = findViewById(R.id.information_daily_savings);
+        informationDaysLeftSolarPanel = findViewById(R.id.information_days_left_solar_panel);
+        informationOwnEnergy = findViewById(R.id.information_own_energy);
+        informationSeparator = findViewById(R.id.separator_information);
+
+        walkingDistanceFragment = (WalkingDistanceFragment) getFragmentManager().findFragmentById(R.id.walking_distance);
+        cyclingDistanceFragment = (CyclingDistanceFragment) getFragmentManager().findFragmentById(R.id.cycling_distance);
+        solarPanelSizeFragment = (SolarPanelSizeFragment) getFragmentManager().findFragmentById(R.id.solar_panel_size);
+
+        categoriesBar = findViewById(R.id.categories_bar);
+
+        //Fragments
+
+        carbonFootprintCircleFragment = (CircleFragment) getFragmentManager().findFragmentById(R.id.dailyCarbonFootprint);
+        carbonFootprintCircleFragment.setStartAngle(135);
+        carbonFootprintCircleFragment.setSweepAngle(270);
+        carbonFootprintCircleFragment.init();
+
+        transportationDashboardFragment = (CategoryFragment) getFragmentManager().findFragmentById(R.id.transportation_dashboard_fragment);
+        transportationDashboardFragment.setColor(mGreen);
+        transportationDashboardFragment.setCategoryName("Transportation");
+        transportationDashboardFragment.init();
+
+        housingDashboardFragment = (CategoryFragment) getFragmentManager().findFragmentById(R.id.housing_dashboard_fragment);
+        housingDashboardFragment.setColor(mBlue);
+        housingDashboardFragment.setCategoryName("Housing");
+        housingDashboardFragment.init();
+
+        indicatorsBarFragment = (IndicatorsBarFragment) getFragmentManager().findFragmentById(R.id.indicators_bar);
 
         setUpNavigationView();
     }
