@@ -46,6 +46,7 @@ import com.example.desent.desent.models.EnergyConsumption;
 import com.example.desent.desent.models.Expenses;
 import com.example.desent.desent.models.Indicator;
 import com.example.desent.desent.models.Transportation;
+import com.example.desent.desent.models.VehicleCost;
 import com.example.desent.desent.utils.EstimationType;
 import com.example.desent.desent.utils.TimeScale;
 import com.example.desent.desent.utils.Utility;
@@ -83,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected EnergyConsumption energyConsumption;
     protected Energy energy;
     protected Transportation transport;
+    protected VehicleCost vehicleCost;
 
     //Information views
     protected View informationCO2Left;
@@ -583,13 +585,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //Indicators
         energy = new Energy(this);
         transport = new Transportation(this);
+        vehicleCost = new VehicleCost(this);
 
         ArrayList<String> columnNames = new ArrayList<>();
         columnNames.add("Transportation");
         columnNames.add("Housing");
         indicators.add(carbonFootprint = new CarbonFootprint(getApplicationContext(),transport, energy, inputStream, columnNames));
         indicators.add(calories = new Calories(getApplicationContext(), transport, inputStream, columnNames));
-        indicators.add(expenses = new Expenses(getApplicationContext(), energy, inputStream, columnNames));
+        indicators.add(expenses = new Expenses(getApplicationContext(), vehicleCost, energy, inputStream, columnNames));
         indicators.add(drivingDistance = new DrivingDistance(getApplicationContext(), transport, inputStream, columnNames));
         indicators.add(energyConsumption = new EnergyConsumption(getApplicationContext(), energy, inputStream, columnNames));
 

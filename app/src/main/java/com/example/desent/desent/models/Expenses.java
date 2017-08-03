@@ -1,6 +1,7 @@
 package com.example.desent.desent.models;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.desent.desent.R;
 
@@ -17,12 +18,13 @@ public class Expenses extends Indicator {
     final static int SOLAR_PANEL_PRICE = 100000;
     float savings;
 
-    public Expenses(Context context, Energy energy, InputStream inputStream, ArrayList<String> columnNames) {
+    public Expenses(Context context, VehicleCost vehicleCost, Energy energy, InputStream inputStream, ArrayList<String> columnNames) {
         super(inputStream,
                 context.getResources().getString(R.string.expenses_name),
                 context.getResources().getString(R.string.expenses_unit),
                 columnNames);
         this.energy = energy;
+        this.vehicleCost = vehicleCost;
         this.explanation = context.getResources().getString(R.string.expenses_explanation);
     }
 
@@ -49,10 +51,12 @@ public class Expenses extends Indicator {
 
             case NONE:
                 estimateDailyValues(columnNames.get(0), 0);
+                averageValues[0] = vehicleCost.getCost(timeScale);
                 averageValues[1] = (float) energy.calculateElectricityCost(timeScale);
                 break;
             case SOLAR_INSTALLATION:
                 estimateDailyValues(columnNames.get(0), 0);
+                averageValues[0] = vehicleCost.getCost(timeScale);
                 averageValues[1] = (float) energy.calculateElectricityCost(timeScale, pvSystemSize);
                 break;
             case WALKING:
@@ -65,6 +69,7 @@ public class Expenses extends Indicator {
                 break;
             case ELECTRIC_CAR:
                 estimateDailyValues("Electric car", 0);
+
                 averageValues[1] = (float) energy.calculateElectricityCost(timeScale);
                 break;
 

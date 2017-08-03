@@ -203,7 +203,7 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
     public void stop() {
         if (mGoogleApiClientLoc.isConnected()) {
             mGoogleApiClientLoc.disconnect();
-            handler.removeCallbacks(runnable);
+            //handler.removeCallbacks(runnable);
         }
     }
 
@@ -341,7 +341,7 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
     protected void enableGPS(){
         if(!activeGps){
             activeGps = true;
-            handler.removeCallbacks(runnable);
+            //handler.removeCallbacks(runnable);
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClientLoc, mLocationRequest, this);
         }
     }
@@ -398,7 +398,7 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
 
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClientLoc, this);
             activeGps = false;
-            handler.postDelayed(runnable, 1000);
+            //handler.postDelayed(runnable, 1000);
         }
     }
 

@@ -38,6 +38,7 @@ public class Indicator {
 
     protected Energy energy;
     protected Transportation transport;
+    protected VehicleCost vehicleCost;
 
     //TODO: remove later
     protected Date date;

@@ -30,7 +30,7 @@ public class Transportation {
     private float co2Week;
     private float co2Month;
     private  boolean combustionEngine = true;
-    SharedPreferences prefs;
+    private SharedPreferences prefs;
 
 
     public Transportation(Context context){

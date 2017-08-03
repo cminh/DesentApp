@@ -42,37 +42,150 @@
             android:title="@string/pref_car_owner"
             android:summary="Yes"
             android:defaultValue="true" />
-        <ListPreference
-            android:entries="@array/pref_car_fuel_list"
-            android:entryValues="@array/pref_car_fuel_list"
-            android:key="pref_key_car_fuel"
-            android:summary="@string/pref_car_summary_fuel"
-            android:title="@string/pref_car_fuel"
-            android:defaultValue="@string/pref_car_default_fuel"
-            android:dependency="pref_key_car_owner"/>
         <EditTextPreference
             android:dialogTitle="@string/pref_car_dialog_price"
             android:key="pref_key_car_price"
             android:summary="@string/pref_car_summary_price"
             android:title="@string/pref_car_price"
             android:dependency="pref_key_car_owner"/>
-        <EditTextPreference
-            android:dialogTitle="@string/pref_car_dialog_fuel_consumption"
-            android:key="pref_key_car_fuel_consumption"
-            android:summary="@string/pref_car_summary_fuel_consumption"
-            android:title="@string/pref_car_fuel_consumption"
-            android:inputType="numberDecimal"
-            android:defaultValue="@string/pref_car_default_consumption"
-            android:dependency="pref_key_car_owner"/>
+
         <EditTextPreference
             android:dialogTitle="@string/pref_car_dialog_ownership_period"
             android:key="pref_key_car_ownership_period"
             android:summary="@string/pref_car_dialog_ownership_period"
             android:title="@string/pref_car_ownership_period"
             android:dependency="pref_key_car_owner"/>
+        <PreferenceScreen
+            android:title="@string/pref_car_title_advanced_settings"
+            android:dependency="pref_key_car_owner">
+            <PreferenceCategory
+                android:title="@string/pref_car_title_advanced_settings">
+                <CheckBoxPreference
+                    android:key="@string/pref_car_key_advanced_default"
+                    android:title="@string/pref_car_advanced_default"
+                    android:summary="Yes"
+                    android:defaultValue="false" />
+                <ListPreference
+                    android:entries="@array/pref_car_fuel_list"
+                    android:entryValues="@array/pref_car_fuel_list"
+                    android:key="pref_key_car_fuel"
+                    android:summary="@string/pref_car_summary_fuel"
+                    android:title="@string/pref_car_fuel"
+                    android:defaultValue="@string/pref_car_default_fuel"
+                    android:dependency="@string/pref_car_key_advanced_default"/>
+                <EditTextPreference
+                    android:dialogTitle="@string/pref_car_dialog_fuel_consumption"
+                    android:key="pref_key_car_fuel_consumption"
+                    android:summary="@string/pref_car_summary_fuel_consumption"
+                    android:title="@string/pref_car_fuel_consumption"
+                    android:inputType="numberDecimal"
+                    android:defaultValue="@string/pref_car_default_consumption"
+                    android:dependency="@string/pref_car_key_advanced_default"/>
+                <EditTextPreference
+                    android:dialogTitle="@string/pref_car_dialog_advanced_fuel_price"
+                    android:key="@string/pref_car_key_advanced_fuel_price"
+                    android:summary="@string/pref_car_summary_advanced_fuel_price"
+                    android:title="@string/pref_car_advanced_fuel_price"
+                    android:inputType="numberDecimal"
+                    android:dependency="@string/pref_car_key_advanced_default"/>
+                <EditTextPreference
+                    android:dialogTitle="@string/pref_car_dialog_advanced_Interest_cost"
+                    android:key="@string/pref_car_key_advanced_Interest_cost"
+                    android:summary="@string/pref_car_summary_advanced_Interest_cost"
+                    android:title="@string/pref_car_advanced_Interest_cost"
+                    android:inputType="numberDecimal"
+                    android:dependency="@string/pref_car_key_advanced_default"/>
+                <EditTextPreference
+                    android:dialogTitle="@string/pref_car_dialog_advanced_yearly_fee"
+                    android:key="@string/pref_car_key_advanced_yearly_fee"
+                    android:summary="@string/pref_car_summary_advanced_yearly_fee"
+                    android:title="@string/pref_car_advanced_yearly_fee"
+                    android:dependency="@string/pref_car_key_advanced_default"/>
+                <EditTextPreference
+                    android:dialogTitle="@string/pref_car_dialog_advanced_insurance_cost"
+                    android:key="@string/pref_car_key_advanced_insurance_cost"
+                    android:summary="@string/pref_car_summary_advanced_insurance_cost"
+                    android:title="@string/pref_car_advanced_insurance_cost"
+                    android:inputType="numberDecimal"
+                    android:dependency="@string/pref_car_key_advanced_default"/>
+                <EditTextPreference
+                    android:dialogTitle="@string/pref_car_dialog_advanced_tire_cost"
+                    android:key="@string/pref_car_key_advanced_tire_cost"
+                    android:summary="@string/pref_car_summary_advanced_tire_cost"
+                    android:title="@string/pref_car_advanced_tire_cost"
+                    android:inputType="numberDecimal"
+                    android:dependency="@string/pref_car_key_advanced_default"/>
+                <EditTextPreference
+                    android:dialogTitle="@string/pref_car_dialog_advanced_wash_accessories_cost"
+                    android:key="@string/pref_car_key_advanced_wash_accessories_cost"
+                    android:summary="@string/pref_car_summary_advanced_wash_accessories_cost"
+                    android:title="@string/pref_car_advanced_wash_accessories_cost"
+                    android:inputType="numberDecimal"
+                    android:dependency="@string/pref_car_key_advanced_default"/>
+                <EditTextPreference
+                    android:dialogTitle="@string/pref_car_dialog_advanced_service_cost"
+                    android:key="@string/pref_car_key_advanced_service_cost"
+                    android:summary="@string/pref_car_summary_advanced_service_cost"
+                    android:title="@string/pref_car_advanced_service_cost"
+                    android:inputType="numberDecimal"
+                    android:dependency="@string/pref_car_key_advanced_default"/>
+                <EditTextPreference
+                    android:dialogTitle="@string/pref_car_dialog_advanced_repair_cost"
+                    android:key="@string/pref_car_key_advanced_repair_cost"
+                    android:summary="@string/pref_car_summary_advanced_repair_cost"
+                    android:title="@string/pref_car_advanced_repair_cost"
+                    android:inputType="numberDecimal"
+                    android:dependency="@string/pref_car_key_advanced_default"/>
+                <EditTextPreference
+                    android:dialogTitle="@string/pref_car_dialog_advanced_depreciation_yr1"
+                    android:key="@string/pref_car_key_advanced_depreciation_yr1"
+                    android:summary="@string/pref_car_summary_advanced_depreciation_yr1"
+                    android:title="@string/pref_car_advanced_depreciation_yr1"
+                    android:inputType="numberDecimal"
+                    android:defaultValue="@string/pref_car_default_advanced_depreciation_yr1"
+                    android:dependency="@string/pref_car_key_advanced_default"/>
+                <EditTextPreference
+                    android:dialogTitle="@string/pref_car_dialog_advanced_depreciation_yr2"
+                    android:key="@string/pref_car_key_advanced_depreciation_yr2"
+                    android:summary="@string/pref_car_summary_advanced_depreciation_yr2"
+                    android:title="@string/pref_car_advanced_depreciation_yr2"
+                    android:inputType="numberDecimal"
+                    android:defaultValue="@string/pref_car_default_advanced_depreciation_yr2"
+                    android:dependency="@string/pref_car_key_advanced_default"/>
+                <EditTextPreference
+                    android:dialogTitle="@string/pref_car_dialog_advanced_depreciation_yr3"
+                    android:key="@string/pref_car_key_advanced_depreciation_yr3"
+                    android:summary="@string/pref_car_summary_advanced_depreciation_yr3"
+                    android:title="@string/pref_car_advanced_depreciation_yr3"
+                    android:inputType="numberDecimal"
+                    android:defaultValue="@string/pref_car_default_advanced_depreciation_yr3"
+                    android:dependency="@string/pref_car_key_advanced_default"/>
+                <EditTextPreference
+                    android:dialogTitle="@string/pref_car_dialog_advanced_depreciation_yr4"
+                    android:key="@string/pref_car_key_advanced_depreciation_yr4"
+                    android:summary="@string/pref_car_summary_advanced_depreciation_yr4"
+                    android:title="@string/pref_car_advanced_depreciation_yr4"
+                    android:inputType="numberDecimal"
+                    android:defaultValue="@string/pref_car_default_advanced_depreciation_yr4"
+                    android:dependency="@string/pref_car_key_advanced_default"/>
+                <EditTextPreference
+                    android:dialogTitle="@string/pref_car_dialog_advanced_depreciation_yr5"
+                    android:key="@string/pref_car_key_advanced_depreciation_yr5"
+                    android:summary="@string/pref_car_summary_advanced_depreciation_yr5"
+                    android:title="@string/pref_car_advanced_depreciation_yr5"
+                    android:inputType="numberDecimal"
+                    android:defaultValue="@string/pref_car_default_advanced_depreciation_yr5"
+                    android:dependency="@string/pref_car_key_advanced_default"/>
+                <EditTextPreference
+                    android:dialogTitle="@string/pref_car_dialog_advanced_depreciation_yr6"
+                    android:key="@string/pref_car_key_advanced_depreciation_yr6"
+                    android:summary="@string/pref_car_summary_advanced_depreciation_yr6"
+                    android:title="@string/pref_car_advanced_depreciation_yr6"
+                    android:inputType="numberDecimal"
+                    android:defaultValue="@string/pref_car_default_advanced_depreciation_yr6"
+                    android:dependency="@string/pref_car_key_advanced_default"/>
 
-
-
-
+            </PreferenceCategory>
+        </PreferenceScreen>
     </PreferenceCategory>
 </PreferenceScreen>

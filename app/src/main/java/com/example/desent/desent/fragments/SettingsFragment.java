@@ -48,10 +48,19 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                     case "0":
                         break;
                     case "true":
-                        currentPref.setSummary("Yes");
+                        Log.i(LOGG, currentPref.getKey());
+                        if(currentPref.getKey().equals("pref_car_key_advanced_default")){
+                            currentPref.setSummary("Custom values activated");
+                        }else{
+                            currentPref.setSummary("Yes");
+                        }
                         break;
                     case "false":
-                        currentPref.setSummary("No");
+                        if(currentPref.getKey().equals("pref_car_key_advanced_default")){
+                            currentPref.setSummary("Default values activated");
+                        }else{
+                            currentPref.setSummary("No");
+                        }
                         break;
                     default:
                         currentPref.setSummary(currentValue);
