@@ -21,6 +21,7 @@ import com.example.desent.desent.models.EnergyConsumption;
 import com.example.desent.desent.models.Expenses;
 import com.example.desent.desent.models.Indicator;
 import com.example.desent.desent.models.Transportation;
+import com.example.desent.desent.models.VehicleCost;
 import com.example.desent.desent.utils.EstimationType;
 import com.example.desent.desent.utils.TimeScale;
 
@@ -38,6 +39,7 @@ public class AsyncSetup extends AsyncTask {
 
     private Energy energy;
     private Transportation transport;
+    private VehicleCost vehicleCost;
 
     private ArrayList<Indicator> indicators;
     private Calories calories;
@@ -127,13 +129,14 @@ public class AsyncSetup extends AsyncTask {
         //Indicators
         energy = new Energy(activity);
         transport = new Transportation(activity);
+        vehicleCost = new VehicleCost(activity);
 
         ArrayList<String> columnNames = new ArrayList<>();
         columnNames.add("Transportation");
         columnNames.add("Housing");
         indicators.add(carbonFootprint = new CarbonFootprint(activity,transport, energy, inputStream, columnNames));
         indicators.add(calories = new Calories(activity, transport, inputStream, columnNames));
-        indicators.add(expenses = new Expenses(activity, energy, inputStream, columnNames));
+        indicators.add(expenses = new Expenses(activity, vehicleCost, energy, inputStream, columnNames));
         indicators.add(drivingDistance = new DrivingDistance(activity, transport, inputStream, columnNames));
         indicators.add(energyConsumption = new EnergyConsumption(activity, energy, inputStream, columnNames));
 
