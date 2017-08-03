@@ -480,6 +480,9 @@ public class VehicleCost {
     }
 
     private float getDistanceFactor(int yr){
+        if(yr >= 5){
+            yr = 5;
+        }
         return distFactor[yr][carSize];
     }
 }
