@@ -185,9 +185,9 @@ public class VehicleCost {
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         float dist = db.getDrivingDistanceToday();
-        costToday = ((totCostWithoutFuel/(24*365))*hour)+ ((dist/1000f)*totFuelCostPrKm);
+        costToday = ((totCostWithoutFuel/(24*365*yrsOwnCar))*hour)+ ((dist/1000f)*totFuelCostPrKm);
 
-        String log = "costPrHour: " + totCostWithoutFuel/(24*365) + "\ncostToday: " + costToday;
+        String log = "costPrHour: " + totCostWithoutFuel/(24*365*yrsOwnCar) + "\ncostToday: " + costToday;
         Log.i(TAG, log);
 
         return costToday;
