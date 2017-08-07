@@ -3,6 +3,7 @@ package com.example.desent.desent.utils;
 import android.database.Cursor;
 import android.util.Log;
 
+import com.example.desent.desent.models.VehicleCost;
 import com.jjoe64.graphview.series.DataPoint;
 
 /**
@@ -10,8 +11,6 @@ import com.jjoe64.graphview.series.DataPoint;
  */
 
 public class GraphPoints {
-
-
     private static String LOGG = "GraphPoints";
     private Cursor curs;
     private double maxY = 0;

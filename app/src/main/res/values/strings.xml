@@ -119,19 +119,21 @@
     <string name="pref_title_car">Car settings</string>
 
     <string name="pref_car_owner">Car owner</string>
+    <string name="pref_car_distance">Driving distance (yearly)</string>
     <string name="pref_car_fuel_consumption">Average consumption (litre pr. 10km)</string>
     <string name="pref_car_year_produced">Production year</string>
     <string name="pref_car_ownership_period">Planned duration of ownership</string>
     <string name="pref_car_price">Car value</string>
     <string name="pref_car_fuel">Fuel type</string>
 
+    <string name="pref_car_dialog_distance">Please enter yearly driving distance</string>
     <string name="pref_car_dialog_fuel_consumption">Please enter fuel consumption</string>
     <string name="pref_car_dialog_year_produced">Please enter production year</string>
     <string name="pref_car_dialog_ownership_period">Please enter planned duration of ownership</string>
     <string name="pref_car_dialog_price">Please enter car value</string>
     <string name="pref_car_dialog_fuel">Please enter fuel type</string>
 
-    <string name="pref_car_summary_fuel_consumption">Please enter fuel consumption</string>
+    <string name="pref_car_summary_distance">Please enter yearly driving distance</string>
     <string name="pref_car_summary_year_produced">Please enter production year</string>
     <string name="pref_car_summary_ownership_period">Please enter planned duration of ownership</string>
     <string name="pref_car_summary_price">Please enter car value</string>
@@ -156,7 +158,18 @@
         <item>Female</item>
     </string-array>
 
-    <string name="pref_car_default_consumption" format="float">0.05</string>
+    <string-array name="pref_car_size_list">
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+    </string-array>
+    <string-array name="pref_car_size_values">
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+    </string-array>
+    <string name="pref_car_size_summary">Please enter yor car size</string>
+    <string name="pref_title_car_size">Car size</string>
 
     <string name="pref_car_advanced_default">Custom values</string>
     <string name="pref_car_title_advanced_settings">Advanced car settings</string>
@@ -168,6 +181,7 @@
     <string name="pref_car_advanced_wash_accessories_cost">Yearly accessories cost (wash etc.)</string>
     <string name="pref_car_advanced_service_cost">Service cost (yearly)</string>
     <string name="pref_car_advanced_repair_cost">Repair cost (yearly)</string>
+    <string name="pref_car_advanced_fuel_consumption">Fuel consumption (litre pr. 100km)</string>
     <string name="pref_car_advanced_depreciation_yr1">Depreciation year 1</string>
     <string name="pref_car_advanced_depreciation_yr2">Depreciation year 2</string>
     <string name="pref_car_advanced_depreciation_yr3">Depreciation year 3</string>
@@ -184,6 +198,7 @@
     <string name="pref_car_key_advanced_wash_accessories_cost">pref_car_key_advanced_wash_accessories_cost</string>
     <string name="pref_car_key_advanced_service_cost">pref_car_key_advanced_service_cost</string>
     <string name="pref_car_key_advanced_repair_cost">pref_car_key_advanced_repair_cost</string>
+    <string name="pref_car_key_advanced_fuel_consumption">pref_car_key_advanced_fuel_consumption</string>
     <string name="pref_car_key_advanced_depreciation_yr1">pref_car_key_advanced_depreciation_yr1</string>
     <string name="pref_car_key_advanced_depreciation_yr2">pref_car_key_advanced_depreciation_yr2</string>
     <string name="pref_car_key_advanced_depreciation_yr3">pref_car_key_advanced_depreciation_yr3</string>
@@ -200,6 +215,7 @@
     <string name="pref_car_summary_advanced_wash_accessories_cost"></string>
     <string name="pref_car_summary_advanced_service_cost"></string>
     <string name="pref_car_summary_advanced_repair_cost"></string>
+    <string name="pref_car_summary_advanced_fuel_consumption"></string>
     <string name="pref_car_summary_advanced_depreciation_yr1"></string>
     <string name="pref_car_summary_advanced_depreciation_yr2"></string>
     <string name="pref_car_summary_advanced_depreciation_yr3"></string>
@@ -210,11 +226,12 @@
     <string name="pref_car_dialog_advanced_fuel_price">Please enter fuel price</string>
     <string name="pref_car_dialog_advanced_Interest_cost">Please enter interest cost(percentage)</string>
     <string name="pref_car_dialog_advanced_yearly_fee">Please enter the yearly fee (norw.: veiavgift)</string>
-    <string name="pref_car_dialog_advanced_insurance_cost">Please enter yearly incurance cost</string>
+    <string name="pref_car_dialog_advanced_insurance_cost">Please enter yearly insurance cost</string>
     <string name="pref_car_dialog_advanced_tire_cost">Please enter yearly tire cost</string>
     <string name="pref_car_dialog_advanced_wash_accessories_cost">Please enter yearly accessories cost (wash etc.) </string>
     <string name="pref_car_dialog_advanced_service_cost">Please enter yearly service cost</string>
     <string name="pref_car_dialog_advanced_repair_cost">Please enter yearly repair cost</string>
+    <string name="pref_car_dialog_advanced_fuel_consumption">Pleas enter your fuel consumption (litre pr. 100km)</string>
     <string name="pref_car_dialog_advanced_depreciation_yr1">Please enter depreciation year 1</string>
     <string name="pref_car_dialog_advanced_depreciation_yr2">Please enter depreciation year 2</string>
     <string name="pref_car_dialog_advanced_depreciation_yr3">Please enter depreciation year 3</string>

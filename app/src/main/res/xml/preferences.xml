@@ -48,12 +48,24 @@
             android:summary="@string/pref_car_summary_price"
             android:title="@string/pref_car_price"
             android:dependency="pref_key_car_owner"/>
-
+        <EditTextPreference
+            android:dialogTitle="@string/pref_car_dialog_distance"
+            android:key="pref_key_car_distance"
+            android:summary="@string/pref_car_summary_distance"
+            android:title="@string/pref_car_distance"
+            android:dependency="pref_key_car_owner"/>
         <EditTextPreference
             android:dialogTitle="@string/pref_car_dialog_ownership_period"
             android:key="pref_key_car_ownership_period"
             android:summary="@string/pref_car_dialog_ownership_period"
             android:title="@string/pref_car_ownership_period"
+            android:dependency="pref_key_car_owner"/>
+        <ListPreference
+            android:entries="@array/pref_car_size_list"
+            android:entryValues="@array/pref_car_size_values"
+            android:key="pref_key_car_size"
+            android:summary="@string/pref_car_size_summary"
+            android:title="@string/pref_title_car_size"
             android:dependency="pref_key_car_owner"/>
         <PreferenceScreen
             android:title="@string/pref_car_title_advanced_settings"
@@ -74,12 +86,11 @@
                     android:defaultValue="@string/pref_car_default_fuel"
                     android:dependency="@string/pref_car_key_advanced_default"/>
                 <EditTextPreference
-                    android:dialogTitle="@string/pref_car_dialog_fuel_consumption"
-                    android:key="pref_key_car_fuel_consumption"
-                    android:summary="@string/pref_car_summary_fuel_consumption"
-                    android:title="@string/pref_car_fuel_consumption"
+                    android:dialogTitle="@string/pref_car_dialog_advanced_fuel_consumption"
+                    android:key="@string/pref_car_key_advanced_fuel_consumption"
+                    android:summary="@string/pref_car_summary_advanced_fuel_consumption"
+                    android:title="@string/pref_car_advanced_fuel_consumption"
                     android:inputType="numberDecimal"
-                    android:defaultValue="@string/pref_car_default_consumption"
                     android:dependency="@string/pref_car_key_advanced_default"/>
                 <EditTextPreference
                     android:dialogTitle="@string/pref_car_dialog_advanced_fuel_price"

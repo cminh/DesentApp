@@ -3,6 +3,8 @@ package com.example.desent.desent.models;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.EditTextPreference;
+import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -11,7 +13,9 @@ import com.example.desent.desent.utils.TimeScale;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by magnust on 25.07.2017.
@@ -22,30 +26,50 @@ public class VehicleCost {
 
     private static final String TAG = "VehicleCost";
 
-    //input
-    private int yrsOwnCar = 3;
-    private int carSize = 0; // 0 = small, 1 = medium, 2 = large
-    private int cost = 300000;
-    private boolean newCar = true;
-    private int distancePrYear = 0;
+    //input (required values)
+    private int yrsOwnCar;
+    private int carSize; // 0 = small, 1 = medium, 2 = large
+    private int cost;
+    private boolean newCar;
+    private float distancePrYear;
 
-    //default
-    private float[] valueLossRate = {0.2f, 0.14f, 0.13f , 0.12f, 0.11f, 0.10f};
+    //default (yearly)
+
     private float interest = 0.04f;
+    private int roadFee = 2820;
+    private float fuelCostPrLitre = 14.00f;
+    private float taxFactor = 0.76f;
+    private float fuelCost = 0;
     private float tires = 0;
     private float insurance = 0;
-    private int[] wash = {600, 300, 0};
+    private float service = 0;
+    private float wash = 0;
+    private float repair = 0;
+    private float fuelConsumptionPrKm;
+    private float valueLossRateYr1=0.20f;
+    private float valueLossRateYr2=0.14f;
+    private float valueLossRateYr3=0.13f;
+    private float valueLossRateYr4=0.12f;
+    private float valueLossRateYr5=0.11f;
+    private float valueLossRateYr6=0.10f;
+
+    private float[] valueLossRateArray = {0f,0f,0f,0f,0f,0f};
+
+
+
+    //Arrays dependent
+
+    private int[] washArray = {600, 300, 0};
     private  float[] insuranceInit = {4000f,4900f,5500f};
     private  float[] serviceInit = {0f,50f,0f};
     private  float[] tireInit = {610f,100f,-650f};
     private  float[] repInit = {4000f,4900f,5500f};
-    private float service = 0;
-    private int roadFee = 2820;
-    private float fuelCostPrLitre = 14.00f;
-    private float fuelConsumptionPrKm;
     private float[] defaultFuelConsumptionPrKm = {0.06f, 0.07f, 0.08f};
+
+    // TODO: I think this value should be used somewhere..
     private float[] defaultDistancePrYear = {8000f, 14000f, 20000f};
-    private float taxFactor = 0.76f;
+
+
     private float[][] distFactor = {{12f, 21f, 30f},{10.32f, 18.06f, 25.8f},
             {9.098383838f,15.92222222f,22.7459596f},{8.229781818f, 14.40212121f, 20.57445455f},
             {7.638767677f, 13.36784625f, 19.09691919f},{7.271232323f, 12.72465925f, 18.17808081f}};
@@ -69,6 +93,8 @@ public class VehicleCost {
     //Variables
     private float valueLoss = 0;
     private float interestLoss = 0;
+    Map<String, String> defaultValueMap = new HashMap<String, String>();
+    private boolean preferenceChange = false;
 
     //info
     private float totCost;
@@ -83,64 +109,158 @@ public class VehicleCost {
     private SharedPreferences prefs;
     private DatabaseHelper db;
 
+    public VehicleCost(){
+        getRequiredValues();
+
+    }
+
     public VehicleCost (Context context){
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         db = new DatabaseHelper(context);
-        setValues();
-        calcCosts();
+        getRequiredValues();
     }
 
-    public VehicleCost(int yrsOwnCar, int carSize, int cost , int dist, boolean newCar){
-        this.yrsOwnCar = yrsOwnCar;
-        this.carSize = carSize;
-        this.cost = cost;
-        this.distancePrYear = dist;
-        this.newCar = newCar;
-        calcCosts();
-    }
 
-    protected void setValues(){
+
+    private void getRequiredValues() {
         // input values
-        this.carSize = 0; // 0 = small, 1 = medium, 2 = large
-        this.yrsOwnCar = Integer.parseInt(prefs.getString("pref_key_car_ownership_period","3"));
-        this.cost = Integer.parseInt(prefs.getString("pref_key_car_price","300000"));
-        this.fuelConsumptionPrKm = 0.06f; //Float.parseFloat(prefs.getString("pref_key_car_fuel_consumption","0.06"));
         this.newCar = prefs.getBoolean("pref_key_car_owner", true);
-        this.distancePrYear = 8000; //change later
-        SharedPreferences.Editor editor = prefs.edit();
+        this.cost = Integer.parseInt(prefs.getString("pref_key_car_price", "300000"));
+        this.distancePrYear = Integer.parseInt(prefs.getString("pref_key_car_distance","8000")); //change later
+        this.yrsOwnCar = Integer.parseInt(prefs.getString("pref_key_car_ownership_period", "3"));
 
-        // set advanced values
-        //TODO: need to change calculations
-        if(prefs.getBoolean("pref_car_advanced_default",false)){
-            // Custom active - get preferences
-        }else{
-            // Default active - set default based on car size
-            String consumption = "" + defaultFuelConsumptionPrKm[carSize];
-            String fuelPrice = "" + fuelCostPrLitre;
-            String interestCost = "" + interest;
-            String yearlyFee = "" + roadFee;
-            String insuranceCost = "" + (calcInsurance()/yrsOwnCar);
-            String tireCost = "" + calcTires(distancePrYear, yrsOwnCar)/yrsOwnCar;
-            String wash = "" + calcWash(distancePrYear, yrsOwnCar)/yrsOwnCar;
-            String serviceCost = "" + calcService(distancePrYear, yrsOwnCar)/yrsOwnCar;
-            String repairCost = "" + calcRepCost(distancePrYear, yrsOwnCar)/yrsOwnCar;
-            String dp1 = "0.20";
-            String dp2 = "0.14";
-            String dp3 = "0.13";
-            String dp4 = "0.12";
-            String dp5 = "0.11";
-            String dp6 = "0.10";
-
-
-
-
-            editor.putString("pref_key_car_fuel_consumption", consumption);
-
-
+        switch (prefs.getString("pref_key_car_size", "0")){
+            case "Small":
+                this.carSize = 0;
+                break;
+            case "Medium":
+                this.carSize = 1;
+                break;
+            case "Large":
+                this.carSize = 2;
+                break;
+            default:
+                this.carSize = 0;
         }
-        editor.commit();
+
+
+        if(preferenceChange){
+            calculateYearlyValues(true);
+            displayDefaultValues();
+        }else{
+            if (prefs.getBoolean("pref_car_key_advanced_default", false)) {
+                // Custom active - set default and get preferences
+                calculateYearlyValues(false);
+
+            }else{
+                // Default active - set default based on car size
+                calculateYearlyValues(true);
+                displayDefaultValues();
+            }
+        }
+
+
+
     }
 
+    private void displayDefaultValues() {
+
+
+        String pref_car_key_advanced_fuel_consumption = "" + defaultFuelConsumptionPrKm[carSize];
+        String pref_car_key_advanced_fuel_price = "" + fuelCostPrLitre;
+        String pref_car_key_advanced_Interest_cost = "0.04";
+        String pref_car_key_advanced_yearly_fee = "2820";
+        String pref_car_key_advanced_insurance_cost = "" + insurance;
+        String pref_car_key_advanced_tire_cost = "" + tires;
+        String pref_car_key_advanced_wash_accessories_cost = "" + wash;
+        String pref_car_key_advanced_service_cost = "" + service;
+        String pref_car_key_advanced_repair_cost = "" + repair;
+        String pref_car_key_advanced_depreciation_yr1 = "0.20";
+        String pref_car_key_advanced_depreciation_yr2 = "0.14";
+        String pref_car_key_advanced_depreciation_yr3 = "0.13";
+        String pref_car_key_advanced_depreciation_yr4 = "0.12";
+        String pref_car_key_advanced_depreciation_yr5 = "0.11";
+        String pref_car_key_advanced_depreciation_yr6 = "0.10";
+
+        defaultValueMap.put("pref_car_key_advanced_fuel_consumption" , pref_car_key_advanced_fuel_consumption);
+        defaultValueMap.put("pref_car_key_advanced_fuel_price",pref_car_key_advanced_fuel_price);
+        defaultValueMap.put("pref_car_key_advanced_Interest_cost",pref_car_key_advanced_Interest_cost);
+        defaultValueMap.put("pref_car_key_advanced_yearly_fee",pref_car_key_advanced_yearly_fee);
+        defaultValueMap.put("pref_car_key_advanced_insurance_cost",pref_car_key_advanced_insurance_cost);
+        defaultValueMap.put("pref_car_key_advanced_tire_cost",pref_car_key_advanced_tire_cost);
+        defaultValueMap.put("pref_car_key_advanced_wash_accessories_cost",pref_car_key_advanced_wash_accessories_cost);
+        defaultValueMap.put("pref_car_key_advanced_service_cost",pref_car_key_advanced_service_cost);
+        defaultValueMap.put("pref_car_key_advanced_repair_cost",pref_car_key_advanced_repair_cost);
+        defaultValueMap.put("pref_car_key_advanced_depreciation_yr1",pref_car_key_advanced_depreciation_yr1);
+        defaultValueMap.put("pref_car_key_advanced_depreciation_yr2",pref_car_key_advanced_depreciation_yr2);
+        defaultValueMap.put("pref_car_key_advanced_depreciation_yr3",pref_car_key_advanced_depreciation_yr3);
+        defaultValueMap.put("pref_car_key_advanced_depreciation_yr4",pref_car_key_advanced_depreciation_yr4);
+        defaultValueMap.put("pref_car_key_advanced_depreciation_yr5",pref_car_key_advanced_depreciation_yr5);
+        defaultValueMap.put("pref_car_key_advanced_depreciation_yr6",pref_car_key_advanced_depreciation_yr6);
+    }
+
+    private void calculateYearlyValues(boolean bol) {
+
+
+        calcCosts(bol);
+    }
+
+    private void setPostCalculationCustomValues() {
+        if(prefs.contains("pref_car_key_advanced_fuel_consumption")){
+            fuelConsumptionPrKm = Float.parseFloat(prefs.getString("pref_car_key_advanced_fuel_consumption","0f"));
+            fuelConsumptionPrKm = fuelConsumptionPrKm/100f;
+        }
+        if(prefs.contains("pref_car_key_advanced_repair_cost")){
+            repair = Float.parseFloat(prefs.getString("pref_car_key_advanced_repair_cost","0f"));
+        }
+        if(prefs.contains("pref_car_key_advanced_service_cost")){
+            service = Float.parseFloat(prefs.getString("pref_car_key_advanced_service_cost","0f"));
+        }
+        if(prefs.contains("pref_car_key_advanced_wash_accessories_cost")){
+            wash =Float.parseFloat(prefs.getString("pref_car_key_advanced_wash_accessories_cost","0f"));
+        }
+        if(prefs.contains("pref_car_key_advanced_tire_cost")){
+            tires = Float.parseFloat(prefs.getString("pref_car_key_advanced_tire_cost","0f"));
+        }
+        if(prefs.contains("pref_car_key_advanced_insurance_cost")){
+            insurance = Float.parseFloat(prefs.getString("pref_car_key_advanced_insurance_cost","0f"));
+        }
+        if(prefs.contains("pref_car_key_advanced_yearly_fee")){
+            roadFee = Integer.parseInt(prefs.getString("pref_car_key_advanced_yearly_fee","0f"));
+        }
+        if(prefs.contains("pref_car_key_advanced_fuel_price")){
+            fuelCostPrLitre = Float.parseFloat(prefs.getString("pref_car_key_advanced_fuel_price","0f"));
+        }
+    }
+
+    private void setInitialCustomValues() {
+        if(prefs.contains("pref_car_key_advanced_Interest_cost")){
+//            interest = Float.parseFloat(prefs.getString("pref_car_key_advanced_Interest_cost","0.04f"));
+        }
+        if(prefs.contains("pref_car_key_advanced_depreciation_yr1")){
+            valueLossRateYr1 = Float.parseFloat(prefs.getString("pref_car_key_advanced_depreciation_yr1","0.20f"));
+        }
+        if(prefs.contains("pref_car_key_advanced_depreciation_yr2")){
+            valueLossRateYr2 = Float.parseFloat(prefs.getString("pref_car_key_advanced_depreciation_yr2","0.14f"));
+        }
+        if(prefs.contains("pref_car_key_advanced_depreciation_yr3")){
+            valueLossRateYr3 = Float.parseFloat(prefs.getString("pref_car_key_advanced_depreciation_yr3","0.13f"));
+        }
+        if(prefs.contains("pref_car_key_advanced_depreciation_yr4")){
+            valueLossRateYr4 = Float.parseFloat(prefs.getString("pref_car_key_advanced_depreciation_yr4","0.12f"));
+        }
+        if(prefs.contains("pref_car_key_advanced_depreciation_yr5")){
+            valueLossRateYr5 = Float.parseFloat(prefs.getString("pref_car_key_advanced_depreciation_yr5","0.11f"));
+        }
+        if(prefs.contains("pref_car_key_advanced_depreciation_yr6")){
+            valueLossRateYr6 = Float.parseFloat(prefs.getString("pref_car_key_advanced_depreciation_yr6","0.10f"));
+        }
+    }
+
+    public  Map<String, String> getDefaultValueMap(boolean preferenceChange){
+        this.preferenceChange = preferenceChange;
+        return defaultValueMap;
+    }
     protected float getAvgCurrentCarCost(){
         int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         float hourlyCost = (avgCostPrDay/24)*hour;
@@ -193,31 +313,46 @@ public class VehicleCost {
         return costToday;
     }
 
-    private void calcCosts(){
-        float fuelCost;
-        float totInsurance;
-        float totRoadFee;
-        float totTireCost;
-        float totWash;
-        float totService;
-        float totRepair;
+    private void calcCosts(boolean onlyDefaultValues){
+
 
         if(newCar){
             //newCarCalc
+            valueLossRateArray[0] = valueLossRateYr1 ;
+            valueLossRateArray[1] = valueLossRateYr2;
+            valueLossRateArray[2] = valueLossRateYr3;
+            valueLossRateArray[3] = valueLossRateYr4;
+            valueLossRateArray[4] = valueLossRateYr5;
+            valueLossRateArray[5] = valueLossRateYr6;
+
+            fuelConsumptionPrKm = defaultFuelConsumptionPrKm[carSize];
+
+            if(onlyDefaultValues){
+
+            }else{
+                setInitialCustomValues();
+            }
+
             calc();
 
-            fuelCost = distancePrYear * fuelConsumptionPrKm * fuelCostPrLitre * yrsOwnCar;
-            totInsurance = calcInsurance();
-            totRoadFee = roadFee * yrsOwnCar;
-            totTireCost = calcTires(distancePrYear, yrsOwnCar);
-            totWash = calcWash(distancePrYear, yrsOwnCar);
-            totService = calcService(distancePrYear, yrsOwnCar);
-            totRepair = calcRepCost(distancePrYear,yrsOwnCar);
+            fuelCost = distancePrYear * fuelConsumptionPrKm * fuelCostPrLitre;
+            insurance = calcInsurance();
+            tires = calcTires(distancePrYear);
+            wash = calcWash(distancePrYear);
+            service = calcService(distancePrYear);
+            repair = calcRepCost(distancePrYear, yrsOwnCar)/yrsOwnCar; // to get yearly value like the rest
 
-            totCost = (fuelCost + valueLoss + interestLoss + totInsurance+ totRoadFee +
-                    totTireCost + totWash + totService + totRepair);
-            totCostWithoutFuel = valueLoss + interestLoss + totInsurance+ totRoadFee +
-                    totTireCost + totWash + totService + totRepair;
+            if(onlyDefaultValues){
+
+            }else{
+                setPostCalculationCustomValues();
+            }
+            totCost = ((fuelCost  + insurance + roadFee +
+                    tires + wash + service + repair) * yrsOwnCar) + valueLoss + interestLoss;
+
+            totCostWithoutFuel = ((insurance + roadFee +
+                    tires + wash + service + repair) * yrsOwnCar) + valueLoss + interestLoss;
+
             totFuelCostPrKm = fuelConsumptionPrKm * fuelCostPrLitre;
             avgCostPrKm = totCost/(distancePrYear*yrsOwnCar);
             avgCostPrDay = totCost/(365*yrsOwnCar);
@@ -225,12 +360,12 @@ public class VehicleCost {
 
             String stringLog = "Total cost: " + totCost +"\nvalueLoss = " + valueLoss + "\ninterestCost =  "+ interestLoss +
                     "\nfuelCost = " + fuelCost +
-                    "\ntotRoadFee = " + totRoadFee +
-                    "\ntotInsurance = " + totInsurance +
-                    "\ntotTireCost = " + totTireCost +
-                    "\ntotWash = " + totWash +
-                    "\ntotService = " + totService +
-                    "\ntotRepair = " + totRepair;
+                    "\ntotRoadFee = " + roadFee +
+                    "\ntotInsurance = " + insurance +
+                    "\ntotTireCost = " + tires +
+                    "\ntotWash = " + wash +
+                    "\ntotService = " + service +
+                    "\ntotRepair = " + repair;
             Log.i(TAG, stringLog);
 
         }else{
@@ -240,79 +375,64 @@ public class VehicleCost {
 
     }
 
-    private float calcService(int dist, int yr){
-        float totService;
-
-        if(service == 0){
-            switch (carSize){
-                case 0:
-                    totService = (serviceInit[0]+0.25f*dist)*yr;
-                    return totService;
-                case 1:
-                    totService = (serviceInit[1]+0.175f*dist)*yr;
-                    return totService;
-                case 2:
-                    totService = (serviceInit[2]+0.15f*dist)*yr;
-                    return totService;
-                default:
-                    return 0;
-            }
-        }else{
-            return service * yrsOwnCar;
+    private float calcService(float dist){
+        float service;
+        switch (carSize){
+            case 0:
+                service = (serviceInit[0]+0.25f*dist);
+                return service;
+            case 1:
+                service = (serviceInit[1]+0.175f*dist);
+                return service;
+            case 2:
+                service = (serviceInit[2]+0.15f*dist);
+                return service;
+            default:
+                return 0;
         }
     }
 
-    private float calcWash(int dist, int yr){
-        float totWash;
-
-        totWash = (wash[carSize] + (4f/80f)*dist)*yr;
-
-        return totWash;
+    private float calcWash(float dist){
+        float wash;
+        wash = (washArray[carSize] + (4f/80f)*dist);
+        return wash;
     }
 
     private float calcInsurance(){
-        float totInsurance;
-        if(insurance == 0){
-            switch (carSize){
-                case 0:
-                    totInsurance = (insuranceInit[carSize]+0.125f*distancePrYear)*yrsOwnCar;
-                    return totInsurance;
-                case 1:
-                    totInsurance = (insuranceInit[carSize]+0.150f*distancePrYear)*yrsOwnCar;
-                    return totInsurance;
-                case 2:
-                    totInsurance = (insuranceInit[carSize]+0.175f*distancePrYear)*yrsOwnCar;
-                    return totInsurance;
-                default:
-                    return 0;
-            }
-        }else{
-            return insurance*yrsOwnCar;
+        float insurance;
+        switch (carSize){
+            case 0:
+                insurance = (insuranceInit[carSize]+0.125f*distancePrYear);
+                return insurance;
+            case 1:
+                insurance = (insuranceInit[carSize]+0.150f*distancePrYear);
+                return insurance;
+            case 2:
+                insurance = (insuranceInit[carSize]+0.175f*distancePrYear);
+                return insurance;
+            default:
+                return 0;
         }
     }
 
-    private float calcTires(int dist, int yr){
-        float totTires;
-        if(tires == 0){
-            switch (carSize){
-                case 0:
-                    totTires = (tireInit[0] + 0.08f*dist)*yr;
-                    return totTires;
-                case 1:
-                    totTires = (tireInit[1]+0.1f*dist)*yr;
-                    return totTires;
-                case 2:
-                    totTires = (tireInit[2] + 0.12f*dist)*yr;
-                    return totTires;
-                default:
-                    return 0;
-            }
-        }else{
-            return tires*yrsOwnCar;
+    private float calcTires(float dist){
+        float tires;
+        switch (carSize){
+            case 0:
+                tires = (tireInit[0] + 0.08f*dist);
+                return tires;
+            case 1:
+                tires = (tireInit[1]+0.1f*dist);
+                return tires;
+            case 2:
+                tires = (tireInit[2] + 0.12f*dist);
+                return tires;
+            default:
+                return 0;
         }
     }
 
-    private float calcRepCost(int dist, int yr){
+    private float calcRepCost(float dist, int yr){
         float repCost = 0;
         float accumDist = dist;
 
@@ -439,21 +559,23 @@ public class VehicleCost {
         float totInterestLoss = 0;
         float interestLoss = 0;
 
+        // initiating default values
+
 
         for(int i = 0; i < yrsOwnCar; i++){
 
-            correctedLossDiff = (getDistanceFactor(i)*((distancePrYear/defaultDistancePrYear[carSize])-1f)*100f);
+            correctedLossDiff = (getDistanceFactor(i)*((distancePrYear/distancePrYear)-1f)*100f);
             totCorrectedLossDiff += correctedLossDiff;
 
             String distfac= "factor: " + getDistanceFactor(i) + "\ndiff: " + correctedLossDiff;
             Log.i(TAG, distfac);
             if(i>=5) {
 
-                normalValueLoss = normalCurrentValue * valueLossRate[5];
+                normalValueLoss = normalCurrentValue * valueLossRateArray[5];
                 totNormalValueLoss += normalValueLoss;
 
             }else{
-                normalValueLoss = normalCurrentValue * valueLossRate[i];
+                normalValueLoss = normalCurrentValue * valueLossRateArray[i];
                 totNormalValueLoss += normalValueLoss;
             }
 

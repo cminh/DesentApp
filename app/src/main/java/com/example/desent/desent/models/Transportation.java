@@ -4,6 +4,7 @@ package com.example.desent.desent.models;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.example.desent.desent.utils.TimeScale;
 
@@ -162,9 +163,9 @@ public class Transportation {
            drivingDistanceWeek = db.getWeekAverageDrivingDistance();
            drivingDistanceMonth = db.getMonthAverageDrivingDistance();
 
-           co2Today = calculateKgCo2FromDriving(drivingDistanceToday, getEmissionsPrLitre(), getLitrePer10km());
-           co2Week = calculateKgCo2FromDriving(drivingDistanceWeek, getEmissionsPrLitre(), getLitrePer10km());
-           co2Month = calculateKgCo2FromDriving(drivingDistanceMonth, getEmissionsPrLitre(), getLitrePer10km());
+           co2Today = calculateKgCo2FromDriving(drivingDistanceToday, getEmissionsPrLitre(), getLitrePerKm());
+           co2Week = calculateKgCo2FromDriving(drivingDistanceWeek, getEmissionsPrLitre(), getLitrePerKm());
+           co2Month = calculateKgCo2FromDriving(drivingDistanceMonth, getEmissionsPrLitre(), getLitrePerKm());
         }else{
            co2Today = 0f;
            co2Week = 0f;
@@ -222,25 +223,26 @@ public class Transportation {
         }
     }
 
-    private float getLitrePer10km(){
-        float fuelConsumption = Float.parseFloat(prefs.getString("pref_key_car_fuel_consumption", "0"));
+    private float getLitrePerKm(){
+        float fuelConsumption = Float.parseFloat(prefs.getString("pref_car_key_advanced_fuel_consumption", "0"));
+        Log.i("getLitrePrKm", prefs.getString("pref_car_key_advanced_fuel_consumption", "0"));
         if (fuelConsumption>0){
-            return fuelConsumption;
+            return fuelConsumption/100f;
         }else{
             return 0f;
         }
     }
 
     protected float calculateKgCo2FromDriving(){
-        return ((prefs.getBoolean("pref_key_car_owner", true) ? calculateKgCo2FromDriving(getDrivingDistanceToday(), getEmissionsPrLitre(), getLitrePer10km()) : 0));
+        return ((prefs.getBoolean("pref_key_car_owner", true) ? calculateKgCo2FromDriving(getDrivingDistanceToday(), getEmissionsPrLitre(), getLitrePerKm()) : 0));
     }
 
     protected float calculateKgCo2FromDriving(float drivingDistance){
-        return ((prefs.getBoolean("pref_key_car_owner", true) ? calculateKgCo2FromDriving(drivingDistance, getEmissionsPrLitre(), getLitrePer10km()) : 0));
+        return ((prefs.getBoolean("pref_key_car_owner", true) ? calculateKgCo2FromDriving(drivingDistance, getEmissionsPrLitre(), getLitrePerKm()) : 0));
     }
 
     protected float calculateKgCo2FromDriving(float drivingDistance, float emission){
-        return ((prefs.getBoolean("pref_key_car_owner", true) ? calculateKgCo2FromDriving(drivingDistance, emission, getLitrePer10km()) : 0));
+        return ((prefs.getBoolean("pref_key_car_owner", true) ? calculateKgCo2FromDriving(drivingDistance, emission, getLitrePerKm()) : 0));
     }
 
     private float calculateKgCo2FromDriving(float drivingDistance, float emission, float consumption){
