@@ -174,6 +174,8 @@ public class RegisterActivity extends FragmentActivity {
         };
     }
 
+
+
     class MyPagerAdapter extends FragmentPagerAdapter {
 
         private final List fragments;

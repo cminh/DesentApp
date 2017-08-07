@@ -19,6 +19,7 @@ import android.view.View;
 import com.example.desent.desent.utils.AxisFormatter;
 import com.example.desent.desent.utils.ChartData;
 import com.example.desent.desent.utils.StackAxisFormatter;
+import com.example.desent.desent.utils.Utility;
 
 import org.json.JSONObject;
 
@@ -53,9 +54,15 @@ public class StackBarChart extends View {
     private float stackHeight;
     private int indent = 0;
 
+    private int decimalsNumber;
 
+    public int getDecimalsNumber() {
+        return decimalsNumber;
+    }
 
-
+    public void setDecimalsNumber(int decimalsNumber) {
+        this.decimalsNumber = decimalsNumber;
+    }
 
     public StackBarChart(Context context, AttributeSet attributeSet){
         super(context, attributeSet);
@@ -273,7 +280,7 @@ public class StackBarChart extends View {
                 total_number += values.get(j).getY_List()[i];
             }
 
-            canvas.drawText(Float.toString(total_number),
+            canvas.drawText(Utility.floatToStringNDecimals(total_number, decimalsNumber),
                     list_cordinate.get(i).getY_values() + border,
                     list_cordinate.get(i).getX_values() - 30, paint);
         }

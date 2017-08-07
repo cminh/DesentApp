@@ -5,14 +5,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.desent.desent.activities.Settings"
+    tools:context="com.example.desent.desent.activities.SettingsActivity"
     tools:showIn="@layout/app_bar_settings">
-
-    <fragment
-        android:name="com.example.desent.desent.fragments.SettingsFragment"
-        android:layout_height="match_parent"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:id="@+id/settings_view"
-         />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_margin="10dp"
+            android:id="@+id/profile_pic"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/earth"
+            android:layout_gravity="center_horizontal"/>
+
+        <fragment
+            android:name="com.example.desent.desent.fragments.SettingsFragment"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:id="@+id/settings_view"
+            />
+
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

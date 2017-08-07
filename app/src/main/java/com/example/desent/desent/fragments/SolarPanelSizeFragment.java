@@ -62,7 +62,7 @@ public class SolarPanelSizeFragment extends Fragment implements View.OnClickList
     }
 
     public void setUp() {
-        this.buttonsContainer = (ViewGroup) getView().findViewById(R.id.solar_panel_button_container);
+        this.buttonsContainer = getView().findViewById(R.id.solar_panel_button_container);
 
         buttonsSpacing = (int) getResources().getDimension(R.dimen.activity_horizontal_margin);
         buttonSize = (int) getResources().getDimension(R.dimen.circular_button_size);
@@ -71,7 +71,7 @@ public class SolarPanelSizeFragment extends Fragment implements View.OnClickList
     public void addButtons(float[] pvSystemSizes){
         this.pvSystemSizes = pvSystemSizes;
         for(int i=0; i<pvSystemSizes.length; i++)
-            addButton(String.valueOf(pvSystemSizes[i]) + " kWh");
+            addButton(String.valueOf(pvSystemSizes[i]) + " kW");
     }
 
     private void addButton(String text) {

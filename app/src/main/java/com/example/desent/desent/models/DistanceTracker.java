@@ -155,7 +155,7 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
         onCreate();
         String locationProvider = LocationManager.GPS_PROVIDER;
         Log.i(LOG,locationProvider);
-        //startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+        //startActivity(new Intent(android.provider.SettingsActivity.ACTION_LOCATION_SOURCE_SETTINGS))
     }
 
 
@@ -203,7 +203,7 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
     public void stop() {
         if (mGoogleApiClientLoc.isConnected()) {
             mGoogleApiClientLoc.disconnect();
-            //handler.removeCallbacks(runnable);
+            handler.removeCallbacks(runnable);
         }
     }
 
@@ -235,7 +235,7 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
             Log.i(LOG, "mLastLocation == null");
         }else{
             Log.i(LOG, mLastLocation.toString());
-            distance = mLastLocation.distanceTo(location);
+            distance = mLastLocation.distanceTo(location)/1000; //meters to kilometers
             mLastLocation = location;
             activeGps = true;
             if(activity.equals("STILL")){
@@ -341,7 +341,7 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
     protected void enableGPS(){
         if(!activeGps){
             activeGps = true;
-            //handler.removeCallbacks(runnable);
+            handler.removeCallbacks(runnable);
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClientLoc, mLocationRequest, this);
         }
     }
@@ -398,7 +398,7 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
 
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClientLoc, this);
             activeGps = false;
-            //handler.postDelayed(runnable, 1000);
+            handler.postDelayed(runnable, 1000);
         }
     }
 

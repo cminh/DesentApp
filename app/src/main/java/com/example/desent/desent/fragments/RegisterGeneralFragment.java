@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.desent.desent.R;
+import com.example.desent.desent.utils.AESHelper;
 import com.example.desent.desent.utils.Utility;
 import com.soundcloud.android.crop.Crop;
 
@@ -38,6 +39,8 @@ import static android.app.Activity.RESULT_OK;
  */
 
 public class RegisterGeneralFragment extends Fragment {
+
+    private final static String CIPHER_KEY = "p2m8j0DgoqjJGxnDYfq70fV92h7sCg0N";
 
     private boolean isProfileValid;
     private ImageView profilePic;
@@ -66,10 +69,6 @@ public class RegisterGeneralFragment extends Fragment {
         profilePic.setOnClickListener(new View.OnClickListener(){ //TODO:request permission
             @Override
             public void onClick(View arg0) {
-                // TODO Auto-generated method stub
-                /**Intent intent = new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, 0);**/
                 pickImage();
             }});
 
@@ -91,7 +90,13 @@ public class RegisterGeneralFragment extends Fragment {
         editor.putString("pref_key_profile_picture", imageUri.toString());
         editor.putString("pref_key_personal_name", String.valueOf(nameTextView.getText()));
         editor.putString("pref_key_personal_email", String.valueOf(emailTextView.getText()));
-        editor.putString("pref_key_personal_password", String.valueOf(passwordTextView.getText()));
+
+        try {
+            editor.putString("pref_key_personal_password", AESHelper.encrypt(CIPHER_KEY, String.valueOf(passwordTextView.getText())));
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         editor.commit();
 
@@ -246,7 +251,13 @@ public class RegisterGeneralFragment extends Fragment {
 
         nameTextView.setText(sharedPreferences.getString("pref_key_personal_name", ""), TextView.BufferType.EDITABLE);
         emailTextView.setText(sharedPreferences.getString("pref_key_personal_email", ""), TextView.BufferType.EDITABLE);
-        passwordTextView.setText(sharedPreferences.getString("pref_key_personal_password", ""), TextView.BufferType.EDITABLE);
+
+        try {
+            passwordTextView.setText(AESHelper.decrypt(CIPHER_KEY, sharedPreferences.getString("pref_key_personal_password", "")), TextView.BufferType.EDITABLE);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
     }
 

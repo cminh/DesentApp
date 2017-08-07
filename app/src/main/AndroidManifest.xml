@@ -13,6 +13,10 @@
         android:theme="@style/AppTheme.NoActionBar">
         <activity
             android:name=".activities.WelcomeActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".activities.LoginActivity"
@@ -29,17 +33,12 @@
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <meta-data
             android:name="com.google.android.awareness.API_KEY"
             android:value="AIzaSyBIjyDWOa7-RutFW44jUcK-HNk3UrRWJ5o"/>
         <activity
-            android:name=".activities.Settings"
+            android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:theme="@style/AppTheme.NoActionBar.Settings">
         </activity>

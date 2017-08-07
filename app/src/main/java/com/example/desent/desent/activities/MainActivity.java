@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -354,7 +353,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         registerReceiver(distanceTracking.getFenceReceiver(), new IntentFilter(FENCE_RECEIVER_ACTION));
         ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
-        AsyncSetup asyncSetup = new AsyncSetup(this,
+        AsyncMainSetup asyncMainSetup = new AsyncMainSetup(this,
                 progressBar,
                 indicators,
                 carbonFootprintCircleFragment,
@@ -365,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 cyclingDistanceFragment,
                 solarPanelSizeFragment);
 
-        asyncSetup.execute();
+        asyncMainSetup.execute();
     }
 
     @Override
@@ -453,7 +452,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
                         // launch new intent instead of loading fragment
-                        startActivity(new Intent(MainActivity.this, Settings.class));
+                        startActivity(new Intent(MainActivity.this, SettingsActivity.class));
                         drawer.closeDrawers();
                         return true;
                     case R.id.nav_about_us:

@@ -48,19 +48,19 @@ public class Calories extends Indicator {
         switch (estimationType) {
 
             case NONE:
-                averageValues[0] = calculateCaloriesFromWalking(transport.getWalkingDistance(timeScale)) + calculateCaloriesFromCycling(transport.getCyclingDistance(timeScale));
+                averageValues[0] = calculateCaloriesFromWalking(transport.getWalkingDistance(timeScale)) + calculateCaloriesFromCycling(transport.getCyclingDistance(timeScale)/1000);
                 break;
             case SOLAR_INSTALLATION:
-                averageValues[0] = calculateCaloriesFromWalking(transport.getWalkingDistance(timeScale)) + calculateCaloriesFromCycling(transport.getCyclingDistance(timeScale));
+                averageValues[0] = calculateCaloriesFromWalking(transport.getWalkingDistance(timeScale)) + calculateCaloriesFromCycling(transport.getCyclingDistance(timeScale)/1000);
                 break;
             case WALKING:
-                averageValues[0] = calculateCaloriesFromWalking(this.walkingDistance) + calculateCaloriesFromCycling(transport.getCyclingDistance(timeScale));
+                averageValues[0] = calculateCaloriesFromWalking(this.walkingDistance) + calculateCaloriesFromCycling(transport.getCyclingDistance(timeScale)/1000);
                 break;
             case CYCLING:
                 averageValues[0] = calculateCaloriesFromWalking(transport.getWalkingDistance(timeScale)) + calculateCaloriesFromCycling(this.cyclingDistance);
                 break;
             case ELECTRIC_CAR:
-                averageValues[0] = calculateCaloriesFromWalking(transport.getWalkingDistance(timeScale)) + calculateCaloriesFromCycling(transport.getCyclingDistance(timeScale));
+                averageValues[0] = calculateCaloriesFromWalking(transport.getWalkingDistance(timeScale)) + calculateCaloriesFromCycling(transport.getCyclingDistance(timeScale)/1000);
                 break;
 
         }

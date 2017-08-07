@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -78,10 +77,6 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getApplicationContext(), R.array.history_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(spinnerHandler);
-
-        energy = new Energy(this);
-        transportation = new Transportation(this);
 
         myDb = new DatabaseHelper(this);
         myDb.getWeekDrivingDistance();
@@ -89,7 +84,21 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
         stackBarChart = (StackBarChart) findViewById(R.id.chart);
         labelOrganizer = (StackedBarLabel) findViewById(R.id.labelStackedBar);
         yaxis = (Yaxis) findViewById(R.id.y_axis);
-        displayDistanceGraph();
+        //displayDistanceGraph();
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+
+        AsyncHistorySetup asyncHistorySetup = new AsyncHistorySetup(this,
+                stackBarChart,
+                labelOrganizer,
+                yaxis);
+
+        asyncHistorySetup.execute();
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -104,7 +113,7 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
         } else if (id == R.id.nav_history) {
             drawer.closeDrawers();
         } else if (id == R.id.nav_settings) {
-            startActivity(new Intent(HistoryActivity.this, Settings.class));
+            startActivity(new Intent(HistoryActivity.this, SettingsActivity.class));
             drawer.closeDrawer(GravityCompat.START);
 
         } else if (id == R.id.nav_about_us) {
@@ -113,6 +122,10 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
         }
 
         return true;
+    }
+
+    public void initSpinner(){
+        spinner.setOnItemSelectedListener(spinnerHandler);
     }
 
     AdapterView.OnItemSelectedListener spinnerHandler = new AdapterView.OnItemSelectedListener() {
@@ -217,6 +230,7 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
 
         stackBarChart.setHorizontal_label(h_labels);
         stackBarChart.setBarIndent(50);
+        stackBarChart.setDecimalsNumber(1);
         Log.i(LOGG, "før setData");
 
         stackBarChart.setData(value);
@@ -261,6 +275,7 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
         Log.i(LOGG, "før setData");
 
         stackBarChart.setData(value);
+        stackBarChart.setDecimalsNumber(1);
 
         labelOrganizer.clear();
 
@@ -315,6 +330,7 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
         Log.i(LOGG, "før setData");
 
         stackBarChart.setData(value);
+        stackBarChart.setDecimalsNumber(1);
 
         // stackBarChart.setDescription("Travel distance");
 
@@ -335,70 +351,19 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
         yaxis.setFirstValueSet(value);
     }
 
-    public void displayGraph() {
+    public Energy getEnergy() {
+        return energy;
+    }
 
-        Cursor dist = myDb.getDistance();
-        if (dist.getCount() == 0) {
-            // show message
-            showMessage("Error", "Nothing found");
-            return;
-        }
+    public void setEnergy(Energy energy) {
+        this.energy = energy;
+    }
 
-        // Getting the datapoints for the graph
-        GraphPoints gp = new GraphPoints(dist);
-        double maxY = gp.getMaxY();
-        DataPoint[] dp = gp.generatePoints();
+    public Transportation getTransportation() {
+        return transportation;
+    }
 
-        List<ChartData> value = new ArrayList<>();
-
-        Float[] value1 = {2f, 3f, 6f, 5f, 4f, 4f, 6f};
-        Float[] value2 = {1f, 1f, 1f, 1f, 1f, 1f, 9f};
-        Float[] value3 = {3f, 5f, 7f, 9f, 4f, 4f, 6f};
-
-        String barColor1 = "#00ff00";
-        String barColor2 = "#4f8714";
-        String barColor3 = "#875c14";
-
-        String labelText1 = "Walking";
-        String labelText2 = "Cycling";
-        String labelText3 = "Driving";
-
-
-        value.add(new ChartData(value1, labelText1, barColor1));
-        value.add(new ChartData(value2, labelText2, barColor2));
-        value.add(new ChartData(value3, labelText3, barColor3));
-
-        List<String> h_lables = new ArrayList<>();
-        h_lables.add("sun");
-        h_lables.add("mon");
-        h_lables.add("tue");
-        h_lables.add("wed");
-        h_lables.add("thurs");
-        h_lables.add("fri");
-        h_lables.add("sat");
-
-        stackBarChart.setHorizontal_label(h_lables);
-        stackBarChart.setBarIndent(50);
-        Log.i(LOGG, "før setData");
-
-        stackBarChart.setData(value);
-
-        // stackBarChart.setDescription("Travel distance");
-
-        labelOrganizer.clear();
-
-        // Set color on labels
-        labelOrganizer.addColorLabels(barColor1);
-        labelOrganizer.addColorLabels(barColor2);
-        labelOrganizer.addColorLabels(barColor3);
-
-
-        // Set label text
-        labelOrganizer.addLabelText(labelText1);
-        labelOrganizer.addLabelText(labelText2);
-        labelOrganizer.addLabelText(labelText3);
-
-        yaxis.setBorder(60);
-        yaxis.setFirstValueSet(value);
+    public void setTransportation(Transportation transportation) {
+        this.transportation = transportation;
     }
 }

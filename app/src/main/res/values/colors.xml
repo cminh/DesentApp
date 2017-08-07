@@ -34,7 +34,7 @@
     <!-- Drawer colors -->
     <color name="dark_text_and_icon">#353535</color>
 
-    <!-- Settings colors -->
+    <!-- SettingsActivity colors -->
     <color name="settings_text_dark">#353535</color>
     <color name="settings_title_black">#000000</color>
 

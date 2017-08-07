@@ -32,7 +32,7 @@ import java.util.ArrayList;
  * Created by celine on 02/08/17.
  */
 
-public class AsyncSetup extends AsyncTask {
+public class AsyncMainSetup extends AsyncTask {
 
     MainActivity activity;
     ProgressBar progress;
@@ -58,16 +58,16 @@ public class AsyncSetup extends AsyncTask {
     private CyclingDistanceFragment cyclingDistanceFragment;
     private SolarPanelSizeFragment solarPanelSizeFragment;
 
-    public AsyncSetup(MainActivity activity,
-                      ProgressBar progress,
-                      ArrayList<Indicator> indicators,
-                      CircleFragment circleFragment,
-                      IndicatorsBarFragment indicatorsBarFragment,
-                      CategoryFragment transportationFragment,
-                      CategoryFragment housingFragment,
-                      WalkingDistanceFragment walkingDistanceFragment,
-                      CyclingDistanceFragment cyclingDistanceFragment,
-                      SolarPanelSizeFragment solarPanelSizeFragment) {
+    public AsyncMainSetup(MainActivity activity,
+                          ProgressBar progress,
+                          ArrayList<Indicator> indicators,
+                          CircleFragment circleFragment,
+                          IndicatorsBarFragment indicatorsBarFragment,
+                          CategoryFragment transportationFragment,
+                          CategoryFragment housingFragment,
+                          WalkingDistanceFragment walkingDistanceFragment,
+                          CyclingDistanceFragment cyclingDistanceFragment,
+                          SolarPanelSizeFragment solarPanelSizeFragment) {
         this.activity = activity;
         this.progress = progress;
         this.indicators = indicators;

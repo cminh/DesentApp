@@ -6,12 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -20,20 +15,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.desent.desent.R;
-import com.example.desent.desent.models.PreferencesManager;
 import com.example.desent.desent.utils.Utility;
+import com.soundcloud.android.crop.Crop;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 
-public class Settings extends AppCompatActivity
+public class SettingsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
     private DrawerLayout drawer;
+    private ImageView profilePic;
+    private Uri imageUri;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,16 @@ public class Settings extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        profilePic = (ImageView) findViewById(R.id.profile_pic);
 
+        profilePic.setOnClickListener(new View.OnClickListener(){ //TODO:request permission
+            @Override
+            public void onClick(View arg0) {
+                pickImage();
+            }});
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        restorePreferences();
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -52,6 +61,64 @@ public class Settings extends AppCompatActivity
 
        setUpNavigationView();
 
+
+    }
+
+    private void pickImage() {
+        Crop.pickImage(this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent result) {
+        if (requestCode == Crop.REQUEST_PICK && resultCode == RESULT_OK) {
+            beginCrop(result.getData());
+        } else if (requestCode == Crop.REQUEST_CROP) {
+            handleCrop(resultCode, result);
+        }
+    }
+
+
+    private void beginCrop(Uri source) {
+        Uri destination = Uri.fromFile(new File(getCacheDir(), "cropped"));
+        Crop.of(source, destination).asSquare().start(this);
+    }
+
+    private void handleCrop(int resultCode, Intent result) {
+        if (resultCode == RESULT_OK) {
+            imageUri = Crop.getOutput(result);
+            profilePic.setImageURI(Crop.getOutput(result));
+            Bitmap bitmap;
+            try {
+                bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+                profilePic.setImageBitmap(Utility.getCroppedBitmap(bitmap));
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("pref_key_profile_picture", imageUri.toString());
+            } catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else if (resultCode == Crop.RESULT_ERROR) {
+            Toast.makeText(this, Crop.getError(result).getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void restorePreferences(){
+
+        try {
+            imageUri = Uri.parse(sharedPreferences.getString("pref_key_profile_picture", "android.resource://com.example.desent.desent/drawable/earth"));
+        } catch (IllegalArgumentException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        Bitmap bitmap;
+        try {
+            bitmap = BitmapFactory.decodeStream(this.getContentResolver().openInputStream(imageUri));
+            profilePic.setImageBitmap(Utility.getCroppedBitmap(bitmap));
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
     }
 
@@ -120,10 +187,10 @@ public class Settings extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {
-            startActivity(new Intent(Settings.this, MainActivity.class));
+            startActivity(new Intent(SettingsActivity.this, MainActivity.class));
             drawer.closeDrawer(GravityCompat.START);
         } else if (id == R.id.nav_history) {
-            startActivity(new Intent(Settings.this, HistoryActivity.class));
+            startActivity(new Intent(SettingsActivity.this, HistoryActivity.class));
             drawer.closeDrawers();
         } else if (id == R.id.nav_settings) {
             drawer.closeDrawer(GravityCompat.START);
