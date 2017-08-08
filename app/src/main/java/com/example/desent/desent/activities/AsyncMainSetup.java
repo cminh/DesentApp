@@ -2,6 +2,7 @@ package com.example.desent.desent.activities;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -14,6 +15,7 @@ import com.example.desent.desent.fragments.IndicatorsBarFragment;
 import com.example.desent.desent.fragments.SolarPanelSizeFragment;
 import com.example.desent.desent.fragments.WalkingDistanceFragment;
 import com.example.desent.desent.models.Calories;
+import com.example.desent.desent.models.CarRegNr;
 import com.example.desent.desent.models.CarbonFootprint;
 import com.example.desent.desent.models.DrivingDistance;
 import com.example.desent.desent.models.Energy;
@@ -40,6 +42,8 @@ public class AsyncMainSetup extends AsyncTask {
     private Energy energy;
     private Transportation transport;
     private VehicleCost vehicleCost;
+    private CarRegNr carRegNr;
+    private static final String TAG = "AsyncMainSetup";
 
     private ArrayList<Indicator> indicators;
     private Calories calories;
@@ -121,6 +125,16 @@ public class AsyncMainSetup extends AsyncTask {
     }
 
     protected void setUp(){
+        //Fetch Co2 emissions from Vegvesenet if license plate is entered and in Norway
+        carRegNr = new CarRegNr("suppe");
+        String co2Result = carRegNr.fetchCO2();
+        Log.i(TAG,co2Result);
+        if(co2Result.equals("Not a valid number")){
+
+        }else{
+
+        }
+
 
         //Limit values
         int limitCarbonFootprint = 4;//Data
@@ -175,6 +189,8 @@ public class AsyncMainSetup extends AsyncTask {
         housingDashboardFragment.setUp();
 
     }
+
+
 
 
 }
