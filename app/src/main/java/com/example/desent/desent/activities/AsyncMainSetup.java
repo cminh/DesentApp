@@ -129,11 +129,7 @@ public class AsyncMainSetup extends AsyncTask {
         carRegNr = new CarRegNr("suppe");
         String co2Result = carRegNr.fetchCO2();
         Log.i(TAG,co2Result);
-        if(co2Result.equals("Not a valid number")){
 
-        }else{
-
-        }
 
 
         //Limit values

@@ -1,10 +1,7 @@
 package com.example.desent.desent.models;
 
-import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
-
-import com.example.desent.desent.utils.AsyncResponse;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;

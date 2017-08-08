@@ -3,7 +3,9 @@ package com.example.desent.desent.models;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.Preference;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.util.Log;
 
 import com.example.desent.desent.utils.TimeScale;
@@ -19,6 +21,8 @@ public class Transportation {
 
     private final static float DIESEL_EMISSIONS = 2.640f; // kgCO2e/L
     private final static float GASOLINE_EMISSIONS = 2.392f; // kgCO2e/L
+    private float emissionGramPrKm;
+    private boolean carReg;
 
     private Context context;
     private DatabaseHelper db;
@@ -38,6 +42,26 @@ public class Transportation {
         this.context = context;
         db = new DatabaseHelper(context);
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        this.carReg = false;
+    }
+
+    public Transportation(Context context, String carRegRes){
+        this.context = context;
+        db = new DatabaseHelper(context);
+        prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        if(carRegRes.equals("Not a valid number")){
+            this.carReg = false;
+        }else{
+            this.carReg = true;
+            try{
+                this.emissionGramPrKm = Float.parseFloat(carRegRes);
+            }catch (Exception e) {
+                e.printStackTrace();
+                this.carReg = false;
+            }
+
+        }
+
     }
 
     public DatabaseHelper getDb() {
@@ -246,7 +270,14 @@ public class Transportation {
     }
 
     private float calculateKgCo2FromDriving(float drivingDistance, float emission, float consumption){
-        float kgCo2FromDriving = drivingDistance * emission * consumption;
+        float kgCo2FromDriving;
+
+        if(carReg){
+            kgCo2FromDriving = drivingDistance * (this.emissionGramPrKm/1000f);
+            
+        }else{
+            kgCo2FromDriving = drivingDistance * emission * consumption;
+        }
 
         return kgCo2FromDriving;
     }

@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -19,7 +21,10 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by magnust on 06.07.2017.
@@ -234,6 +239,30 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
             distance = 0;
             Log.i(LOG, "mLastLocation == null");
         }else{
+            Geocoder geocoder;
+            List<Address> addresses;
+            geocoder = new Geocoder(this, Locale.getDefault());
+            Log.e(TAG, "Before geocoder");
+            try {
+                addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+                String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                String city = addresses.get(0).getLocality();
+                String state = addresses.get(0).getAdminArea();
+                String country = addresses.get(0).getCountryName();
+                String postalCode = addresses.get(0).getPostalCode();
+                String knownName = addresses.get(0).getFeatureName();
+
+                Log.e(TAG, "Adress: " + address +
+                        "\nCity: " + city +
+                        "\nState: " + state +
+                        "\nCountry: " + country +
+                        "\nPostal code: " + postalCode +
+                        "\nKnown name: " + knownName);
+
+            } catch (IOException e) {
+                Log.e(TAG, "Inside catch error geocoder");
+                e.printStackTrace();
+            }
             Log.i(LOG, mLastLocation.toString());
             distance = mLastLocation.distanceTo(location)/1000; //meters to kilometers
             mLastLocation = location;

@@ -7,8 +7,10 @@ import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.util.Log;
 
 import com.example.desent.desent.R;
@@ -26,6 +28,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private final String TAG = "SettingsFragment";
     private SharedPreferences sharedPreferences;
     private VehicleCost vehicleCost;
+    private EditTextPreference costPref;
+    private PreferenceCategory preferenceCategory;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences (getActivity());
         updatePreferenceSummary(sharedPreferences);
         Log.i(TAG,"1");
+
     }
 
     private void updatePreferenceSummary(SharedPreferences sharedPreferences) {
@@ -83,6 +88,12 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         getPreferenceScreen().getSharedPreferences()
                 .registerOnSharedPreferenceChangeListener(this);
         setDefaultSummary(sharedPreferences);
+
+        //Preferences that shall be hidden must be hidden here
+        costPref = (EditTextPreference) findPreference("pref_key_car_price");
+        preferenceCategory = (PreferenceCategory) findPreference("pref_category_car");
+        preferenceCategory.removePreference(costPref);
+
         Log.i(TAG,"3");
     }
 

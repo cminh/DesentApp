@@ -3,10 +3,13 @@ package com.example.desent.desent.models;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
@@ -19,6 +22,8 @@ public class PreferencesManager extends PreferenceActivity {
 
     private static final String LOGG = "PreferencesManager";
     private EditTextPreference editTextPref;
+    private EditTextPreference costPref;
+    private PreferenceScreen preferenceScreen;
 
     public PreferencesManager() {
         Log.i(LOGG,"inside Constructor");
@@ -33,6 +38,13 @@ public class PreferencesManager extends PreferenceActivity {
         super.onCreate(savedInstanceState);
 
     }
+
+    /*
+        costPref = (EditTextPreference) findPreference("pref_key_car_price");
+        preferenceScreen = (PreferenceScreen) findPreference("pref_screen_main");
+        preferenceScreen.removePreference(costPref);
+     */
+
 
     private void setSummary() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);

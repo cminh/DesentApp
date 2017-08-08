@@ -1,4 +1,5 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="pref_screen_main">
     <PreferenceCategory
         android:title="@string/pref_title_personal">
         <EditTextPreference
@@ -36,24 +37,25 @@
 
     </PreferenceCategory>
     <PreferenceCategory
-        android:title="@string/pref_title_car">
+        android:title="@string/pref_title_car"
+        android:key="pref_category_car">
         <CheckBoxPreference
             android:key="pref_key_car_owner"
             android:title="@string/pref_car_owner"
             android:summary="Yes"
             android:defaultValue="true" />
         <EditTextPreference
+            android:dependency="pref_key_car_owner"
             android:dialogTitle="@string/pref_car_dialog_price"
             android:key="pref_key_car_price"
             android:summary="@string/pref_car_summary_price"
-            android:title="@string/pref_car_price"
-            android:dependency="pref_key_car_owner"/>
+            android:title="@string/pref_car_price" />
         <EditTextPreference
+            android:dependency="pref_key_car_owner"
             android:dialogTitle="@string/pref_car_dialog_distance"
             android:key="pref_key_car_distance"
             android:summary="@string/pref_car_summary_distance"
-            android:title="@string/pref_car_distance"
-            android:dependency="pref_key_car_owner"/>
+            android:title="@string/pref_car_distance" />
         <EditTextPreference
             android:dialogTitle="@string/pref_car_dialog_ownership_period"
             android:key="pref_key_car_ownership_period"
