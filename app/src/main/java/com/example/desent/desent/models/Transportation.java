@@ -231,27 +231,26 @@ public class Transportation {
     }
 
     public float getEmissionsPrLitre(String fuelType){
-        float emissionsPrLitre;
+        float emissionsPrLitre = 0f;
         switch (fuelType){
             case "Gasoline":
                 emissionsPrLitre = GASOLINE_EMISSIONS;
-                return  emissionsPrLitre;
+                break;
             case "Diesel":
                 emissionsPrLitre = DIESEL_EMISSIONS;
-                return  emissionsPrLitre;
+                break;
             case "Electricity":
                 emissionsPrLitre = 0f;
-                return  emissionsPrLitre;
-            default:
-                return 0f;
+                break;
         }
+        return emissionsPrLitre;
     }
 
     private float getLitrePerKm(){
         float fuelConsumption = Float.parseFloat(prefs.getString("pref_car_key_advanced_fuel_consumption", "0"));
         Log.i("getLitrePrKm", prefs.getString("pref_car_key_advanced_fuel_consumption", "0"));
         if (fuelConsumption>0){
-            return fuelConsumption/100f;
+            return fuelConsumption;
         }else{
             return 0f;
         }
