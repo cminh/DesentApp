@@ -2,9 +2,11 @@ package com.example.desent.desent.models;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
@@ -18,6 +20,9 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.view.Gravity;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,6 +72,7 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
     private GoogleApiClient mGoogleApiClientAware;
     private static final String FENCE_RECEIVER_ACTION = "FENCE_RECEIVE";
     private static final String TAG = "Awareness";
+    private HomeTown homeTown;
 
     // Current state
     private String currentActivity;
@@ -239,30 +245,9 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
             distance = 0;
             Log.i(LOG, "mLastLocation == null");
         }else{
-            Geocoder geocoder;
-            List<Address> addresses;
-            geocoder = new Geocoder(this, Locale.getDefault());
-            Log.e(TAG, "Before geocoder");
-            try {
-                addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-                String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-                String city = addresses.get(0).getLocality();
-                String state = addresses.get(0).getAdminArea();
-                String country = addresses.get(0).getCountryName();
-                String postalCode = addresses.get(0).getPostalCode();
-                String knownName = addresses.get(0).getFeatureName();
+            homeTown = new HomeTown(activityContext, location);
+            Log.i(TAG, homeTown.getWeatherLocation());
 
-                Log.e(TAG, "Adress: " + address +
-                        "\nCity: " + city +
-                        "\nState: " + state +
-                        "\nCountry: " + country +
-                        "\nPostal code: " + postalCode +
-                        "\nKnown name: " + knownName);
-
-            } catch (IOException e) {
-                Log.e(TAG, "Inside catch error geocoder");
-                e.printStackTrace();
-            }
             Log.i(LOG, mLastLocation.toString());
             distance = mLastLocation.distanceTo(location)/1000; //meters to kilometers
             mLastLocation = location;

@@ -39,6 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Table names
     public static final String TABLE_NAME = "USERINPUT";
     public static final String TABLE_DISTANCE = "DISTANCETRACKER";
+    public static final String TABLE_HOME = "HOME";
 
     // COL's for TABLE_DISTANCE
     public static final String D_COL_1 = "DATE";
@@ -55,6 +56,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String UI_COL_5 = "CAR_MAKE";
     public static final String UI_COL_6 = "YEARLY_ELECTRICITY_CONSUMPTION";
 
+    // COL's for TABLE_HOME
+    public static final String H_COL_1 = "HOME_LAT";
+    public static final String H_COL_2 = "HOME_LON";
+    public static final String H_COL_3 = "TEMP";
+    public static final String H_COL_4 = "COUNTRY";
+    public static final String H_COL_5 = "CITY";
+
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -64,6 +72,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table " + TABLE_NAME + " (" + UI_COL_2 + " TEXT PRIMARY KEY," + UI_COL_3 + " TEXT," + UI_COL_4 + " TEXT," + UI_COL_5 + " TEXT, " + UI_COL_6 + " TEXT)");
         db.execSQL("create table " + TABLE_DISTANCE + " (" + D_COL_1 + " TEXT PRIMARY KEY," + D_COL_2 + " FLOAT," + D_COL_3 + " FLOAT," + D_COL_4 + " FLOAT)");
+        db.execSQL("create table " + TABLE_HOME + " (" + H_COL_1 + " TEXT PRIMARY KEY," + H_COL_2 +
+                " TEXT," + H_COL_3 + " TEXT,"+ H_COL_4 + " TEXT,"+ H_COL_5 + " TEXT)");
     }
 
     @Override
@@ -407,7 +417,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public float getCyclingDistance(String date) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery("select " + D_COL_3 +" from " + TABLE_DISTANCE + " where "+ D_COL_1 +" = '" + date + "'", null);cursor.moveToFirst();
+        Cursor cursor = db.rawQuery("select " + D_COL_3 +" from " + TABLE_DISTANCE + " where "+ D_COL_1 +" = '" + date + "'", null);
+        cursor.moveToFirst();
         float cycleToday;
 
         if (cursor.getCount()>0){
@@ -599,4 +610,87 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             checkDateCounter = 0;
         }
     }
+
+    // Weather info
+    public String getWeatherLocation() {
+        String res;
+        SQLiteDatabase db = this.getWritableDatabase();
+        if(checkIfEmpty(db,TABLE_HOME)){
+            //Table is empty - give default Trondheim weather
+            res = "lat=63.4&lon=10.4";
+
+        }else{
+            // Table is not empty
+            Cursor cursor = db.rawQuery("select * from " + TABLE_HOME, null);
+            cursor.moveToFirst();
+            res = "lat=" + cursor.getString(0) + "&lon=" + cursor.getString(1);
+        }
+
+        return res;
+    }
+
+    public boolean cityEqualsHomeTown(String city){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + TABLE_HOME, null);
+        cursor.moveToFirst();
+        String homeTown = cursor.getString(4).trim();
+        if(homeTown.equals(city)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public boolean insertWeatherLocation(String lat, String lon, String temp, String country, String city) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        if (checkIfEmpty(db, TABLE_HOME)) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(H_COL_1, lat);
+            contentValues.put(H_COL_2, lon);
+            contentValues.put(H_COL_3, temp);
+            contentValues.put(H_COL_4, country);
+            contentValues.put(H_COL_5, city);
+            Log.i(LOG, "WeatherLocation inserted");
+            long result = db.insert(TABLE_HOME, null, contentValues);
+            if (result == -1)
+                return false;
+            else
+                Log.i(LOG, "True returned");
+            return true;
+        } else {
+            // the table is not empty and, it is not possible to insert a new row!
+            return false;
+        }
+    }
+
+    public boolean updateWeatherData(String lat, String lon, String country, String city) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(H_COL_1, lat);
+        contentValues.put(H_COL_2, lon);
+        contentValues.put(H_COL_3, "NO"); //Prevents app from updating again
+        contentValues.put(H_COL_4, country);
+        contentValues.put(H_COL_5, city);
+        long result = db.update(TABLE_HOME, contentValues, "TEMP = ?", new String[]{"YES"});
+        if (result == -1){
+            Log.i(LOG, "False, table not updated");
+            return false;
+        }else{
+            Log.i(LOG, "True, table updated");
+            return true;
+        }
+    }
+
+    public boolean existingWeatherData(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        if (checkIfEmpty(db, TABLE_HOME)) {
+            //empty table
+            return false;
+        } else {
+            //Not empty table
+            return true;
+        }
+    }
+
+
 }
