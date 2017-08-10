@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -38,10 +39,12 @@ import com.example.desent.desent.fragments.SolarPanelSizeFragment;
 import com.example.desent.desent.fragments.WalkingDistanceFragment;
 import com.example.desent.desent.models.Calories;
 import com.example.desent.desent.models.CarbonFootprint;
+import com.example.desent.desent.models.DatabaseHelper;
 import com.example.desent.desent.models.DistanceTracker;
 import com.example.desent.desent.models.DrivingDistance;
 import com.example.desent.desent.models.Energy;
 import com.example.desent.desent.models.EnergyConsumption;
+import com.example.desent.desent.models.EnergyDatabaseUpdate;
 import com.example.desent.desent.models.Expenses;
 import com.example.desent.desent.models.Indicator;
 import com.example.desent.desent.models.Transportation;
@@ -51,9 +54,12 @@ import com.example.desent.desent.utils.TimeScale;
 import com.example.desent.desent.utils.Utility;
 
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 
+import android.os.Handler;
+
+import static android.Manifest.permission_group.CALENDAR;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
@@ -102,6 +108,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DistanceTracker distanceTracking;
     private boolean gpsFlag;
     private static final String FENCE_RECEIVER_ACTION = "FENCE_RECEIVE";
+
+    //Energy
+    Handler EnergyHandler = new Handler();
+
+    public EnergyDatabaseUpdate energyDatabaseUpdate;
+    public DatabaseHelper mDatabaseHelper;
 
     private boolean isFirstDisplay = true;
 
@@ -365,6 +377,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 solarPanelSizeFragment);
 
         asyncMainSetup.execute();
+
+        // necessary for reading the Weather
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        energyDatabaseUpdate = new EnergyDatabaseUpdate(this); //TODO: async
+        mDatabaseHelper = new DatabaseHelper(this);
+
+        EnergyUpdatesRunnableCode.run();
     }
 
     @Override
@@ -575,70 +596,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    protected void setUp(){
-
-        //Limit values
-        int limitCarbonFootprint = 4;//Data
-        InputStream inputStream = getResources().openRawResource(R.raw.data);
-
-        //Indicators
-        energy = new Energy(this);
-        transport = new Transportation(this);
-        vehicleCost = new VehicleCost(this);
-
-        ArrayList<String> columnNames = new ArrayList<>();
-        columnNames.add("Transportation");
-        columnNames.add("Housing");
-        indicators.add(carbonFootprint = new CarbonFootprint(getApplicationContext(),transport, energy, inputStream, columnNames));
-        indicators.add(calories = new Calories(getApplicationContext(), transport, inputStream, columnNames));
-        indicators.add(expenses = new Expenses(getApplicationContext(), vehicleCost, energy, inputStream, columnNames));
-        indicators.add(drivingDistance = new DrivingDistance(getApplicationContext(), transport, inputStream, columnNames));
-        indicators.add(energyConsumption = new EnergyConsumption(getApplicationContext(), energy, inputStream, columnNames));
-
-        indicatorsBarFragment.addIndicator(calories);
-        indicatorsBarFragment.addIndicator(expenses);
-        indicatorsBarFragment.addIndicator(drivingDistance);
-        indicatorsBarFragment.addIndicator(energyConsumption);
-
-        carbonFootprintCircleFragment.setImgName("earth");
-        carbonFootprintCircleFragment.setNumberOfStates(5);
-
-        for (Indicator indicator : indicators) {
-            indicator.setTimeScale(TimeScale.TODAY); //TODO: SharedPreferences?
-            indicator.setEstimationType(EstimationType.NONE);
-        }
-
-        carbonFootprint.setMaxValue(2 * limitCarbonFootprint);
-        carbonFootprint.setLimitValue(limitCarbonFootprint);
-
-        calories.setDecimalsNumber(0);
-        expenses.setDecimalsNumber(0);
-        carbonFootprint.setDecimalsNumber(1);
-        drivingDistance.setDecimalsNumber(1);
-        energyConsumption.setDecimalsNumber(1);
-
-        carbonFootprintCircleFragment.setIndicator(carbonFootprint);
-        carbonFootprintCircleFragment.setUp();
-
-        transportationDashboardFragment.setCategoryIndex(0);
-        transportationDashboardFragment.setIndicator(carbonFootprint);
-        transportationDashboardFragment.setUp();
-
-        housingDashboardFragment.setCategoryIndex(1);
-        housingDashboardFragment.setIndicator(carbonFootprint);
-        housingDashboardFragment.setUp();
-
-        indicatorsBarFragment.setUp();
-        walkingDistanceFragment.setUp();
-        cyclingDistanceFragment.setUp();
-        solarPanelSizeFragment.setUp();
-
-        float[] pvSystemSizes = {3,4,5,6};
-        solarPanelSizeFragment.addButtons(pvSystemSizes);
-
-        //timeSpinner.setOnItemSelectedListener(timeSpinnerHandler);
-    }
-
     public void initTimeSpinner(){
         timeSpinner.setOnItemSelectedListener(timeSpinnerHandler);
     }
@@ -683,4 +640,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         setUpNavigationView();
     }
+
+    // Define the code block to be executed
+    public Runnable EnergyUpdatesRunnableCode = new Runnable() {
+        @Override
+        public void run() {
+            // Do something here on the main thread
+            Log.d("Handler", "Called in OnCreate");
+
+            energyDatabaseUpdate.UpdateCurrentValues();
+
+            // Runnable code repeated twice per hour (1700.000 ms)
+            EnergyHandler.postDelayed(EnergyUpdatesRunnableCode, 1700000);
+
+        }
+    };
 }

@@ -23,6 +23,8 @@ public class SolarPanelSizeFragment extends Fragment implements View.OnClickList
     private float[] pvSystemSizes;
     int buttonsSpacing;
     int buttonSize;
+    int maxLenght = 4;
+    int lenght = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -76,12 +78,17 @@ public class SolarPanelSizeFragment extends Fragment implements View.OnClickList
 
     private void addButton(String text) {
 
-        Button button = (Button) getActivity().getLayoutInflater().inflate(R.layout.circular_button, buttonsContainer, false);
-        button.setText(text);
-        button.setOnClickListener(this);
-        buttonsContainer.addView(button);
+        lenght += 1;
 
-        buttonsContainer.addView(new Space(getActivity()), new ViewGroup.LayoutParams(buttonsSpacing, buttonSize));
+        if (lenght <= maxLenght) {
+
+            Button button = (Button) getActivity().getLayoutInflater().inflate(R.layout.circular_button, buttonsContainer, false);
+            button.setText(text);
+            button.setOnClickListener(this);
+            buttonsContainer.addView(button);
+
+            buttonsContainer.addView(new Space(getActivity()), new ViewGroup.LayoutParams(buttonsSpacing, buttonSize));
+        }
 
         selectButton((Button) buttonsContainer.getChildAt(0));
 

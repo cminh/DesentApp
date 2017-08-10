@@ -91,7 +91,7 @@ public class HistoryActivity extends AppCompatActivity implements NavigationView
     @Override
     protected void onStart() {
         super.onStart();
-        //ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        spinner.setSelection(0);
 
         AsyncHistorySetup asyncHistorySetup = new AsyncHistorySetup(this,
                 stackBarChart,

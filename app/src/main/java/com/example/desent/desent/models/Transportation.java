@@ -257,15 +257,15 @@ public class Transportation {
     }
 
     protected float calculateKgCo2FromDriving(){
-        return ((prefs.getBoolean("pref_key_car_owner", true) ? calculateKgCo2FromDriving(getDrivingDistanceToday(), getEmissionsPrLitre(), getLitrePerKm()) : 0));
+        return (prefs.getBoolean("pref_key_car_owner", true) ? calculateKgCo2FromDriving(getDrivingDistanceToday(), getEmissionsPrLitre(), getLitrePerKm()) : 0);
     }
 
     protected float calculateKgCo2FromDriving(float drivingDistance){
-        return ((prefs.getBoolean("pref_key_car_owner", true) ? calculateKgCo2FromDriving(drivingDistance, getEmissionsPrLitre(), getLitrePerKm()) : 0));
+        return (prefs.getBoolean("pref_key_car_owner", true) ? calculateKgCo2FromDriving(drivingDistance, getEmissionsPrLitre(), getLitrePerKm()) : 0);
     }
 
     protected float calculateKgCo2FromDriving(float drivingDistance, float emission){
-        return ((prefs.getBoolean("pref_key_car_owner", true) ? calculateKgCo2FromDriving(drivingDistance, emission, getLitrePerKm()) : 0));
+        return (prefs.getBoolean("pref_key_car_owner", true) ? calculateKgCo2FromDriving(drivingDistance, emission, getLitrePerKm()) : 0);
     }
 
     private float calculateKgCo2FromDriving(float drivingDistance, float emission, float consumption){

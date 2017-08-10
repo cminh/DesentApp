@@ -187,5 +187,4 @@ public class WeatherHttpClient {
         return null;
     }
 
-
 }

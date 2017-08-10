@@ -39,6 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Table names
     public static final String TABLE_NAME = "USERINPUT";
     public static final String TABLE_DISTANCE = "DISTANCETRACKER";
+    public static final String TABLE_ENERGY = "ENERGY";
     public static final String TABLE_HOME = "HOME";
 
     // COL's for TABLE_DISTANCE
@@ -55,6 +56,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String UI_COL_4 = "WEIGHT";
     public static final String UI_COL_5 = "CAR_MAKE";
     public static final String UI_COL_6 = "YEARLY_ELECTRICITY_CONSUMPTION";
+
+    // Table columns for TABLE_ENERGY
+    private static final String EN_COL0 = "ID";
+    private static final String EN_COL1 = "hour_of_year";
+    private static final String EN_COL2 = "electricity_price";
+    private static final String EN_COL3 = "pv_output_1kW_clear_sky"; // used to scale with cloudiness to get actual profile
+    private static final String EN_COL4 = "default_electricity_load"; // electricity without heat
+    // columns for actual load without pv
+    private static final String EN_COL5 = "heat_load"; // calculated from real time weather values
+    private static final String EN_COL6 = "heat_load_forecast"; // calculated from forecast weather values
 
     // COL's for TABLE_HOME
     public static final String H_COL_1 = "HOME_LAT";
@@ -74,11 +85,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("create table " + TABLE_DISTANCE + " (" + D_COL_1 + " TEXT PRIMARY KEY," + D_COL_2 + " FLOAT," + D_COL_3 + " FLOAT," + D_COL_4 + " FLOAT)");
         db.execSQL("create table " + TABLE_HOME + " (" + H_COL_1 + " TEXT PRIMARY KEY," + H_COL_2 +
                 " TEXT," + H_COL_3 + " TEXT,"+ H_COL_4 + " TEXT,"+ H_COL_5 + " TEXT)");
+        db.execSQL( "CREATE TABLE " + TABLE_ENERGY + "("
+                + EN_COL0  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + EN_COL1  + " NUMERIC, "
+                + EN_COL2  + " NUMERIC, "
+                + EN_COL3  + " NUMERIC, "
+                + EN_COL4  + " NUMERIC, "
+                + EN_COL5  + " NUMERIC, "
+                + EN_COL6  + " NUMERIC )");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ENERGY);
         onCreate(db);
     }
 
@@ -307,10 +327,51 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public boolean insertEnergyData(double[] item) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(EN_COL1, item[0]);
+        contentValues.put(EN_COL2, item[1]);
+        contentValues.put(EN_COL3, item[2]);
+        contentValues.put(EN_COL4, item[3]);
+        contentValues.put(EN_COL5, item[4]);
+        contentValues.put(EN_COL6, item[5]);
+
+        //Log.d(TAG, "addData: Adding " + item[2] + " to " + TABLE_NAME);
+
+        long result = db.insert(TABLE_ENERGY, null, contentValues);
+        db.close();
+
+        return result != -1;
+    }
+
+
     public Cursor getAllData() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("select * from " + TABLE_NAME, null);
         return res;
+    }
+
+
+    public Cursor getEnergyData() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_ENERGY;
+        return db.rawQuery(query, null);
+    }
+
+    public double getHeat(int hour) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT " + EN_COL5 + " FROM " + TABLE_ENERGY + " WHERE " + EN_COL1 + " = '" + String.valueOf(hour) + "'", null);
+        cursor.moveToFirst();
+
+        double heat = -100;
+        if (cursor.getCount()>0) {
+            cursor.moveToLast();
+            heat = cursor.getFloat(0);
+        }
+
+        return heat;
     }
 
     public Cursor getDistance() {
@@ -572,6 +633,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(UI_COL_6, elCons);
         db.update(TABLE_NAME, contentValues, "NAME = ?", new String[]{name});
         return true;
+    }
+
+
+
+    public boolean updateEnergyData(double[] item) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(EN_COL1, item[0]);
+        contentValues.put(EN_COL2, item[1]);
+        contentValues.put(EN_COL3, item[2]);
+        contentValues.put(EN_COL4, item[3]);
+        contentValues.put(EN_COL5, item[4]);
+        contentValues.put(EN_COL6, item[5]);
+
+        long result = db.update(TABLE_ENERGY, contentValues, "ID=" +1, null);
+        db.close();
+
+        return result > 0;
     }
 
     public Integer deleteData(String name) {

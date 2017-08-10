@@ -42,6 +42,18 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         updatePreferenceSummary(sharedPreferences);
         Log.i(TAG,"1");
 
+        // Set up a listener whenever a key changes
+        getPreferenceScreen().getSharedPreferences()
+                .registerOnSharedPreferenceChangeListener(this);
+        setDefaultSummary(sharedPreferences);
+
+        //Preferences that shall be hidden must be hidden here
+        costPref = (EditTextPreference) findPreference("pref_key_car_price");
+        preferenceCategory = (PreferenceCategory) findPreference("pref_category_car");
+        preferenceCategory.removePreference(costPref);
+
+        Log.i(TAG,"3");
+
     }
 
     private void updatePreferenceSummary(SharedPreferences sharedPreferences) {
@@ -79,22 +91,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 }
             }
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        // Set up a listener whenever a key changes
-        getPreferenceScreen().getSharedPreferences()
-                .registerOnSharedPreferenceChangeListener(this);
-        setDefaultSummary(sharedPreferences);
-
-        //Preferences that shall be hidden must be hidden here
-        costPref = (EditTextPreference) findPreference("pref_key_car_price");
-        preferenceCategory = (PreferenceCategory) findPreference("pref_category_car");
-        preferenceCategory.removePreference(costPref);
-
-        Log.i(TAG,"3");
     }
 
     @Override
