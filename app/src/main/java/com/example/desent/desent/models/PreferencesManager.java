@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
@@ -13,6 +14,12 @@ import android.preference.PreferenceScreen;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.example.desent.desent.R;
+
+import org.junit.experimental.categories.Category;
+
+import java.util.ArrayList;
 
 /**
  * Created by magnust on 27.06.2017.
@@ -36,6 +43,7 @@ public class PreferencesManager extends PreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
     }
 

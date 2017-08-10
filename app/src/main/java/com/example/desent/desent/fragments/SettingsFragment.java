@@ -2,6 +2,7 @@ package com.example.desent.desent.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
@@ -31,6 +32,15 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private EditTextPreference costPref;
     private PreferenceCategory preferenceCategory;
 
+    //Table for Peter
+    private CharSequence[] entries =          {"Electric (resistance)", "Heat pump" , "Gas"    , "Oil"   , "Wood"   };
+    private CharSequence[] entryValues =      {"Electric (resistance)", "Heat pump" , "Gas"    , "Oil"   , "Wood"   };
+    private String[] systemEfficiency =       {"1"                    , "2"         , "3"      , "4"     , "5"      };
+    private String[] defaultValueNOK =        {"1"                    , "1"         , "8"      , "8"     , "4"      };
+    private String[] defaultValueEUR =        {"20.6"                 , "20.6"      , "0.9"    , "1.1"   , "0.3"    };
+    private String[] unitsNOK =               {"NOK/kWh"              , "NOK/kWh"   , "NOK/m3" , "NOK/l" , "NOK/kg" };
+    private String[] unitsEUR =               {"Cent/kWh"             , "Cent/kWh"  , "EUR/m3" , "EUR/l" , "EUR/kg" };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,8 +49,15 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         vehicleCost = new VehicleCost(getActivity());
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences (getActivity());
-        updatePreferenceSummary(sharedPreferences);
         Log.i(TAG,"1");
+
+        ListPreference listPreferenceCategory = (ListPreference) findPreference("pref_key_heat_type");
+        if (listPreferenceCategory != null) {
+            listPreferenceCategory.setEntries(entries);
+            listPreferenceCategory.setEntryValues(entryValues);
+            listPreferenceCategory.setDefaultValue(entries[0]);
+        }
+        updatePreferenceSummary(); // Must be exec. after initiation of list pref.
 
         // Set up a listener whenever a key changes
         getPreferenceScreen().getSharedPreferences()
@@ -56,7 +73,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
     }
 
-    private void updatePreferenceSummary(SharedPreferences sharedPreferences) {
+    private void updatePreferenceSummary() {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences (getActivity());
         Map<String, ?> preferencesMap = sharedPreferences.getAll();
 
         for (Map.Entry<String, ?> entry : preferencesMap.entrySet()) {
@@ -66,6 +84,19 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             if (currentPref != null ){
 
                 String currentValue = entry.getValue().toString();
+
+                if(currentPref.getKey().equals("pref_key_heat_type")){
+                    Preference efficiency = findPreference("pref_key_heat_efficiency");
+                    efficiency.setSummary(systemEfficiency[getInt(currentValue)]);
+                    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString("pref_key_heat_efficiency",systemEfficiency[getInt(currentValue)]);
+                    Log.i(TAG,"System efficiency " + systemEfficiency[getInt(currentValue)]);
+                    editor.commit();
+                    Intent intent = getActivity().getIntent();
+                    getActivity().finish();
+                    startActivity(intent);
+                }
 
                 switch (currentValue) {
                     case "0":
@@ -104,9 +135,32 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        updatePreferenceSummary(sharedPreferences);
+        updatePreferenceSummary();
         setDefaultSummary(sharedPreferences);
 
+    }
+
+    private int getInt(String str){
+        int res = 10; // Will crash if items are added without updating this method
+
+        switch (str){
+            case "Electric (resistance)":
+                res = 0;
+                break;
+            case "Heat pump":
+                res = 1;
+                break;
+            case "Gas":
+                res = 2;
+                break;
+            case "Oil":
+                res = 3;
+                break;
+            case "Wood":
+                res = 4;
+                break;
+        }
+        return res;
     }
 
     private void setDefaultSummary(SharedPreferences sharedPreferences){

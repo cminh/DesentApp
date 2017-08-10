@@ -114,8 +114,26 @@
     <string name="pref_personal_summary_age">Please enter your age</string>
     <string name="pref_personal_summary_weight">Please enter your weight</string>
 
+    //Primary heating system
+    <string name="pref_title_heat">Primary heating system</string>
 
+    <string name="pref_heat_type">Type of heating</string>
+    <string name="pref_heat_efficiency">System efficiency</string>
+    <string name="pref_heat_fuel_cost">Fuel cost</string>
 
+    <string name="pref_key_heat_type">pref_key_heat_type</string>
+    <string name="pref_key_heat_efficiency">pref_key_heat_efficiency</string>
+    <string name="pref_key_heat_fuel_cost">pref_key_heat_fuel_cost</string>
+
+    <string name="pref_dialog_heat_type">Please enter fuel type</string>
+    <string name="pref_dialog_heat_efficiency">Please enter system efficiency</string>
+    <string name="pref_dialog_heat_fuel_cost">Please enter fuel cost</string>
+
+    <string name="pref_summary_heat_type">Please enter fuel type</string>
+    <string name="pref_summary_heat_efficiency">Please enter system efficiency</string>
+    <string name="pref_summary_heat_fuel_cost">Please enter fuel cost</string>
+
+    //Car
     <string name="pref_title_car">Car settings</string>
 
     <string name="pref_car_owner">Car owner</string>

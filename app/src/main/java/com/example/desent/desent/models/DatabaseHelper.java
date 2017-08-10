@@ -1,7 +1,7 @@
 package com.example.desent.desent.models;
 
 /**
- * Created by magnust on 06.07.2017.
+ * Created by magnust on 04.07.2017.
  */
 
 
@@ -15,9 +15,7 @@ import android.util.Log;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-/**
- * Created by magnust on 04.07.2017.
- */
+
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 

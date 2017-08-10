@@ -36,6 +36,23 @@
             android:title="@string/pref_personal_weight" />
 
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_title_heat">
+
+        <ListPreference
+            android:key="@string/pref_key_heat_type"
+            android:title="@string/pref_heat_type"
+            android:summary="@string/pref_summary_heat_type" />
+        <EditTextPreference
+            android:title="@string/pref_heat_efficiency"
+            android:key="@string/pref_key_heat_efficiency"
+            android:dialogTitle="@string/pref_dialog_heat_efficiency"
+            android:summary="@string/pref_summary_heat_efficiency"/>
+        <EditTextPreference
+            android:title="@string/pref_heat_fuel_cost"
+            android:key="@string/pref_key_heat_fuel_cost"
+            android:dialogTitle="@string/pref_dialog_heat_fuel_cost"
+            android:summary="@string/pref_summary_heat_fuel_cost" />
+    </PreferenceCategory>
     <PreferenceCategory
         android:title="@string/pref_title_car"
         android:key="pref_category_car">
