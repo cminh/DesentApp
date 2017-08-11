@@ -41,7 +41,8 @@
         <ListPreference
             android:key="@string/pref_key_heat_type"
             android:title="@string/pref_heat_type"
-            android:summary="@string/pref_summary_heat_type" />
+            android:summary="@string/pref_summary_heat_type"
+            android:defaultValue="@string/pref_default_heat_fuel_type"/>
         <EditTextPreference
             android:title="@string/pref_heat_efficiency"
             android:key="@string/pref_key_heat_efficiency"

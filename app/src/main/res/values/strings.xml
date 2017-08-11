@@ -110,11 +110,11 @@
 
     <string name="pref_personal_summary_name">Please enter your name</string>
     <string name="pref_personal_summary_email">Please enter your email</string>
-    <string name="pref_personal_summary_password">Plase enter your password</string>
+    <string name="pref_personal_summary_password">Please enter your password</string>
     <string name="pref_personal_summary_age">Please enter your age</string>
     <string name="pref_personal_summary_weight">Please enter your weight</string>
 
-    //Primary heating system
+    <!--Primary heating system-->
     <string name="pref_title_heat">Primary heating system</string>
 
     <string name="pref_heat_type">Type of heating</string>
@@ -132,6 +132,8 @@
     <string name="pref_summary_heat_type">Please enter fuel type</string>
     <string name="pref_summary_heat_efficiency">Please enter system efficiency</string>
     <string name="pref_summary_heat_fuel_cost">Please enter fuel cost</string>
+
+    <string name="pref_default_heat_fuel_type">Electric (resistance)</string>
 
     //Car
     <string name="pref_title_car">Car settings</string>

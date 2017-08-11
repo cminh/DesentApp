@@ -31,6 +31,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private VehicleCost vehicleCost;
     private EditTextPreference costPref;
     private PreferenceCategory preferenceCategory;
+    private boolean updateEfficientSummary = true;
+    private String keyUpdate = "";
 
     //Table for Peter
     private CharSequence[] entries =          {"Electric (resistance)", "Heat pump" , "Gas"    , "Oil"   , "Wood"   };
@@ -76,7 +78,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private void updatePreferenceSummary() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences (getActivity());
         Map<String, ?> preferencesMap = sharedPreferences.getAll();
-
+        updateEfficientSummary = true;
         for (Map.Entry<String, ?> entry : preferencesMap.entrySet()) {
 
             Preference currentPref = findPreference(entry.getKey());
@@ -86,16 +88,30 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 String currentValue = entry.getValue().toString();
 
                 if(currentPref.getKey().equals("pref_key_heat_type")){
-                    Preference efficiency = findPreference("pref_key_heat_efficiency");
-                    efficiency.setSummary(systemEfficiency[getInt(currentValue)]);
-                    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                    //Preference efficiency = findPreference("pref_key_heat_efficiency");
+                    //efficiency.setSummary(systemEfficiency[getInt(currentValue)]);
+                    EditTextPreference heatEff = (EditTextPreference) findPreference("pref_key_heat_efficiency");
+                    EditTextPreference heatFuel = (EditTextPreference) findPreference("pref_key_heat_fuel_cost");
+                    heatEff.setText(systemEfficiency[getInt(currentValue)]);
+                    heatFuel.setText(defaultValueNOK[getInt(currentValue)]);
+
+                    heatEff.setSummary(systemEfficiency[getInt(currentValue)]);
+                    heatFuel.setSummary(defaultValueNOK[getInt(currentValue)] + " " + unitsNOK[getInt(currentValue)]);
+                    heatFuel.setTitle("Fuel cost (" + unitsNOK[getInt(currentValue)] + ")");
+
+                    updateEfficientSummary = false;
+                    // TODO: Create method for setting summary, avoiding setting it in the update method?
+
+
+                   /* SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
                     SharedPreferences.Editor editor = settings.edit();
                     editor.putString("pref_key_heat_efficiency",systemEfficiency[getInt(currentValue)]);
                     Log.i(TAG,"System efficiency " + systemEfficiency[getInt(currentValue)]);
                     editor.commit();
-                    Intent intent = getActivity().getIntent();
+                    /*Intent intent = getActivity().getIntent();
                     getActivity().finish();
                     startActivity(intent);
+                    */
                 }
 
                 switch (currentValue) {
@@ -118,7 +134,15 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                         }
                         break;
                     default:
-                        currentPref.setSummary(currentValue);
+                        if(currentPref.getKey().equals("pref_key_heat_efficiency") && !updateEfficientSummary){
+                            //Nothing
+                        }else if (currentPref.getKey().equals("pref_key_heat_fuel_cost") && !updateEfficientSummary){
+
+                        }else{
+                            currentPref.setSummary(currentValue);
+
+                        }
+
                 }
             }
         }
@@ -135,10 +159,14 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        keyUpdate = key;
         updatePreferenceSummary();
+
         setDefaultSummary(sharedPreferences);
 
     }
+
+
 
     private int getInt(String str){
         int res = 10; // Will crash if items are added without updating this method
