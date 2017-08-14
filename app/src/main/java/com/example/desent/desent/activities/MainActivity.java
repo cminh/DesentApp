@@ -285,6 +285,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 ft.hide(solarPanelSizeFragment);
                                 ft.commit();
 
+                                walkingDistanceFragment.refresh();
+
                                 break;
                             case R.id.navigation_cycling:
 
@@ -304,6 +306,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 ft.show(cyclingDistanceFragment);
                                 ft.hide(solarPanelSizeFragment);
                                 ft.commit();
+
+                                cyclingDistanceFragment.refresh();
 
                                 break;
                             case R.id.navigation_electric_car:
