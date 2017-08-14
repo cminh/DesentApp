@@ -96,8 +96,6 @@ public class AsyncMainSetup extends AsyncTask {
 
     @Override
     protected void onPostExecute(Object o) {
-        Toast.makeText(activity, "Calculations updated",
-                Toast.LENGTH_LONG).show();
 
         progress.setVisibility(View.GONE);
 
