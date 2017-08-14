@@ -28,12 +28,14 @@
             android:dialogTitle="@string/pref_personal_dialog_age"
             android:key="pref_key_personal_age"
             android:summary="@string/pref_personal_summary_age"
-            android:title="@string/pref_personal_age" />
+            android:title="@string/pref_personal_age"
+            android:inputType="numberDecimal"/>
         <EditTextPreference
             android:dialogTitle="@string/pref_personal_dialog_weight"
             android:key="pref_key_personal_weight"
             android:summary="@string/pref_personal_summary_weight"
-            android:title="@string/pref_personal_weight" />
+            android:title="@string/pref_personal_weight"
+            android:inputType="numberDecimal"/>
 
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_title_heat">
@@ -47,12 +49,23 @@
             android:title="@string/pref_heat_efficiency"
             android:key="@string/pref_key_heat_efficiency"
             android:dialogTitle="@string/pref_dialog_heat_efficiency"
-            android:summary="@string/pref_summary_heat_efficiency"/>
+            android:summary="@string/pref_summary_heat_efficiency"
+            android:defaultValue="@string/pref_default_heat_efficiency"
+            android:inputType="numberDecimal"/>
         <EditTextPreference
             android:title="@string/pref_heat_fuel_cost"
             android:key="@string/pref_key_heat_fuel_cost"
             android:dialogTitle="@string/pref_dialog_heat_fuel_cost"
-            android:summary="@string/pref_summary_heat_fuel_cost" />
+            android:summary="@string/pref_summary_heat_fuel_cost"
+            android:defaultValue="@string/pref_default_heat_fuel_cost"
+            android:inputType="numberDecimal"/>
+        <EditTextPreference
+            android:title="@string/pref_heat_prev_yr"
+            android:key="@string/pref_key_heat_prev_yr"
+            android:dialogTitle="@string/pref_dialog_heat_prev_yr"
+            android:summary="@string/pref_summary_heat_prev_yr"
+            android:defaultValue="@string/pref_default_heat_prev_yr"
+            android:inputType="numberDecimal"/>
     </PreferenceCategory>
     <PreferenceCategory
         android:title="@string/pref_title_car"
@@ -64,22 +77,31 @@
             android:defaultValue="true" />
         <EditTextPreference
             android:dependency="pref_key_car_owner"
+            android:dialogTitle="@string/pref_car_dialog_regnr"
+            android:key="pref_key_car_regnr"
+            android:summary="@string/pref_car_summary_regnr"
+            android:title="@string/pref_car_regnr" />
+        <EditTextPreference
+            android:dependency="pref_key_car_owner"
             android:dialogTitle="@string/pref_car_dialog_price"
             android:key="pref_key_car_price"
             android:summary="@string/pref_car_summary_price"
-            android:title="@string/pref_car_price" />
+            android:title="@string/pref_car_price"
+            android:inputType="numberDecimal"/>
         <EditTextPreference
             android:dependency="pref_key_car_owner"
             android:dialogTitle="@string/pref_car_dialog_distance"
             android:key="pref_key_car_distance"
             android:summary="@string/pref_car_summary_distance"
-            android:title="@string/pref_car_distance" />
+            android:title="@string/pref_car_distance"
+            android:inputType="numberDecimal"/>
         <EditTextPreference
             android:dialogTitle="@string/pref_car_dialog_ownership_period"
             android:key="pref_key_car_ownership_period"
             android:summary="@string/pref_car_dialog_ownership_period"
             android:title="@string/pref_car_ownership_period"
-            android:dependency="pref_key_car_owner"/>
+            android:dependency="pref_key_car_owner"
+            android:inputType="numberDecimal"/>
         <ListPreference
             android:entries="@array/pref_car_size_list"
             android:entryValues="@array/pref_car_size_values"
@@ -131,6 +153,7 @@
                     android:key="@string/pref_car_key_advanced_yearly_fee"
                     android:summary="@string/pref_car_summary_advanced_yearly_fee"
                     android:title="@string/pref_car_advanced_yearly_fee"
+                    android:inputType="numberDecimal"
                     android:dependency="@string/pref_car_key_advanced_default"/>
                 <EditTextPreference
                     android:dialogTitle="@string/pref_car_dialog_advanced_insurance_cost"

@@ -15,6 +15,7 @@ import android.preference.PreferenceScreen;
 import android.util.Log;
 
 import com.example.desent.desent.R;
+import com.example.desent.desent.models.DatabaseHelper;
 import com.example.desent.desent.models.PreferencesManager;
 import com.example.desent.desent.models.VehicleCost;
 
@@ -29,19 +30,21 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private final String TAG = "SettingsFragment";
     private SharedPreferences sharedPreferences;
     private VehicleCost vehicleCost;
-    private EditTextPreference costPref;
+    private EditTextPreference regnrPref;
     private PreferenceCategory preferenceCategory;
-    private boolean updateEfficientSummary = true;
-    private String keyUpdate = "";
 
     //Table for Peter
-    private CharSequence[] entries =          {"Electric (resistance)", "Heat pump" , "Gas"    , "Oil"   , "Wood"   };
-    private CharSequence[] entryValues =      {"Electric (resistance)", "Heat pump" , "Gas"    , "Oil"   , "Wood"   };
-    private String[] systemEfficiency =       {"1"                    , "2"         , "3"      , "4"     , "5"      };
-    private String[] defaultValueNOK =        {"1"                    , "1"         , "8"      , "8"     , "4"      };
-    private String[] defaultValueEUR =        {"20.6"                 , "20.6"      , "0.9"    , "1.1"   , "0.3"    };
-    private String[] unitsNOK =               {"NOK/kWh"              , "NOK/kWh"   , "NOK/m3" , "NOK/l" , "NOK/kg" };
-    private String[] unitsEUR =               {"Cent/kWh"             , "Cent/kWh"  , "EUR/m3" , "EUR/l" , "EUR/kg" };
+    private CharSequence[] entries =                {"Electric (resistance)", "Heat pump" , "Gas"    , "Oil"   , "Wood"   };
+    private CharSequence[] entryValues =            {"Electric (resistance)", "Heat pump" , "Gas"    , "Oil"   , "Wood"   };
+    private String[] systemEfficiency =             {"1"                    , "2"         , "3"      , "4"     , "5"      };
+    private String[] defaultFuelConsumptionNOK =    {"1"                    , "1"         , "8"      , "8"     , "4"      };
+    private String[] defaultFuelConsumptionEUR =    {"20.6"                 , "20.6"      , "0.9"    , "1.1"   , "0.3"    };
+    private String[] lastYearsConsumptionNOK =      {"1"                    , "2"         , "3"      , "4"     , "5"      };
+    private String[] lastYearsConsumptionEUR =      {"11"                   , "22"        , "33"     , "44"    , "55"     };
+    private String[] unitsNOK =                     {"NOK/kWh"              , "NOK/kWh"   , "NOK/m3" , "NOK/l" , "NOK/kg" };
+    private String[] unitsEUR =                     {"Cent/kWh"             , "Cent/kWh"  , "EUR/m3" , "EUR/l" , "EUR/kg" };
+    private String[] unitsConsumption =             {"kWh"                  , "kWh"       , "m3"     , "l"     , "kg"     };
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,18 +62,35 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             listPreferenceCategory.setEntryValues(entryValues);
             listPreferenceCategory.setDefaultValue(entries[0]);
         }
-        updatePreferenceSummary(); // Must be exec. after initiation of list pref.
+
 
         // Set up a listener whenever a key changes
         getPreferenceScreen().getSharedPreferences()
                 .registerOnSharedPreferenceChangeListener(this);
+
+        updatePreferenceSummary(); // Must be exec. after initiation of list pref.
+        updatePetersSettingsType();
         setDefaultSummary(sharedPreferences);
 
-        //Preferences that shall be hidden must be hidden here
-        costPref = (EditTextPreference) findPreference("pref_key_car_price");
-        preferenceCategory = (PreferenceCategory) findPreference("pref_category_car");
-        preferenceCategory.removePreference(costPref);
+        //Preferences must be hidden here
+        DatabaseHelper db = new DatabaseHelper(getActivity());
+        if(db.isNorway()){
+           /* wait with this
+           if(sharedPreferences.getString("pref_key_car_regnr","Not a valid number").equals("Not a ")){
 
+            }else{
+
+            }
+            */
+        }else{
+            regnrPref = (EditTextPreference) findPreference("pref_key_car_regnr");
+            preferenceCategory = (PreferenceCategory) findPreference("pref_category_car");
+            preferenceCategory.removePreference(regnrPref);
+        }
+        //TODO: remove pref if reg nr.
+        /*
+
+        */
         Log.i(TAG,"3");
 
     }
@@ -78,7 +98,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private void updatePreferenceSummary() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences (getActivity());
         Map<String, ?> preferencesMap = sharedPreferences.getAll();
-        updateEfficientSummary = true;
         for (Map.Entry<String, ?> entry : preferencesMap.entrySet()) {
 
             Preference currentPref = findPreference(entry.getKey());
@@ -86,33 +105,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             if (currentPref != null ){
 
                 String currentValue = entry.getValue().toString();
-
-                if(currentPref.getKey().equals("pref_key_heat_type")){
-                    //Preference efficiency = findPreference("pref_key_heat_efficiency");
-                    //efficiency.setSummary(systemEfficiency[getInt(currentValue)]);
-                    EditTextPreference heatEff = (EditTextPreference) findPreference("pref_key_heat_efficiency");
-                    EditTextPreference heatFuel = (EditTextPreference) findPreference("pref_key_heat_fuel_cost");
-                    heatEff.setText(systemEfficiency[getInt(currentValue)]);
-                    heatFuel.setText(defaultValueNOK[getInt(currentValue)]);
-
-                    heatEff.setSummary(systemEfficiency[getInt(currentValue)]);
-                    heatFuel.setSummary(defaultValueNOK[getInt(currentValue)] + " " + unitsNOK[getInt(currentValue)]);
-                    heatFuel.setTitle("Fuel cost (" + unitsNOK[getInt(currentValue)] + ")");
-
-                    updateEfficientSummary = false;
-                    // TODO: Create method for setting summary, avoiding setting it in the update method?
-
-
-                   /* SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                    SharedPreferences.Editor editor = settings.edit();
-                    editor.putString("pref_key_heat_efficiency",systemEfficiency[getInt(currentValue)]);
-                    Log.i(TAG,"System efficiency " + systemEfficiency[getInt(currentValue)]);
-                    editor.commit();
-                    /*Intent intent = getActivity().getIntent();
-                    getActivity().finish();
-                    startActivity(intent);
-                    */
-                }
 
                 switch (currentValue) {
                     case "0":
@@ -134,9 +126,13 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                         }
                         break;
                     default:
-                        if(currentPref.getKey().equals("pref_key_heat_efficiency") && !updateEfficientSummary){
+                        if(currentPref.getKey().equals("pref_key_heat_efficiency")){
                             //Nothing
-                        }else if (currentPref.getKey().equals("pref_key_heat_fuel_cost") && !updateEfficientSummary){
+                        }else if (currentPref.getKey().equals("pref_key_heat_fuel_cost")){
+
+                        }else if (currentPref.getKey().equals("pref_key_heat_prev_yr")){
+
+                        }else if (currentPref.getKey().equals("pref_key_heat_type")){
 
                         }else{
                             currentPref.setSummary(currentValue);
@@ -159,14 +155,17 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        keyUpdate = key;
-        updatePreferenceSummary();
+        if(key.equals("pref_key_heat_efficiency") || key.equals("pref_key_heat_fuel_cost") || key.equals("pref_key_heat_prev_yr")){
+            updatePetersSettings();
+        }else if (key.equals("pref_key_heat_type")){
+            updatePetersSettingsType();
+        }else{
+            updatePreferenceSummary();
+            setDefaultSummary(sharedPreferences);
+        }
 
-        setDefaultSummary(sharedPreferences);
 
     }
-
-
 
     private int getInt(String str){
         int res = 10; // Will crash if items are added without updating this method
@@ -189,6 +188,51 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 break;
         }
         return res;
+    }
+
+    private void updatePetersSettings(){
+
+        EditTextPreference heatEff = (EditTextPreference) findPreference("pref_key_heat_efficiency");
+        EditTextPreference heatFuel = (EditTextPreference) findPreference("pref_key_heat_fuel_cost");
+        EditTextPreference heatPrev = (EditTextPreference) findPreference("pref_key_heat_prev_yr");
+
+        heatEff.setSummary(heatEff.getText().toString());
+        heatFuel.setSummary(heatFuel.getText().toString());
+        heatPrev.setSummary(heatPrev.getText().toString());
+    }
+
+    private void updatePetersSettingsType(){
+        DatabaseHelper db = new DatabaseHelper(getActivity());
+        EditTextPreference heatEff = (EditTextPreference) findPreference("pref_key_heat_efficiency");
+        EditTextPreference heatFuel = (EditTextPreference) findPreference("pref_key_heat_fuel_cost");
+        EditTextPreference heatPrevYr = (EditTextPreference) findPreference("pref_key_heat_prev_yr");
+        ListPreference type =(ListPreference) findPreference("pref_key_heat_type");
+        type.setSummary(type.getValue().toString());
+        int ii = getInt(type.getValue().toString());
+        heatEff.setText(systemEfficiency[ii]); // same system efficiency
+        heatEff.setSummary(systemEfficiency[ii]);
+
+        if(db.isNorway()){
+            heatFuel.setText(defaultFuelConsumptionNOK[ii]);
+            heatFuel.setTitle("Fuel cost (" + unitsNOK[ii] + ")");
+            heatPrevYr.setText(lastYearsConsumptionNOK[ii]);
+            heatPrevYr.setTitle("Consumption last year (" + unitsNOK[ii] + ")");
+
+            heatFuel.setSummary(defaultFuelConsumptionNOK[ii] + " " +
+                    unitsNOK[ii]);
+            heatPrevYr.setSummary(lastYearsConsumptionNOK[ii] + " " +
+                    unitsConsumption[ii]);
+        }else{
+            heatFuel.setText(defaultFuelConsumptionEUR[ii]);
+            heatFuel.setTitle("Fuel cost (" + unitsEUR[ii] + ")");
+            heatPrevYr.setText(lastYearsConsumptionEUR[ii]);
+            heatPrevYr.setTitle("Consumption last year (" + unitsEUR[ii] + ")");
+
+            heatFuel.setSummary(defaultFuelConsumptionEUR[ii] + " " +
+                    unitsEUR[ii]);
+            heatPrevYr.setSummary(lastYearsConsumptionEUR[ii] + " " +
+                    unitsConsumption[ii]);
+        }
     }
 
     private void setDefaultSummary(SharedPreferences sharedPreferences){

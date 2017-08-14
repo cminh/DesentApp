@@ -719,6 +719,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public boolean isNorway(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String country;
+        boolean isNorway = true;
+        Cursor cursor = db.rawQuery("select * from " + TABLE_HOME, null);
+
+        if(checkIfEmpty(db, TABLE_HOME) ){
+            country = "Norway";
+        }else{
+            cursor.moveToFirst();
+            country = cursor.getString(3).trim();
+        }
+
+        if(country.equals("Norway")){
+            isNorway = true;
+        }else{
+            isNorway = false;
+        }
+        cursor.close();
+        return isNorway;
+    }
+
     public boolean insertWeatherLocation(String lat, String lon, String temp, String country, String city) {
         SQLiteDatabase db = this.getWritableDatabase();
         if (checkIfEmpty(db, TABLE_HOME)) {

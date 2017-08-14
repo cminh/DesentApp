@@ -23,6 +23,8 @@ public class Transportation {
     private final static float GASOLINE_EMISSIONS = 2.392f; // kgCO2e/L
     private float emissionGramPrKm;
     private boolean carReg;
+    private CarRegNr carRegNr;
+    private final static String TAG = "Transportation";
 
     private Context context;
     private DatabaseHelper db;
@@ -42,24 +44,33 @@ public class Transportation {
         this.context = context;
         db = new DatabaseHelper(context);
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        this.carReg = false;
-    }
 
-    public Transportation(Context context, String carRegRes){
-        this.context = context;
-        db = new DatabaseHelper(context);
-        prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        if(carRegRes.equals("Not a valid number")){
-            this.carReg = false;
-        }else{
-            this.carReg = true;
-            try{
-                this.emissionGramPrKm = Float.parseFloat(carRegRes);
-            }catch (Exception e) {
-                e.printStackTrace();
+
+        //Fetch Co2 emissions from Vegvesenet if license plate is entered and in Norway
+        DatabaseHelper db = new DatabaseHelper(context);
+        if(db.isNorway()){
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences (context);
+            carRegNr = new CarRegNr(prefs.getString("pref_key_car_regnr", "Not a valid number"));
+            String co2Result = carRegNr.fetchCO2();
+            Log.i(TAG, prefs.getString("pref_key_car_regnr", "Not a valid number"));
+            Log.i(TAG,co2Result);
+
+            if(co2Result.equals("Not a valid number") || co2Result.isEmpty() || co2Result.equals("")){
+                // Do nothing, something wrong
                 this.carReg = false;
+            }else{
+                this.carReg = true;
+                try{
+                    this.emissionGramPrKm = Float.parseFloat(co2Result);
+                }catch (Exception e) {
+                    e.printStackTrace();
+                    this.carReg = false;
+                }
             }
 
+        }else{
+            //Not in Norway
+            this.carReg = false;
         }
 
     }

@@ -390,6 +390,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
+        if(gpsFlag == true) {
+            distanceTracking.askForGps();
+            gpsFlag = false;
+        }
         //setUp();
     }
 
@@ -408,10 +412,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case 2: { if ((grantResults.length > 0)
                     && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 Log.i("MAIN","onRequestPermissionsResult");
-                distanceTracking.askForGps();
+                //distanceTracking.askForGps();
+                gpsFlag = true;
             } else {
-                Toast.makeText(this, "The app needs to enable location to do the calculations.",
-                        Toast.LENGTH_LONG).show();
+                //Toast.makeText(this, "The app needs to enable location to do the calculations.",
+                  //      Toast.LENGTH_LONG).show();
             }
                 return;
             }

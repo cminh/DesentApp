@@ -120,28 +120,38 @@
     <string name="pref_title_heat">Primary heating system</string>
 
     <string name="pref_heat_type">Type of heating</string>
-    <string name="pref_heat_efficiency">System efficiency</string>
+    <string name="pref_heat_efficiency">System efficiency (%)</string>
     <string name="pref_heat_fuel_cost">Fuel cost</string>
+    <string name="pref_heat_prev_yr">Consumption last year</string>
 
     <string name="pref_key_heat_type">pref_key_heat_type</string>
     <string name="pref_key_heat_efficiency">pref_key_heat_efficiency</string>
     <string name="pref_key_heat_fuel_cost">pref_key_heat_fuel_cost</string>
+    <string name="pref_key_heat_prev_yr">pref_key_heat_prev_yr</string>
+
 
     <string name="pref_dialog_heat_type">Please enter fuel type</string>
     <string name="pref_dialog_heat_efficiency">Please enter system efficiency</string>
     <string name="pref_dialog_heat_fuel_cost">Please enter fuel cost</string>
+    <string name="pref_dialog_heat_prev_yr">Please enter consumption last year</string>
 
     <string name="pref_summary_heat_type">Please enter fuel type</string>
     <string name="pref_summary_heat_efficiency">Please enter system efficiency</string>
     <string name="pref_summary_heat_fuel_cost">Please enter fuel cost</string>
+    <string name="pref_summary_heat_prev_yr">Please enter consumption last year</string>
 
     <string name="pref_default_heat_fuel_type">Electric (resistance)</string>
+    <string name="pref_default_heat_efficiency">Please enter efficiency</string>
+    <string name="pref_default_heat_fuel_cost">Please enter fuel cost</string>
+    <string name="pref_default_heat_prev_yr">Please enter consumption for previous year</string>
+
 
     //Car
     <string name="pref_title_car">Car settings</string>
 
     <string name="pref_car_owner">Car owner</string>
     <string name="pref_car_distance">Driving distance (yearly)</string>
+    <string name="pref_car_regnr">License plate (Reg. nr.)</string>
     <string name="pref_car_fuel_consumption">Average consumption (litre pr. 10km)</string>
     <string name="pref_car_year_produced">Production year</string>
     <string name="pref_car_ownership_period">Planned duration of ownership</string>
@@ -149,6 +159,7 @@
     <string name="pref_car_fuel">Fuel type</string>
 
     <string name="pref_car_dialog_distance">Please enter yearly driving distance</string>
+    <string name="pref_car_dialog_regnr">Please enter your license plate (reg. nr.)</string>
     <string name="pref_car_dialog_fuel_consumption">Please enter fuel consumption</string>
     <string name="pref_car_dialog_year_produced">Please enter production year</string>
     <string name="pref_car_dialog_ownership_period">Please enter planned duration of ownership</string>
@@ -156,6 +167,7 @@
     <string name="pref_car_dialog_fuel">Please enter fuel type</string>
 
     <string name="pref_car_summary_distance">Please enter yearly driving distance</string>
+    <string name="pref_car_summary_regnr">Please enter your license plate (Reg. nr.)</string>
     <string name="pref_car_summary_year_produced">Please enter production year</string>
     <string name="pref_car_summary_ownership_period">Please enter planned duration of ownership</string>
     <string name="pref_car_summary_price">Please enter car value</string>
@@ -246,7 +258,7 @@
     <string name="pref_car_summary_advanced_depreciation_yr6"></string>
 
     <string name="pref_car_dialog_advanced_fuel_price">Please enter fuel price</string>
-    <string name="pref_car_dialog_advanced_Interest_cost">Please enter interest cost(percentage)</string>
+    <string name="pref_car_dialog_advanced_Interest_cost">Please enter interest cost (%)</string>
     <string name="pref_car_dialog_advanced_yearly_fee">Please enter the yearly fee (norw.: veiavgift)</string>
     <string name="pref_car_dialog_advanced_insurance_cost">Please enter yearly insurance cost</string>
     <string name="pref_car_dialog_advanced_tire_cost">Please enter yearly tire cost</string>
