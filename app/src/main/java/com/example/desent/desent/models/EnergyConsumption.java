@@ -14,12 +14,8 @@ import java.util.ArrayList;
 
 public class EnergyConsumption extends Indicator {
 
-    public EnergyConsumption(Context context, Energy energy, InputStream inputStream, ArrayList<String> columnNames) {
-        super(inputStream,
-                context.getResources().getString(R.string.energy_consumption_name),
-                context.getResources().getString(R.string.energy_consumption_unit),
-                columnNames);
-        this.energy = energy;
+    public EnergyConsumption(String name, String unit, String explanation, Energy energy) {
+        super(name, unit, explanation, energy);
     }
 
     public int calculatePercentageSelfConsumption() {
@@ -42,6 +38,15 @@ public class EnergyConsumption extends Indicator {
                 break;
             case SOLAR_INSTALLATION:
                 averageValues[1] = (float) energy.calculateEnergyConsumption(timeScale, pvSystemSize);
+                break;
+            case WALKING:
+                averageValues[1] = (float) energy.calculateEnergyConsumption(timeScale);
+                break;
+            case CYCLING:
+                averageValues[1] = (float) energy.calculateEnergyConsumption(timeScale);
+                break;
+            case ELECTRIC_CAR:
+                averageValues[1] = (float) energy.calculateEnergyConsumption(timeScale);
                 break;
 
         }

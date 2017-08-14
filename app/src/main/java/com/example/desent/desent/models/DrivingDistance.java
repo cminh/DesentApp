@@ -13,12 +13,8 @@ import java.util.ArrayList;
 
 public class DrivingDistance extends Indicator {
 
-    public DrivingDistance(Context context, Transportation transport, InputStream inputStream, ArrayList<String> columnNames) {
-        super(inputStream,
-                context.getResources().getString(R.string.distance_name),
-                context.getResources().getString(R.string.distance_unit),
-                columnNames);
-        this.transport = transport; //TODO: move
+    public DrivingDistance(String name, String unit, String explanation, Transportation transport) {
+        super(name, unit, explanation, transport);
     }
 
 

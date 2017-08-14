@@ -20,13 +20,8 @@ public class Calories extends Indicator {
     protected float weight;
     protected int age;
 
-    public Calories(Context context, Transportation transport, InputStream inputStream, ArrayList<String> columnNames) {
-        super(inputStream,
-                context.getResources().getString(R.string.calories_name),
-                context.getResources().getString(R.string.calories_unit),
-                columnNames);
-        this.transport = transport; //TODO: move
-        this.explanation = context.getResources().getString(R.string.calories_explanation);
+    public Calories(String name, String unit, String explanation, Transportation transport, Context context) {
+        super(name, unit, explanation, transport);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         gender = prefs.getString("pref_key_gender", "Female");

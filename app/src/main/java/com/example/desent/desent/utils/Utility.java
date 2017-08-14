@@ -61,4 +61,12 @@ public class Utility {
         //return _bmp;
         return output;
     }
+
+    private void clearBitmap(Bitmap bitmap) {
+        if (bitmap != null && !bitmap.isRecycled()) {
+            bitmap.recycle();
+            bitmap = null;
+            System.gc();
+        }
+    }
 }

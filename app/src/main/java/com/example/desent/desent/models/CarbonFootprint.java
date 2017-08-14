@@ -18,13 +18,8 @@ import java.util.Calendar;
 
 public class CarbonFootprint extends Indicator {
 
-    public CarbonFootprint(Context context, Transportation transport, Energy energy, InputStream inputStream, ArrayList<String> columnNames) {
-        super(inputStream,
-                context.getResources().getString(R.string.carbon_footprint_name),
-                context.getResources().getString(R.string.carbon_footprint_unit),
-                columnNames);
-        this.energy = energy; //TODO: move
-        this.transport = transport; //TODO: move
+    public CarbonFootprint(String name, String unit, String explanation, Energy energy, Transportation transport) {
+        super(name, unit, explanation, energy, transport);
     }
 
     @Override

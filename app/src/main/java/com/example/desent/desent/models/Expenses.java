@@ -18,23 +18,24 @@ public class Expenses extends Indicator {
     final static int SOLAR_PANEL_PRICE = 100000;
     float savings;
 
-    public Expenses(Context context, VehicleCost vehicleCost, Energy energy, InputStream inputStream, ArrayList<String> columnNames) {
-        super(inputStream,
-                context.getResources().getString(R.string.expenses_name),
-                context.getResources().getString(R.string.expenses_unit),
-                columnNames);
-        this.energy = energy;
-        this.vehicleCost = vehicleCost;
+    public Expenses(String name, String unit, String explanation, Energy energy, Transportation transport, VehicleCost vehicleCost, Context context) {
+        super(name, unit, explanation, energy, transport, vehicleCost);
         this.explanation = context.getResources().getString(R.string.expenses_explanation);
     }
 
-    //TODO: optimize
     public float calculateSavings() {
         savings = 0;
 
         switch (estimationType) {
             case SOLAR_INSTALLATION:
                 savings = (float) (energy.calculateElectricityCost(timeScale) - energy.calculateElectricityCost(timeScale, pvSystemSize));
+                break;
+            case WALKING:
+                savings = vehicleCost.getCost(timeScale) - this.drivingDistance*vehicleCost.getAvgCostPrKm();
+                break;
+            case CYCLING:
+                savings = vehicleCost.getCost(timeScale) - this.drivingDistance*vehicleCost.getAvgCostPrKm();
+                break;
         }
 
         return (savings>0) ? savings : 0;
@@ -50,26 +51,23 @@ public class Expenses extends Indicator {
         switch (estimationType) {
 
             case NONE:
-                estimateDailyValues(columnNames.get(0), 0);
                 averageValues[0] = vehicleCost.getCost(timeScale);
                 averageValues[1] = (float) energy.calculateElectricityCost(timeScale);
                 break;
             case SOLAR_INSTALLATION:
-                estimateDailyValues(columnNames.get(0), 0);
                 averageValues[0] = vehicleCost.getCost(timeScale);
                 averageValues[1] = (float) energy.calculateElectricityCost(timeScale, pvSystemSize);
                 break;
             case WALKING:
-                estimateDailyValues("Walking", 0);
+                averageValues[0] = vehicleCost.getCost(timeScale) - (transport.getDrivingDistance(timeScale) - this.drivingDistance)*vehicleCost.getAvgCostPrKm();
                 averageValues[1] = (float) energy.calculateElectricityCost(timeScale);
                 break;
             case CYCLING:
-                estimateDailyValues("Cycling", 0);
+                averageValues[0] = vehicleCost.getCost(timeScale) - (transport.getDrivingDistance(timeScale) - this.drivingDistance)*vehicleCost.getAvgCostPrKm();
                 averageValues[1] = (float) energy.calculateElectricityCost(timeScale);
                 break;
             case ELECTRIC_CAR:
-                estimateDailyValues("Electric car", 0);
-
+                averageValues[0] = vehicleCost.getCost(timeScale) - transport.getDrivingDistance(timeScale)*vehicleCost.getAvgCostPrKm();
                 averageValues[1] = (float) energy.calculateElectricityCost(timeScale);
                 break;
 

@@ -89,8 +89,11 @@ public class SettingsActivity extends AppCompatActivity
             profilePic.setImageURI(Crop.getOutput(result));
             Bitmap bitmap;
             try {
-                bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+                bitmap = BitmapFactory.decodeStream(this.getContentResolver().openInputStream(imageUri));
                 profilePic.setImageBitmap(Utility.getCroppedBitmap(bitmap));
+                bitmap.recycle();
+                bitmap = null;
+                System.gc();
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("pref_key_profile_picture", imageUri.toString());
             } catch (FileNotFoundException e) {
@@ -115,6 +118,9 @@ public class SettingsActivity extends AppCompatActivity
         try {
             bitmap = BitmapFactory.decodeStream(this.getContentResolver().openInputStream(imageUri));
             profilePic.setImageBitmap(Utility.getCroppedBitmap(bitmap));
+            bitmap.recycle();
+            bitmap = null;
+            System.gc();
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -174,6 +180,9 @@ public class SettingsActivity extends AppCompatActivity
         try {
             bitmap = BitmapFactory.decodeStream(this.getContentResolver().openInputStream(imageUri));
             profilePicture.setImageBitmap(Utility.getCroppedBitmap(bitmap));
+            bitmap.recycle();
+            bitmap = null;
+            System.gc();
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

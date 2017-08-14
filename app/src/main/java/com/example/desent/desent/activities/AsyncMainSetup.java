@@ -130,25 +130,39 @@ public class AsyncMainSetup extends AsyncTask {
         String co2Result = carRegNr.fetchCO2();
         Log.i(TAG,co2Result);
 
-
-
         //Limit values
         int limitCarbonFootprint = 4;//Data
-        InputStream inputStream = activity.getResources().openRawResource(R.raw.data);
 
         //Indicators
         energy = new Energy(activity);
         transport = new Transportation(activity);
         vehicleCost = new VehicleCost(activity);
 
-        ArrayList<String> columnNames = new ArrayList<>();
-        columnNames.add("Transportation");
-        columnNames.add("Housing");
-        indicators.add(carbonFootprint = new CarbonFootprint(activity,transport, energy, inputStream, columnNames));
-        indicators.add(calories = new Calories(activity, transport, inputStream, columnNames));
-        indicators.add(expenses = new Expenses(activity, vehicleCost, energy, inputStream, columnNames));
-        indicators.add(drivingDistance = new DrivingDistance(activity, transport, inputStream, columnNames));
-        indicators.add(energyConsumption = new EnergyConsumption(activity, energy, inputStream, columnNames));
+        indicators.add(carbonFootprint = new CarbonFootprint(activity.getString(R.string.carbon_footprint_name),
+                activity.getString(R.string.carbon_footprint_unit),
+                "",
+                energy,
+                transport));
+        indicators.add(calories = new Calories(activity.getString(R.string.calories_name),
+                activity.getString(R.string.calories_unit),
+                activity.getString(R.string.calories_explanation),
+                transport,
+                activity));
+        indicators.add(expenses = new Expenses(activity.getString(R.string.expenses_name),
+                activity.getString(R.string.expenses_unit),
+                activity.getString(R.string.expenses_explanation),
+                energy,
+                transport,
+                vehicleCost,
+                activity));
+        indicators.add(drivingDistance = new DrivingDistance(activity.getString(R.string.distance_name),
+                activity.getString(R.string.distance_unit),
+                activity.getString(R.string.driving_explanation),
+                transport));
+        indicators.add(energyConsumption = new EnergyConsumption(activity.getString(R.string.energy_consumption_name),
+                activity.getString(R.string.energy_consumption_unit),
+                activity.getString(R.string.energy_consumption_explanation),
+                energy));
 
         carbonFootprint.setMaxValue(2 * limitCarbonFootprint);
         carbonFootprint.setLimitValue(limitCarbonFootprint);
