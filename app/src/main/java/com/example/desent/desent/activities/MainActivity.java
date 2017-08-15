@@ -650,7 +650,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         @Override
         public void run() {
             // Do something here on the main thread
-            Log.d("Handler", "Called in OnCreate");
+            Log.i("Handler", "Weather data update");
 
             energyDatabaseUpdate.UpdateCurrentValues();
 

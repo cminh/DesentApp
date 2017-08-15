@@ -245,8 +245,8 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
             distance = 0;
             Log.i(LOG, "mLastLocation == null");
         }else{
-            //homeTown = new HomeTown(activityContext, location);
-            //Log.i(TAG, homeTown.getWeatherLocation());
+            homeTown = new HomeTown(activityContext, location);
+            Log.i(TAG, homeTown.getWeatherLocation());
 
             Log.i(LOG, mLastLocation.toString());
             distance = mLastLocation.distanceTo(location)/1000; //meters to kilometers

@@ -21,8 +21,8 @@ public class WeatherHttpClient {
 
     static final String TAG = "WeatherHttpClient";
 
-    private static String BASE_URL_CURRENT_WEATHER = "http://api.openweathermap.org/data/2.5/weather?q=";
-    private static String BASE_URL_5_DAY_FORECAST = "http://api.openweathermap.org/data/2.5/forecast?q=";
+    private static String BASE_URL_CURRENT_WEATHER = "http://api.openweathermap.org/data/2.5/weather?";
+    private static String BASE_URL_5_DAY_FORECAST = "http://api.openweathermap.org/data/2.5/forecast?";
     private static String APIID = "&appid=";
     private static String API_KEY = "1ca3cae9d5a2df24e80d5f73767d77ad";
 
@@ -63,7 +63,7 @@ public class WeatherHttpClient {
                 + ((double) Character.getNumericValue(string.charAt(indexOfTemperature+10)))/10
                 + ((double) Character.getNumericValue(string.charAt(indexOfTemperature+11)))/100;
 
-        Log.i(TAG, Double.toString(temperature-273.15));
+        Log.i(TAG,"Temp.: " + Double.toString(temperature-273.15));
 
         return  temperature-273.15;
     }
@@ -83,7 +83,7 @@ public class WeatherHttpClient {
                     + Character.getNumericValue(string.charAt(indexOfClouds+6));
         }
 
-        Log.i(TAG, Double.toString(clouds));
+        Log.i(TAG,"Clouds: " + Double.toString(clouds));
 
         return clouds;
     }
@@ -149,7 +149,7 @@ public class WeatherHttpClient {
             con.setDoInput(true);
             con.setDoOutput(true);
             con.setReadTimeout(3000);
-            Log.i(TAG, Integer.toString(con.getResponseCode()));
+            Log.i(TAG, "Response code: " + Integer.toString(con.getResponseCode()));
             con.connect();
 
             int responseCode = con.getResponseCode();

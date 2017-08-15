@@ -37,10 +37,12 @@ public class EnergyDatabaseUpdate {
     private DatabaseHelper mDatabaseHelper;
 
 
-    public EnergyDatabaseUpdate(Context kontext) {
+    public EnergyDatabaseUpdate(Context context) {
 
-        mDatabaseHelper = new DatabaseHelper(kontext);
+        mDatabaseHelper = new DatabaseHelper(context);
         mWeatherHttpClient = new WeatherHttpClient();
+        HomeTown homeTown = new HomeTown(context);
+        location = homeTown.getWeatherLocation();
 
     }
 

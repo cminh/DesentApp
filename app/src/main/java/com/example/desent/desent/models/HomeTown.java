@@ -70,19 +70,24 @@ public class HomeTown {
             e.printStackTrace();
         }
 
-        if(exist){
-            //WeatherLocation exist
-            if(db.cityEqualsHomeTown(city)){
-                //City equals home town
-                //Do nothing
+        if(country.equals("null") || city.equals("null")){
+            //Do nothing
+        }else{
+            if(exist){
+                //WeatherLocation exist
+                if(db.cityEqualsHomeTown(city)){
+                    //City equals home town
+                    //Do nothing
+                }else{
+                    //City does not equal home town
+                    askIfHomeTown();
+                }
             }else{
-                //City does not equal home town
+                //WeatherLocation do not exist
                 askIfHomeTown();
             }
-        }else{
-            //WeatherLocation do not exist
-            askIfHomeTown();
         }
+
     }
 
     private boolean getExist(){return exist;}
