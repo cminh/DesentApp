@@ -81,8 +81,8 @@ public class CircleFragment extends Fragment {
 
     public void updateImgState(){
         int state = (int) (((numberOfStates - 1) * indicator.getSumValues()) / indicator.getMaxValue()) + 1;
-        if (state < 0)
-            state = 0;
+        if (state < 1)
+            state = 1;
         else if (state > numberOfStates)
             state = numberOfStates;
         Resources res = getResources();
