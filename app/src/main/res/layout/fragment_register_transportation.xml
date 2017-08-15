@@ -6,7 +6,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_marginBottom="16dp"
         android:focusable="true"
@@ -32,6 +32,13 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:text="@string/register_transportation_description"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            android:layout_marginTop="10dp"/>
+
     </LinearLayout>
 
     <RelativeLayout
@@ -50,22 +57,6 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/pref_car_fuel"
-            android:layout_alignParentLeft="true"/>
-        <Spinner
-            android:id="@+id/spinner_car_fuel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"/>
-
-    </RelativeLayout>
-
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -75,7 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/pref_car_price"
-            android:inputType="numberDecimal"
+            android:inputType="number"
             android:maxLines="1" />
 
     </android.support.design.widget.TextInputLayout>
@@ -85,11 +76,11 @@
         android:layout_height="wrap_content">
 
         <EditText
-            android:id="@+id/car_fuel_consumption"
+            android:id="@+id/car_driving_distance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/pref_car_fuel_consumption"
-            android:inputType="numberDecimal"
+            android:hint="@string/pref_car_distance"
+            android:inputType="number"
             android:maxLines="1" />
 
     </android.support.design.widget.TextInputLayout>
@@ -103,9 +94,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/pref_car_ownership_period"
-            android:inputType="numberDecimal"
+            android:inputType="number"
             android:maxLines="1" />
 
     </android.support.design.widget.TextInputLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pref_title_car_size"
+            android:layout_alignParentLeft="true"/>
+        <Spinner
+            android:id="@+id/spinner_car_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"/>
+
+    </RelativeLayout>
 
 </LinearLayout>

@@ -6,7 +6,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_marginBottom="16dp"
         android:focusable="true"
@@ -31,6 +31,13 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:text="@string/register_activity_description"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            android:layout_marginTop="10dp"/>
+
     </LinearLayout>
 
     <RadioGroup
@@ -53,18 +60,18 @@
     </RadioGroup>
 
     <android.support.design.widget.TextInputLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <EditText
-        android:id="@+id/age"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/pref_personal_age"
-        android:inputType="number"
-        android:maxLines="1" />
+        android:layout_height="wrap_content">
 
-</android.support.design.widget.TextInputLayout>
+        <EditText
+            android:id="@+id/age"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/pref_personal_age"
+            android:inputType="number"
+            android:maxLines="1" />
+
+    </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"

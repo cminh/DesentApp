@@ -4,9 +4,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +24,9 @@ public class RegisterTransportationFragment extends Fragment {
 
     private boolean isProfileValid;
     private CheckBox carOwner;
-    private Spinner carFuelSpinner;
+    private Spinner carSizeSpinner;
     private EditText priceTextView;
-    private EditText averageConsumptionTextView;
+    private EditText drivingDistanceTextView;
     private EditText ownershipPeriodTextView;
     private SharedPreferences sharedPreferences;
 
@@ -52,13 +49,13 @@ public class RegisterTransportationFragment extends Fragment {
 
         });
 
-        carFuelSpinner = rootView.findViewById(R.id.spinner_car_fuel);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.pref_car_fuel_list, android.R.layout.simple_spinner_item);
+        carSizeSpinner = rootView.findViewById(R.id.spinner_car_size);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.pref_car_size_list, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        carFuelSpinner.setAdapter(adapter);
+        carSizeSpinner.setAdapter(adapter);
 
         priceTextView = rootView.findViewById(R.id.car_price);
-        averageConsumptionTextView = rootView.findViewById(R.id.car_fuel_consumption);
+        drivingDistanceTextView = rootView.findViewById(R.id.car_driving_distance);
         ownershipPeriodTextView = rootView.findViewById(R.id.car_ownership_period);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -70,9 +67,9 @@ public class RegisterTransportationFragment extends Fragment {
 
     public void onCheckboxClicked(CompoundButton compoundButton, boolean b) {
 
-        carFuelSpinner.setEnabled(b);
+        carSizeSpinner.setEnabled(b);
         priceTextView.setEnabled(b);
-        averageConsumptionTextView.setEnabled(b);
+        drivingDistanceTextView.setEnabled(b);
         ownershipPeriodTextView.setEnabled(b);
 
     }
@@ -85,9 +82,9 @@ public class RegisterTransportationFragment extends Fragment {
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         editor.putBoolean("pref_key_car_owner", carOwner.isChecked());
-        editor.putString("pref_key_car_fuel", carFuelSpinner.getSelectedItem().toString());
+        editor.putString("pref_key_car_size", carSizeSpinner.getSelectedItem().toString());
         editor.putString("pref_key_car_price", String.valueOf(priceTextView.getText()));
-        editor.putString("pref_key_car_fuel_consumption", String.valueOf(averageConsumptionTextView.getText()));
+        editor.putString("pref_key_car_distance", String.valueOf(drivingDistanceTextView.getText()));
         editor.putString("pref_key_car_ownership_period", String.valueOf(ownershipPeriodTextView.getText()));
 
         editor.commit();
@@ -97,9 +94,9 @@ public class RegisterTransportationFragment extends Fragment {
     private void restorePreferences(){
 
         carOwner.setChecked(sharedPreferences.getBoolean("pref_key_car_owner", false));
-        carFuelSpinner.setSelection(((ArrayAdapter<String>)carFuelSpinner.getAdapter()).getPosition(sharedPreferences.getString("pref_key_car_fuel", "Gasoline")));
+        carSizeSpinner.setSelection(((ArrayAdapter<String>) carSizeSpinner.getAdapter()).getPosition(sharedPreferences.getString("pref_key_car_size", "Medium")));
         priceTextView.setText(sharedPreferences.getString("pref_key_car_price", ""), TextView.BufferType.EDITABLE);
-        averageConsumptionTextView.setText(sharedPreferences.getString("pref_key_car_fuel_consumption", ""), TextView.BufferType.EDITABLE);
+        drivingDistanceTextView.setText(sharedPreferences.getString("pref_key_car_distance", ""), TextView.BufferType.EDITABLE);
         ownershipPeriodTextView.setText(sharedPreferences.getString("pref_key_car_ownership_period", ""), TextView.BufferType.EDITABLE);
 
     }

@@ -5,7 +5,7 @@
     android:padding="16dp">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_marginBottom="16dp"
         android:focusable="true"
@@ -31,6 +31,52 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:text="@string/register_housing_description"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            android:layout_marginTop="10dp"/>
+
     </LinearLayout>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pref_heat_type"/>
+
+    <RadioGroup
+        android:id="@+id/radio_group_heating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="5dp">
+        <RadioButton
+            android:id="@+id/radio_button_electric"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Electric (resistance)"/>
+        <RadioButton
+            android:id="@+id/radio_button_heat_pump"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Heat pump"/>
+        <RadioButton
+            android:id="@+id/radio_button_gas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gas"/>
+        <RadioButton
+            android:id="@+id/radio_button_oil"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Oil"/>
+        <RadioButton
+            android:id="@+id/radio_button_wood"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Wood"/>
+    </RadioGroup>
 
 </LinearLayout>
