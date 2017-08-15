@@ -90,6 +90,7 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
     private boolean isStill = true;
     private boolean activeGps = false;
     private Handler handler = new Handler();
+    private boolean noFence = true;
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
@@ -173,29 +174,33 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
     protected void onCreate() {
 
         Log.i(LOG, "Distance is initiated");
+        if(noFence){
+            mGoogleApiClientLoc = new GoogleApiClient.Builder(context)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
 
-        mGoogleApiClientLoc = new GoogleApiClient.Builder(context)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
 
+            myDb = new DatabaseHelper(context);
 
-        myDb = new DatabaseHelper(context);
+            //Create a GoogleApiClient instance
+            mGoogleApiClientAware = new GoogleApiClient.Builder(context)
+                    .addApi(Awareness.API)
+                    .build();
+            mGoogleApiClientAware.connect();
+            fenceReceiver = new MyFenceReceiver();
+            Intent intent = new Intent(FENCE_RECEIVER_ACTION);
+            mFencePendingIntent = PendingIntent.getBroadcast(context,
+                    10001,
+                    intent,
+                    0);
 
-        //Create a GoogleApiClient instance
-        mGoogleApiClientAware = new GoogleApiClient.Builder(context)
-                .addApi(Awareness.API)
-                .build();
-        mGoogleApiClientAware.connect();
-        fenceReceiver = new MyFenceReceiver();
-        Intent intent = new Intent(FENCE_RECEIVER_ACTION);
-        mFencePendingIntent = PendingIntent.getBroadcast(context,
-                10001,
-                intent,
-                0);
+            Log.i(TAG, "mFencePendingIntent finished");
+        }else{
+            Log.i(TAG, "Fence exists");
+        }
 
-        Log.i(TAG, "mFencePendingIntent finished");
 
 
 
@@ -204,9 +209,14 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
 
     public void start() {
         Log.e("OnSTART", "Before");
-        mGoogleApiClientLoc.connect();
+        if (!mGoogleApiClientLoc.isConnected()) {
+            mGoogleApiClientLoc.connect();
+        }
         Log.e("OnSTART", "Location is connected");
-        registerFences();
+        if(noFence){
+            registerFences();
+        }
+
         // registerReceiver(fenceReceiver, new IntentFilter(FENCE_RECEIVER_ACTION));
     }
 
@@ -306,24 +316,12 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
         //Create fences
         AwarenessFence onFootFence = DetectedActivityFence.during(DetectedActivityFence.ON_FOOT);
         AwarenessFence stillFence = DetectedActivityFence.during(DetectedActivityFence.STILL);
-        //AwarenessFence runningFence = DetectedActivityFence.during(DetectedActivityFence.RUNNING);
-        //AwarenessFence unknownFence = DetectedActivityFence.during(DetectedActivityFence.UNKNOWN);
-        //AwarenessFence walkingFence = DetectedActivityFence.during(DetectedActivityFence.WALKING);
         AwarenessFence cyclingFence = DetectedActivityFence.during(DetectedActivityFence.ON_BICYCLE);
         AwarenessFence drivingFence = DetectedActivityFence.during(DetectedActivityFence.IN_VEHICLE);
 
 
         Awareness.FenceApi.updateFences(
-/*
-.addFence("runningFence", runningFence, mFencePendingIntent)
-.addFence("walkingFence", walkingFence, mFencePendingIntent)
-.addFence("onFootFence", onFootFence, mFencePendingIntent)
-.addFence("unknownFence", unknownFence, mFencePendingIntent)
-.addFence("stillFence", stillFence, mFencePendingIntent)
-.addFence("cyclingFence", cyclingFence, mFencePendingIntent)
-.addFence("drivingFence", drivingFence, mFencePendingIntent)
-* */
-                mGoogleApiClientAware,
+        mGoogleApiClientAware,
                 new FenceUpdateRequest.Builder()
                 .addFence("onFootFence", onFootFence, mFencePendingIntent)
                 .addFence("stillFence", stillFence, mFencePendingIntent)
@@ -335,6 +333,7 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
                     public void onResult(@NonNull Status status) {
                         if (status.isSuccess()) {
                             Log.e(TAG, "Fence was successfully registered.");
+                            noFence = false;
                         } else {
                             Log.e(TAG, "Fence could not be registered: " + status);
                         }
