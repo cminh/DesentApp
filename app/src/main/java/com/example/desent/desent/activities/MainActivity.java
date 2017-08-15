@@ -657,6 +657,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.i("Handler", "Weather data update");
 
             energyDatabaseUpdate.UpdateCurrentValues();
+            energyDatabaseUpdate.UpdateForecast();
 
             // Runnable code repeated twice per hour (1700.000 ms)
             EnergyHandler.postDelayed(EnergyUpdatesRunnableCode, 1700000);

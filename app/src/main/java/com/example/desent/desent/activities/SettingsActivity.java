@@ -87,15 +87,19 @@ public class SettingsActivity extends AppCompatActivity
         if (resultCode == RESULT_OK) {
             imageUri = Crop.getOutput(result);
             profilePic.setImageURI(Crop.getOutput(result));
+            ImageView profilePicDrawer = ((NavigationView) findViewById(R.id.nav_view)).getHeaderView(0).findViewById(R.id.imageView);
             Bitmap bitmap;
             try {
                 bitmap = BitmapFactory.decodeStream(this.getContentResolver().openInputStream(imageUri));
-                profilePic.setImageBitmap(Utility.getCroppedBitmap(bitmap));
+                Bitmap croppedBitmap = Utility.getCroppedBitmap(bitmap);
+                profilePic.setImageBitmap(croppedBitmap);
+                profilePicDrawer.setImageBitmap(croppedBitmap);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("pref_key_profile_picture", imageUri.toString());
+                editor.commit();
                 bitmap.recycle();
                 bitmap = null;
                 System.gc();
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("pref_key_profile_picture", imageUri.toString());
             } catch (FileNotFoundException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
