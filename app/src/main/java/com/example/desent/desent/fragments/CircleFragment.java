@@ -81,7 +81,10 @@ public class CircleFragment extends Fragment {
 
     public void updateImgState(){
         int state = (int) (((numberOfStates - 1) * indicator.getSumValues()) / indicator.getMaxValue()) + 1;
-        state = (state < numberOfStates) ? state : numberOfStates;
+        if (state < 0)
+            state = 0;
+        else if (state > numberOfStates)
+            state = numberOfStates;
         Resources res = getResources();
         earthImage.setImageBitmap(BitmapFactory.decodeResource(res, res.getIdentifier(imgName + String.valueOf(state), "drawable", getActivity().getPackageName())));
 

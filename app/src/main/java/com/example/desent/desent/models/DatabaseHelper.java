@@ -369,6 +369,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             heat = cursor.getFloat(0);
         }
 
+        cursor.close();
         return heat;
     }
 
@@ -662,7 +663,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor mcursor = db.rawQuery(count, null);
         mcursor.moveToFirst();
         int icount = mcursor.getInt(0);
-
+        mcursor.close();
         // Table is not empty
         if(icount>0){
             return false;
@@ -702,6 +703,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             Cursor cursor = db.rawQuery("select * from " + TABLE_HOME, null);
             cursor.moveToFirst();
             res = "lat=" + cursor.getString(0) + "&lon=" + cursor.getString(1);
+            cursor.close();
         }
 
         return res;
@@ -712,6 +714,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery("select * from " + TABLE_HOME, null);
         cursor.moveToFirst();
         String homeTown = cursor.getString(4).trim();
+        cursor.close();
         if(homeTown.equals(city)){
             return true;
         }else{

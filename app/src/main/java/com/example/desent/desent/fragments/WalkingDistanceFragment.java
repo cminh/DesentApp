@@ -19,6 +19,8 @@ import com.example.desent.desent.models.Indicator;
 
 public class WalkingDistanceFragment extends Fragment {
 
+    private static int DEFAULT_MAX_DISTANCE = 100;
+
     private SeekBar seekBar;
     private TextView walkingTextView;
     private TextView drivingTextView;
@@ -31,8 +33,26 @@ public class WalkingDistanceFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_walking_distance, container, false);
     }
 
-    public void setUp() {
+    public void refresh() {
 
+        seekBar.setMax(walkingDistance+drivingDistance);
+        seekBar.setProgress(walkingDistance);
+
+        walkingTextView.setText(String.valueOf(walkingDistance) + " km");
+        drivingTextView.setText(String.valueOf(drivingDistance) + " km");
+
+        //TODO: don't think is a good way to do it
+        MainActivity main = (MainActivity) getActivity();
+        for(Indicator indicator : main.getIndicators()) {
+            indicator.setWalkingDistance((float) walkingDistance);
+            indicator.setDrivingDistance((float) drivingDistance);
+        }
+        main.refreshAll();
+
+    }
+
+    public void setUp() {
+        
         seekBar = getView().findViewById(R.id.seekbar_walking_distance);
         walkingTextView = getView().findViewById(R.id.text_view_walking_distance);
         drivingTextView = getView().findViewById(R.id.text_view_driving_distance);
