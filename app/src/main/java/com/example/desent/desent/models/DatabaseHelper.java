@@ -39,6 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_DISTANCE = "DISTANCETRACKER";
     public static final String TABLE_ENERGY = "ENERGY";
     public static final String TABLE_HOME = "HOME";
+    public static final String TABLE_FORECAST = "FORECAST";
 
     // COL's for TABLE_DISTANCE
     public static final String D_COL_1 = "DATE";
@@ -57,10 +58,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Table columns for TABLE_ENERGY
     private static final String EN_COL0 = "ID";
-    private static final String EN_COL1 = "hour_of_year";
-    private static final String EN_COL2 = "electricity_price";
-    private static final String EN_COL3 = "pv_output_1kW_clear_sky"; // used to scale with cloudiness to get actual profile
-    private static final String EN_COL4 = "default_electricity_load"; // electricity without heat
+    private static final String EN_COL1 = "HOUR_OF_YEAR";
+    private static final String EN_COL2 = "ELECTRICITY_PRICE";
+    private static final String EN_COL3 = "PV_OUTPUT_1KW_CLEAR_SKY"; // used to scale with cloudiness to get actual profile
+    private static final String EN_COL4 = "DEFAULT_ELECTRICITY_LOAD"; // electricity without heat
     // columns for actual load without pv
     private static final String EN_COL5 = "heat_load"; // calculated from real time weather values
     private static final String EN_COL6 = "heat_load_forecast"; // calculated from forecast weather values
@@ -71,6 +72,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String H_COL_3 = "TEMP";
     public static final String H_COL_4 = "COUNTRY";
     public static final String H_COL_5 = "CITY";
+
+    // Forecast table columns
+    private static final String FO_COL0 = "ID";
+    private static final String FO_COL1 = "HOUR_OF_YEAR";
+    private static final String FO_COL2 = "TEMPERATURE_FORECAST";
+    private static final String FO_COL3 = "CLOUDS_FORECAST";
+    private static final String FO_COL4 = "IRRADIANCE_FORECAST";
 
 
     public DatabaseHelper(Context context) {
@@ -83,7 +91,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("create table " + TABLE_DISTANCE + " (" + D_COL_1 + " TEXT PRIMARY KEY," + D_COL_2 + " FLOAT," + D_COL_3 + " FLOAT," + D_COL_4 + " FLOAT)");
         db.execSQL("create table " + TABLE_HOME + " (" + H_COL_1 + " TEXT PRIMARY KEY," + H_COL_2 +
                 " TEXT," + H_COL_3 + " TEXT,"+ H_COL_4 + " TEXT,"+ H_COL_5 + " TEXT)");
-        db.execSQL( "CREATE TABLE " + TABLE_ENERGY + "("
+        db.execSQL("CREATE TABLE " + TABLE_ENERGY + "("
                 + EN_COL0  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + EN_COL1  + " NUMERIC, "
                 + EN_COL2  + " NUMERIC, "
@@ -91,12 +99,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + EN_COL4  + " NUMERIC, "
                 + EN_COL5  + " NUMERIC, "
                 + EN_COL6  + " NUMERIC )");
+        db.execSQL("CREATE TABLE " + TABLE_FORECAST + "("
+                + FO_COL0 + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + FO_COL1 + " NUMERIC, "
+                + FO_COL2 + " NUMERIC, "
+                + FO_COL3 + " NUMERIC, "
+                + FO_COL4 + " NUMERIC )");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ENERGY);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_FORECAST);
         onCreate(db);
     }
 
@@ -344,6 +359,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
+    public boolean insertForecastData(double[] item) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(FO_COL1, item[0]);
+        contentValues.put(FO_COL2, item[1]);
+        contentValues.put(FO_COL3, item[2]);
+        contentValues.put(FO_COL4, item[3]);
+
+        //Log.d(TAG, "addData: Adding " + item[2] + " to " + TABLE_NAME);
+
+        long result = db.insert(TABLE_FORECAST, null, contentValues);
+        db.close();
+
+        return result != -1;
+    }
+
 
     public Cursor getAllData() {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -355,6 +387,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor getEnergyData() {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_ENERGY;
+        return db.rawQuery(query, null);
+    }
+
+    public Cursor getForecastData() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_FORECAST;
         return db.rawQuery(query, null);
     }
 
@@ -634,8 +672,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
-
-
     public boolean updateEnergyData(double[] item) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -653,12 +689,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result > 0;
     }
 
+    public boolean updateForecastData(double[] item, int position) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(FO_COL1, item[0]);
+        contentValues.put(FO_COL2, item[1]);
+        contentValues.put(FO_COL3, item[2]);
+        contentValues.put(FO_COL4, item[3]);
+
+        long result = db.update(TABLE_NAME, contentValues, "ID=" +position, null);
+        db.close();
+
+        return result > 0;
+    }
+
     public Integer deleteData(String name) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(TABLE_NAME, "NAME = ?", new String[]{name});
     }
 
-    private boolean checkIfEmpty(SQLiteDatabase db, String tableName){
+    public boolean checkIfEmpty(SQLiteDatabase db, String tableName){
         String count = "SELECT count(*) FROM " + tableName;
         Cursor mcursor = db.rawQuery(count, null);
         mcursor.moveToFirst();
