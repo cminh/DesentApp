@@ -117,10 +117,39 @@ public class VehicleCost {
     public VehicleCost (Context context){
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         db = new DatabaseHelper(context);
-        getRequiredValues();
+        if(prefs.getBoolean("pref_key_car_owner", true)){
+            getRequiredValues();
+        }else{
+            setRequiredValues();
+        }
+
     }
 
+    private void setRequiredValues() {
+        // input values
+        this.newCar = true;
+        this.cost = 300000;
+        this.distancePrYear = 8000;
+        this.yrsOwnCar = 3;
+        this.carSize = 0;
 
+
+
+        if(preferenceChange){
+            calculateYearlyValues(true);
+            displayDefaultValues();
+        }else{
+            if (prefs.getBoolean("pref_car_key_advanced_default", false)) {
+                // Custom active - set default and get preferences
+                calculateYearlyValues(false);
+
+            }else{
+                // Default active - set default based on car size
+                calculateYearlyValues(true);
+                displayDefaultValues();
+            }
+        }
+    }
 
     private void getRequiredValues() {
         // input values
@@ -158,9 +187,6 @@ public class VehicleCost {
                 displayDefaultValues();
             }
         }
-
-
-
     }
 
     private void displayDefaultValues() {
