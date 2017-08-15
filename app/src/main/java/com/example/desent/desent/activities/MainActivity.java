@@ -404,8 +404,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onStop() {
         super.onStop();
-        distanceTracking.stop();
-        unregisterReceiver(distanceTracking.getFenceReceiver());
+        //distanceTracking.stop();
+        //unregisterReceiver(distanceTracking.getFenceReceiver());
     }
 
     @Override
