@@ -68,6 +68,8 @@ public class HomeTown {
         } catch (IOException e) {
             Log.e(TAG, "Inside catch error geocoder");
             e.printStackTrace();
+            city = "null";
+            country = "null";
         }
 
         if(country.equals("null") || city.equals("null")){

@@ -80,12 +80,22 @@ public class RegisterTransportationFragment extends Fragment {
 
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        if(carOwner.isChecked()){
+            editor.putBoolean("pref_key_car_owner", carOwner.isChecked());
+            editor.putString("pref_key_car_size", carSizeSpinner.getSelectedItem().toString());
+            editor.putString("pref_key_car_price", String.valueOf(priceTextView.getText()));
+            editor.putString("pref_key_car_distance", String.valueOf(drivingDistanceTextView.getText()));
+            editor.putString("pref_key_car_ownership_period", String.valueOf(ownershipPeriodTextView.getText()));
+        }else{
+            editor.putBoolean("pref_key_car_owner", false);
+            /*
+            editor.putString("pref_key_car_size", ;
+            editor.putString("pref_key_car_price", String.valueOf(priceTextView.getText()));
+            editor.putString("pref_key_car_distance", String.valueOf(drivingDistanceTextView.getText()));
+            editor.putString("pref_key_car_ownership_period", String.valueOf(ownershipPeriodTextView.getText()));
+        */
+        }
 
-        editor.putBoolean("pref_key_car_owner", carOwner.isChecked());
-        editor.putString("pref_key_car_size", carSizeSpinner.getSelectedItem().toString());
-        editor.putString("pref_key_car_price", String.valueOf(priceTextView.getText()));
-        editor.putString("pref_key_car_distance", String.valueOf(drivingDistanceTextView.getText()));
-        editor.putString("pref_key_car_ownership_period", String.valueOf(ownershipPeriodTextView.getText()));
 
         editor.commit();
 

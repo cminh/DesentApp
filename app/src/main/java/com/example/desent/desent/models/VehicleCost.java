@@ -208,6 +208,11 @@ public class VehicleCost {
         String pref_car_key_advanced_depreciation_yr5 = "0.11";
         String pref_car_key_advanced_depreciation_yr6 = "0.10";
 
+
+
+
+
+
         defaultValueMap.put("pref_car_key_advanced_fuel_consumption" , pref_car_key_advanced_fuel_consumption);
         defaultValueMap.put("pref_car_key_advanced_fuel_price",pref_car_key_advanced_fuel_price);
         defaultValueMap.put("pref_car_key_advanced_Interest_cost",pref_car_key_advanced_Interest_cost);
