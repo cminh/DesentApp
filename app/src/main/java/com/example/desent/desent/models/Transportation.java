@@ -159,18 +159,23 @@ public class Transportation {
 
     public float getDrivingDistance(TimeScale timeScale) {
         float distance = 0;
-
-        switch (timeScale){
-            case TODAY:
-                distance = db.getDrivingDistanceToday();
-                break;
-            case WEEK:
-                distance = db.getWeekAverageDrivingDistance();
-                break;
-            case MONTH:
-                distance = db.getMonthAverageDrivingDistance();
-                break;
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        if(pref.getBoolean("pref_key_car_owner", false)){
+            switch (timeScale){
+                case TODAY:
+                    distance = db.getDrivingDistanceToday();
+                    break;
+                case WEEK:
+                    distance = db.getWeekAverageDrivingDistance();
+                    break;
+                case MONTH:
+                    distance = db.getMonthAverageDrivingDistance();
+                    break;
+            }
+        }else{
+            distance = 40f;
         }
+
 
         return distance;
     }

@@ -273,10 +273,11 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
 
                 if(isInserted == true){
                     String distToast = "Walking: " + String.format("%.1f", myDb.getWalkingDistanceToday()) + " Cycling: " + String.format("%.1f", myDb.getCyclingDistanceToday()) + " Driving: " +  String.format("%.1f", myDb.getDrivingDistanceToday());
-                    Toast.makeText(context,"Data inserted. " + distToast,Toast.LENGTH_LONG).show();
+                    Log.i(TAG, "Data inserted. " + distToast);
+                    //Toast.makeText(context,"Data inserted. " + distToast,Toast.LENGTH_LONG).show();
                 }
                 else{
-                    Toast.makeText(context,"Data not Inserted",Toast.LENGTH_LONG).show();
+                    Toast.makeText(context,"Data not inserted",Toast.LENGTH_LONG).show();
                 }
             }
         }

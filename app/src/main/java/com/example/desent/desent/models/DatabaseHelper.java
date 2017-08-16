@@ -698,7 +698,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(FO_COL3, item[2]);
         contentValues.put(FO_COL4, item[3]);
 
-        long result = db.update(TABLE_NAME, contentValues, "ID=" +position, null);
+        long result = db.update(TABLE_FORECAST, contentValues, "ID=" +position, null);
         db.close();
 
         return result > 0;
