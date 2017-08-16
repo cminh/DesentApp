@@ -3,6 +3,7 @@ package com.example.desent.desent.fragments;
 import android.app.Fragment;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,8 +99,9 @@ public class CategoryFragment extends Fragment {
     public void init() {
 
         categoryImage = getView().findViewById(R.id.image_view_category);
+        categoryImage.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
         Resources res = getResources();
-        categoryImage.setImageBitmap(BitmapFactory.decodeResource(res, res.getIdentifier(categoryName.toLowerCase(), "drawable", getActivity().getPackageName())));
+        categoryImage.setImageBitmap(BitmapFactory.decodeResource(res, res.getIdentifier(imgName, "drawable", getActivity().getPackageName())));
 
         float[] values = {0};
 

@@ -28,7 +28,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.desent.desent.R;
 import com.example.desent.desent.fragments.CategoryFragment;
@@ -58,7 +57,6 @@ import java.util.ArrayList;
 
 import android.os.Handler;
 
-import static android.Manifest.permission_group.CALENDAR;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
@@ -69,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //Fragments
     CircleFragment carbonFootprintCircleFragment;
     private CategoryFragment transportationDashboardFragment;
-    private CategoryFragment housingDashboardFragment;
+    private CategoryFragment energyDashboardFragment;
     private IndicatorsBarFragment indicatorsBarFragment;
 
     private View categoriesBar;
@@ -374,7 +372,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 carbonFootprintCircleFragment,
                 indicatorsBarFragment,
                 transportationDashboardFragment,
-                housingDashboardFragment,
+                energyDashboardFragment,
                 walkingDistanceFragment,
                 cyclingDistanceFragment,
                 solarPanelSizeFragment);
@@ -594,7 +592,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 indicator.calculateValues();
 
             carbonFootprintCircleFragment.refresh();
-            housingDashboardFragment.refresh();
+            energyDashboardFragment.refresh();
             transportationDashboardFragment.refresh();
             indicatorsBarFragment.refresh();
             updateSavings();
@@ -637,12 +635,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         transportationDashboardFragment = (CategoryFragment) getFragmentManager().findFragmentById(R.id.transportation_dashboard_fragment);
         transportationDashboardFragment.setColor(mGreen);
         transportationDashboardFragment.setCategoryName("Transportation");
+        transportationDashboardFragment.setImgName("transportation");
         transportationDashboardFragment.init();
 
-        housingDashboardFragment = (CategoryFragment) getFragmentManager().findFragmentById(R.id.housing_dashboard_fragment);
-        housingDashboardFragment.setColor(mBlue);
-        housingDashboardFragment.setCategoryName("Housing");
-        housingDashboardFragment.init();
+        energyDashboardFragment = (CategoryFragment) getFragmentManager().findFragmentById(R.id.housing_dashboard_fragment);
+        energyDashboardFragment.setColor(mBlue);
+        energyDashboardFragment.setCategoryName("Energy");
+        energyDashboardFragment.setImgName("ic_wb_incandescent_black_24dp");
+        energyDashboardFragment.init();
 
         indicatorsBarFragment = (IndicatorsBarFragment) getFragmentManager().findFragmentById(R.id.indicators_bar);
 
