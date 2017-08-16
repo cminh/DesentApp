@@ -109,7 +109,6 @@ public class CircleFragment extends Fragment {
 
     public void setUp(){
 
-        circularIndicator.setMaxValue((int) indicator.getMaxValue()); //TODO: change
         circularIndicator.setValues(indicator.getAverageValues());
 
         captionText = Utility.floatToStringNDecimals(indicator.getSumValues(), indicator.getDecimalsNumber()) + " " + indicator.getUnit();

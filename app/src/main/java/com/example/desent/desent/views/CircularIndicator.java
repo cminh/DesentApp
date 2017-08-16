@@ -85,7 +85,7 @@ public class CircularIndicator extends View {
     }
 
     protected int valueToAngle(Float value){
-        return (int) ((maxValue > 0) ? (sweepAngle*value)/totalValue : (sweepAngle * value) /totalValue);
+        return (int) ((maxValue > 0) ? (sweepAngle*value)/maxValue : (sweepAngle * value) /totalValue);
     }
 
     public void updateTotalValue(){
