@@ -10,7 +10,7 @@ import com.example.desent.desent.R;
 import com.example.desent.desent.utils.Utility;
 
 /**
- * Created by celine on 20/06/17.
+ * Fragment representing an indicator in the app's top bar
  */
 
 public class IndicatorsBarItem extends LinearLayout {

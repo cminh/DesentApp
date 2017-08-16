@@ -17,7 +17,7 @@ import com.example.desent.desent.utils.Utility;
 import com.example.desent.desent.views.CircularIndicator;
 
 /**
- * Created by celine on 29/04/17.
+ * Fragment used to display the emissions that comes from a certain category (Energy or Transportation)
  */
 public class CategoryFragment extends Fragment {
 

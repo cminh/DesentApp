@@ -15,7 +15,9 @@ import java.util.Arrays;
 import java.util.Date;
 
 /**
- * Created by celine on 24/04/17.
+ * Abstract class that describes "calculated indicators" (expenses, carbon footprint, energy consumption, distance, and energy consumption).
+ * Allows to change the time scale, the estimation type, and calculate the resulting values.
+ * The calculated values are stored in an array that contains the part that comes from transportation (index 0) and energy (index 1).
  */
 public abstract class Indicator {
 
@@ -39,7 +41,7 @@ public abstract class Indicator {
     protected VehicleCost vehicleCost;
 
     protected float[] averageValues = new float[]{0,0};
-    
+
     public float getWalkingDistance() {
         return walkingDistance;
     }

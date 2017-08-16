@@ -15,7 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by celine on 10/03/17.
+ * A circular progress bar that displays several values.
+ * If no max value is specified, the circular indicators shows only each value's proportion (as a pie chart).
  */
 public class CircularIndicator extends View {
 
