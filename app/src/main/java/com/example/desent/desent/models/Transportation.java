@@ -173,7 +173,7 @@ public class Transportation {
                     break;
             }
         }else{
-            distance = 40f;
+            distance = 0f;
         }
 
 
@@ -251,13 +251,20 @@ public class Transportation {
     }
 
     private float getLitrePerKm(){
-        float fuelConsumption = Float.parseFloat(prefs.getString("pref_car_key_advanced_fuel_consumption", "0"));
-        Log.i("getLitrePrKm", prefs.getString("pref_car_key_advanced_fuel_consumption", "0"));
-        if (fuelConsumption>0){
+        float fuelConsumption;
+        if(!prefs.getBoolean("pref_key_car_owner", false)){
+           fuelConsumption = 0.6f;
             return fuelConsumption;
         }else{
-            return 0f;
+            fuelConsumption = Float.parseFloat(prefs.getString("pref_car_key_advanced_fuel_consumption", "6"))/100;
+            Log.i("getLitrePrKm", prefs.getString("pref_car_key_advanced_fuel_consumption", "6"));
+            if (fuelConsumption>0){
+                return fuelConsumption;
+            }else{
+                return 0f;
+            }
         }
+
     }
 
     protected float calculateKgCo2FromDriving(){
@@ -265,7 +272,7 @@ public class Transportation {
     }
 
     protected float calculateKgCo2FromDriving(float drivingDistance){
-        return (prefs.getBoolean("pref_key_car_owner", true) ? calculateKgCo2FromDriving(drivingDistance, getEmissionsPrLitre(), getLitrePerKm()) : 0);
+        return (prefs.getBoolean("pref_key_car_owner", true) ? calculateKgCo2FromDriving(drivingDistance, getEmissionsPrLitre(), getLitrePerKm()) : calculateKgCo2FromDriving(drivingDistance, getEmissionsPrLitre(), getLitrePerKm()));
     }
 
     protected float calculateKgCo2FromDriving(float drivingDistance, float emission){
