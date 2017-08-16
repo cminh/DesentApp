@@ -192,7 +192,7 @@ public class VehicleCost {
     private void displayDefaultValues() {
 
 
-        String pref_car_key_advanced_fuel_consumption = "" + defaultFuelConsumptionPrKm[carSize];
+        String pref_car_key_advanced_fuel_consumption = "" + (defaultFuelConsumptionPrKm[carSize] *100);
         String pref_car_key_advanced_fuel_price = "" + fuelCostPrLitre;
         String pref_car_key_advanced_Interest_cost = "0.04";
         String pref_car_key_advanced_yearly_fee = "2820";

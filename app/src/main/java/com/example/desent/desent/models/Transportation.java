@@ -253,7 +253,7 @@ public class Transportation {
     private float getLitrePerKm(){
         float fuelConsumption;
         if(!prefs.getBoolean("pref_key_car_owner", false)){
-           fuelConsumption = 0.6f;
+           fuelConsumption = 0.06f;
             return fuelConsumption;
         }else{
             fuelConsumption = Float.parseFloat(prefs.getString("pref_car_key_advanced_fuel_consumption", "6"))/100;
