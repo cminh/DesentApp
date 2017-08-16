@@ -228,6 +228,8 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
         }
     }
 
+
+
     public MyFenceReceiver getFenceReceiver(){
         return fenceReceiver;
     }
@@ -414,6 +416,21 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
             activeGps = false;
             handler.postDelayed(runnable, 1000);
         }
+    }
+    @Override
+    public void onDestroy(){
+
+        try{
+            if(fenceReceiver!=null)
+                stop();
+                unregisterReceiver(fenceReceiver);
+                Log.i(TAG, "Everything is destroyed");
+        }catch(Exception e)
+        {
+
+        }
+
+        super.onDestroy();
     }
 
     private void unregisterFence(final String fenceKey) {

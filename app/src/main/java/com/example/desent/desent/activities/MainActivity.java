@@ -406,6 +406,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //unregisterReceiver(distanceTracking.getFenceReceiver());
     }
 
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
