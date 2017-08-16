@@ -31,10 +31,10 @@ public class Expenses extends Indicator {
                 savings = (float) (energy.calculateElectricityCost(timeScale) - energy.calculateElectricityCost(timeScale, pvSystemSize));
                 break;
             case WALKING:
-                savings = vehicleCost.getCost(timeScale) - this.drivingDistance*vehicleCost.getAvgCostPrKm();
+                savings = (transport.getDrivingDistance(timeScale) - this.drivingDistance)*vehicleCost.getAvgCostPrKm();
                 break;
             case CYCLING:
-                savings = vehicleCost.getCost(timeScale) - this.drivingDistance*vehicleCost.getAvgCostPrKm();
+                savings = (transport.getDrivingDistance(timeScale) - this.drivingDistance)*vehicleCost.getAvgCostPrKm();
                 break;
         }
 
