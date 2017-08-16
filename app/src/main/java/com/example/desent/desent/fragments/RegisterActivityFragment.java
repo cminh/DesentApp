@@ -50,8 +50,14 @@ public class RegisterActivityFragment extends Fragment {
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         editor.putString("pref_key_gender", (genderRadioGroup.getCheckedRadioButtonId() == R.id.radio_button_female) ? "Female" : "Male");
-        editor.putString("pref_key_personal_age", String.valueOf(ageTextView.getText()));
-        editor.putString("pref_key_personal_weight", String.valueOf(weightTextView.getText()));
+
+        String age = String.valueOf(ageTextView.getText());
+        if (!age.equals(""))
+            editor.putString("pref_key_personal_age", age);
+
+        String weight = String.valueOf(weightTextView.getText());
+        if (!weight.equals(""))
+            editor.putString("pref_key_personal_weight", weight);
 
         editor.commit();
 

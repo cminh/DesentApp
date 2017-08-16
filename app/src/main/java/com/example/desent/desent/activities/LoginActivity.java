@@ -4,7 +4,9 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +33,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.desent.desent.R;
+import com.example.desent.desent.utils.AESHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +67,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private SharedPreferences sharedPreferences;
+    private final static String CIPHER_KEY = "p2m8j0DgoqjJGxnDYfq70fV92h7sCg0N";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +109,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
     private void populateAutoComplete() {
@@ -188,6 +195,28 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             focusView = mEmailView;
             cancel = true;
         }
+
+        if (!email.equals(sharedPreferences.getString("pref_key_personal_email", ""))) {
+            mEmailView.setError(getString(R.string.error_incorrect_password));
+            focusView = mEmailView;
+            cancel = true;
+        }
+
+        //TODO: fix AESHelper class and check password
+
+        /**String dbPassword = "";
+        try {
+            dbPassword = AESHelper.decrypt(CIPHER_KEY, sharedPreferences.getString("pref_key_personal_password", ""));
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        if (!password.equals(dbPassword)) {
+            mEmailView.setError(getString(R.string.error_incorrect_password));
+            focusView = mEmailView;
+            cancel = true;
+        }**/
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first

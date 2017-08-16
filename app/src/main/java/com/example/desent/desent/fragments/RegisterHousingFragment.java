@@ -55,7 +55,7 @@ public class RegisterHousingFragment extends Fragment {
 
     private void restorePreferences(){
 
-        String heatType = sharedPreferences.getString("pref_key_heat_type", "");
+        String heatType = sharedPreferences.getString("pref_key_heat_type", "Electric (resistance)");
 
         switch(heatType) {
 

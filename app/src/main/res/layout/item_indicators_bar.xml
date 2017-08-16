@@ -6,11 +6,11 @@
         android:layout_width="wrap_content"
         android:layout_gravity="center"
         android:textStyle="bold"
-        android:textSize="12sp"/>
+        android:textSize="16sp"/>
     <TextView
         android:id="@+id/unit_text_view"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_gravity="center"
-        android:textSize="12sp"/>
+        android:textSize="16sp"/>
 </merge>

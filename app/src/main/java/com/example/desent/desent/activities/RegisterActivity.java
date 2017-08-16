@@ -1,21 +1,17 @@
 package com.example.desent.desent.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -49,7 +45,7 @@ public class RegisterActivity extends FragmentActivity {
      */
 
     private LinearLayout dotsLayout;
-    private Button btnSkip, btnNext;
+    private Button btnPrev, btnNext;
     private PagerAdapter mPagerAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,15 +65,18 @@ public class RegisterActivity extends FragmentActivity {
         mPager.setOnPageChangeListener(viewPagerPageChangeListener);
 
         dotsLayout = findViewById(R.id.layoutDots);
-        btnSkip = findViewById(R.id.btn_skip);
+        btnPrev = findViewById(R.id.btn_skip);
         btnNext = findViewById(R.id.btn_next);
 
         addBottomDots(0);
 
-        btnSkip.setOnClickListener(new View.OnClickListener() {
+        btnPrev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchHomeScreen();
+
+                int current = getItem(-1);
+                if (current > -1)
+                    mPager.setCurrentItem(current);
             }
         });
 
@@ -119,7 +118,6 @@ public class RegisterActivity extends FragmentActivity {
     }private void addBottomDots(int currentPage) {
         TextView[] dots = new TextView[mPagerAdapter.getCount()];
 
-        int[] colorsActive = getResources().getIntArray(R.array.array_dot_active);
         int[] colorsInactive = getResources().getIntArray(R.array.array_dot_inactive);
 
         //TODO: fix
@@ -154,11 +152,9 @@ public class RegisterActivity extends FragmentActivity {
                 if (position == mPagerAdapter.getCount() - 1) {
                     // last page. make button text to GOT IT
                     btnNext.setText(getString(R.string.start));
-                    btnSkip.setVisibility(View.GONE);
                 } else {
                     // still pages are left
                     btnNext.setText(getString(R.string.next));
-                    btnSkip.setVisibility(View.VISIBLE);
                 }
             }
 

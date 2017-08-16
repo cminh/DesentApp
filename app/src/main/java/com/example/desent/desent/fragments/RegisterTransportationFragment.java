@@ -93,11 +93,11 @@ public class RegisterTransportationFragment extends Fragment {
 
     private void restorePreferences(){
 
-        carOwner.setChecked(sharedPreferences.getBoolean("pref_key_car_owner", false));
-        carSizeSpinner.setSelection(((ArrayAdapter<String>) carSizeSpinner.getAdapter()).getPosition(sharedPreferences.getString("pref_key_car_size", "Medium")));
-        priceTextView.setText(sharedPreferences.getString("pref_key_car_price", ""), TextView.BufferType.EDITABLE);
-        drivingDistanceTextView.setText(sharedPreferences.getString("pref_key_car_distance", ""), TextView.BufferType.EDITABLE);
-        ownershipPeriodTextView.setText(sharedPreferences.getString("pref_key_car_ownership_period", ""), TextView.BufferType.EDITABLE);
+        carOwner.setChecked(sharedPreferences.getBoolean("pref_key_car_owner", true));
+        carSizeSpinner.setSelection(((ArrayAdapter<String>) carSizeSpinner.getAdapter()).getPosition(sharedPreferences.getString("pref_key_car_size", "Small")));
+        priceTextView.setText(sharedPreferences.getString("pref_key_car_price", "300000"), TextView.BufferType.EDITABLE);
+        drivingDistanceTextView.setText(sharedPreferences.getString("pref_key_car_distance", "8000"), TextView.BufferType.EDITABLE);
+        ownershipPeriodTextView.setText(sharedPreferences.getString("pref_key_car_ownership_period", "3"), TextView.BufferType.EDITABLE);
 
     }
 }

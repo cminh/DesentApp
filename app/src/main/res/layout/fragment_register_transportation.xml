@@ -53,6 +53,7 @@
             android:id="@+id/checkbox_car_owner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:state_checked="true"
             android:layout_alignParentRight="true"/>
 
     </RelativeLayout>

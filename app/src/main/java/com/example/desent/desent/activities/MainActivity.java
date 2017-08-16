@@ -66,8 +66,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //Fragments
     CircleFragment carbonFootprintCircleFragment;
-    private CategoryFragment transportationDashboardFragment;
-    private CategoryFragment energyDashboardFragment;
+    private CategoryFragment transportationFragment;
+    private CategoryFragment energyFragment;
     private IndicatorsBarFragment indicatorsBarFragment;
 
     private View categoriesBar;
@@ -371,8 +371,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 indicators,
                 carbonFootprintCircleFragment,
                 indicatorsBarFragment,
-                transportationDashboardFragment,
-                energyDashboardFragment,
+                transportationFragment,
+                energyFragment,
                 walkingDistanceFragment,
                 cyclingDistanceFragment,
                 solarPanelSizeFragment);
@@ -594,8 +594,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 indicator.calculateValues();
 
             carbonFootprintCircleFragment.refresh();
-            energyDashboardFragment.refresh();
-            transportationDashboardFragment.refresh();
+            energyFragment.refresh();
+            transportationFragment.refresh();
             indicatorsBarFragment.refresh();
             updateSavings();
             updateOwnEnergy();
@@ -634,17 +634,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         carbonFootprintCircleFragment.setSweepAngle(270);
         carbonFootprintCircleFragment.init();
 
-        transportationDashboardFragment = (CategoryFragment) getFragmentManager().findFragmentById(R.id.transportation_dashboard_fragment);
-        transportationDashboardFragment.setColor(mGreen);
-        transportationDashboardFragment.setCategoryName("Transportation");
-        transportationDashboardFragment.setImgName("transportation");
-        transportationDashboardFragment.init();
+        transportationFragment = (CategoryFragment) getFragmentManager().findFragmentById(R.id.transportation_dashboard_fragment);
+        transportationFragment.setColor(mGreen);
+        transportationFragment.setCategoryName("Transport");
+        transportationFragment.setImgName("transportation");
+        transportationFragment.init();
 
-        energyDashboardFragment = (CategoryFragment) getFragmentManager().findFragmentById(R.id.housing_dashboard_fragment);
-        energyDashboardFragment.setColor(mBlue);
-        energyDashboardFragment.setCategoryName("Energy");
-        energyDashboardFragment.setImgName("ic_wb_incandescent_black_24dp");
-        energyDashboardFragment.init();
+        energyFragment = (CategoryFragment) getFragmentManager().findFragmentById(R.id.housing_dashboard_fragment);
+        energyFragment.setColor(mBlue);
+        energyFragment.setCategoryName("Energy");
+        energyFragment.setImgName("ic_wb_incandescent_black_24dp");
+        energyFragment.init();
 
         indicatorsBarFragment = (IndicatorsBarFragment) getFragmentManager().findFragmentById(R.id.indicators_bar);
 
