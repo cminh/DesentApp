@@ -24,6 +24,8 @@ import com.example.desent.desent.fragments.RegisterTransportationFragment;
 import java.util.List;
 import java.util.Vector;
 
+import static android.view.View.GONE;
+
 /**
  * Created by celine on 06/07/17.
  */
@@ -156,6 +158,11 @@ public class RegisterActivity extends FragmentActivity {
                     // still pages are left
                     btnNext.setText(getString(R.string.next));
                 }
+
+                if (position == 0)
+                    btnPrev.setVisibility(GONE);
+                else
+                    btnPrev.setVisibility(View.VISIBLE);
             }
 
             @Override

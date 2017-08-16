@@ -85,6 +85,7 @@ public class CategoryFragment extends Fragment {
         if ((indicator != null) && (categoryIndex < indicator.getAverageValues().length)) {
             values[0] = indicator.getAverageValues()[categoryIndex];
             circularIndicator.setValues(values);
+            circularIndicator.setMaxValue(indicator.getSumValues());
             ((TextView) getView().findViewById(R.id.category_content)).setText(Utility.floatToStringNDecimals(values[0], indicator.getDecimalsNumber()) + " " + indicator.getUnit());
         }
 

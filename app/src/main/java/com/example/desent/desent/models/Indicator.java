@@ -28,7 +28,6 @@ public abstract class Indicator {
 
     protected String name;
     protected String explanation = "";
-    protected ArrayList<String> columnNames;
 
     protected float maxValue;
     protected float limitValue;
@@ -39,10 +38,8 @@ public abstract class Indicator {
     protected Transportation transport;
     protected VehicleCost vehicleCost;
 
-    //TODO: adapt to real data
     protected float[] averageValues = new float[]{0,0};
-
-
+    
     public float getWalkingDistance() {
         return walkingDistance;
     }
@@ -205,7 +202,7 @@ public abstract class Indicator {
 
 
     public float getSumValues() {
-        return getAverageValues()[0] + averageValues[1];
+        return averageValues[0] + averageValues[1];
     }
 
     public void setAverageValues(float[] averageValues){

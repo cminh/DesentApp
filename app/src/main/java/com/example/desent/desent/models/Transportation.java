@@ -197,20 +197,8 @@ public class Transportation {
         return drivingDistanceToday;
     }
 
-    private void isCarOwner(){
-       if(prefs.getBoolean("pref_key_car_owner", true)){
-           drivingDistanceToday = db.getDrivingDistanceToday();
-           drivingDistanceWeek = db.getWeekAverageDrivingDistance();
-           drivingDistanceMonth = db.getMonthAverageDrivingDistance();
-
-           co2Today = calculateKgCo2FromDriving(drivingDistanceToday, getEmissionsPrLitre(), getLitrePerKm());
-           co2Week = calculateKgCo2FromDriving(drivingDistanceWeek, getEmissionsPrLitre(), getLitrePerKm());
-           co2Month = calculateKgCo2FromDriving(drivingDistanceMonth, getEmissionsPrLitre(), getLitrePerKm());
-        }else{
-           co2Today = 0f;
-           co2Week = 0f;
-           co2Month = 0f;
-       }
+    public boolean isCarOwner(){
+        return prefs.getBoolean("pref_key_car_owner", true);
     }
 
     public float[] getWeekCarbonFootprint() {

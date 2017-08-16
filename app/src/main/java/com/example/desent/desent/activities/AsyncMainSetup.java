@@ -159,7 +159,7 @@ public class AsyncMainSetup extends AsyncTask {
                 activity.getString(R.string.energy_consumption_explanation),
                 energy));
 
-        carbonFootprint.setMaxValue(2 * limitCarbonFootprint);
+       // carbonFootprint.setMaxValue(2 * limitCarbonFootprint);
         carbonFootprint.setLimitValue(limitCarbonFootprint);
 
         calories.setDecimalsNumber(0);

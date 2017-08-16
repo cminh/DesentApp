@@ -51,11 +51,11 @@ public class Expenses extends Indicator {
         switch (estimationType) {
 
             case NONE:
-                averageValues[0] = vehicleCost.getCost(timeScale);
+                averageValues[0] = (transport.isCarOwner()) ? vehicleCost.getCost(timeScale) : 0;
                 averageValues[1] = (float) energy.calculateElectricityCost(timeScale);
                 break;
             case SOLAR_INSTALLATION:
-                averageValues[0] = vehicleCost.getCost(timeScale);
+                averageValues[0] = (transport.isCarOwner()) ? vehicleCost.getCost(timeScale) : 0;
                 averageValues[1] = (float) energy.calculateElectricityCost(timeScale, pvSystemSize);
                 break;
             case WALKING:

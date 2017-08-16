@@ -85,8 +85,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected DrivingDistance drivingDistance;
     protected EnergyConsumption energyConsumption;
     protected Energy energy;
-    protected Transportation transport;
-    protected VehicleCost vehicleCost;
 
     //Information views
     protected View informationCO2Left;
@@ -220,6 +218,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
                         FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        boolean isCarOwner = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("pref_key_car_owner", true);
 
                         switch (item.getItemId()) {
 
@@ -273,10 +272,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     indicator.setEstimationType(EstimationType.WALKING);
 
                                 informationCO2Left.setVisibility(View.GONE);
-                                informationSavings.setVisibility(View.VISIBLE);
-                                informationDaysLeftSolarPanel.setVisibility(View.VISIBLE);
                                 informationOwnEnergy.setVisibility(GONE);
-                                informationSeparator.setVisibility(VISIBLE);
+
+                                if (isCarOwner) {
+                                    informationSavings.setVisibility(View.VISIBLE);
+                                    informationDaysLeftSolarPanel.setVisibility(View.VISIBLE);
+                                    informationSeparator.setVisibility(VISIBLE);
+                                } else {
+                                    informationSavings.setVisibility(View.GONE);
+                                    informationDaysLeftSolarPanel.setVisibility(View.GONE);
+                                    informationSeparator.setVisibility(GONE);
+                                }
 
                                 ft.show(walkingDistanceFragment);
                                 ft.hide(cyclingDistanceFragment);
@@ -295,10 +301,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     indicator.setEstimationType(EstimationType.CYCLING);
 
                                 informationCO2Left.setVisibility(View.GONE);
-                                informationSavings.setVisibility(View.VISIBLE);
-                                informationDaysLeftSolarPanel.setVisibility(View.VISIBLE);
                                 informationOwnEnergy.setVisibility(GONE);
-                                informationSeparator.setVisibility(VISIBLE);
+
+                                if (isCarOwner) {
+                                    informationSavings.setVisibility(View.VISIBLE);
+                                    informationDaysLeftSolarPanel.setVisibility(View.VISIBLE);
+                                    informationSeparator.setVisibility(VISIBLE);
+                                } else {
+                                    informationSavings.setVisibility(View.GONE);
+                                    informationDaysLeftSolarPanel.setVisibility(View.GONE);
+                                    informationSeparator.setVisibility(GONE);
+                                }
 
                                 ft.hide(walkingDistanceFragment);
                                 ft.show(cyclingDistanceFragment);

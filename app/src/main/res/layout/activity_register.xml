@@ -44,6 +44,7 @@
         android:layout_alignParentLeft="true"
         android:background="@null"
         android:text="PREV"
+        android:visibility="gone"
         android:textColor="@color/dark_grey" />
 
 </RelativeLayout>
