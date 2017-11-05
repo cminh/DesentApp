@@ -74,15 +74,17 @@ public class HomeTown {
 
         if(country.equals("null") || city.equals("null")){
             //Do nothing
+            Log.e(TAG, "country.equals(null) || city.equals(null)");
         }else{
             if(exist){
                 //WeatherLocation exist
                 if(db.cityEqualsHomeTown(city)){
+                    // HER ER DET NOE FEIL
                     //City equals home town
                     //Do nothing
                 }else{
                     //City does not equal home town
-                    askIfHomeTown();
+                    //askIfHomeTown();
                 }
             }else{
                 //WeatherLocation do not exist
@@ -107,9 +109,11 @@ public class HomeTown {
                         if(getExist()){
                             //Existing data, but this is the hometown
                             db.updateWeatherData(lat, lon, country, homeTown);
+                            Log.e(TAG, "db.updateWeatherData(lat, lon, country, homeTown);");
                         }else{
                             //Doesn't exist, but it is the hometown (temp = NO)
                             db.insertWeatherLocation(lat, lon, "NO", country, homeTown);
+                            Log.e(TAG, "db.insertWeatherLocation(lat, lon, \"NO\", country, homeTown);");
                         }
                         dialog.cancel();
                     }
@@ -124,6 +128,7 @@ public class HomeTown {
                             //for initial calculations (temp = YES)
                             homeTown = city;
                             db.insertWeatherLocation(lat, lon, "YES", country, homeTown);
+                            Log.e(TAG, "db.insertWeatherLocation(lat, lon, \"YES\", country, homeTown);");
                         }
                         dialog.cancel();
                     }

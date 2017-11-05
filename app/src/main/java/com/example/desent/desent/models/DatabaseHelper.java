@@ -765,6 +765,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery("select * from " + TABLE_HOME, null);
         cursor.moveToFirst();
         String homeTown = cursor.getString(4).trim();
+        Log.i(LOG, "hometown = " + homeTown);
+        Log.i(LOG, "current city = " + city);
         cursor.close();
         if(homeTown.equals(city)){
             return true;
