@@ -11,6 +11,10 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -63,7 +67,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
  * Created by magnust on 04.07.2017.
  */
 
-public class DistanceTracker extends MainActivity implements GoogleApiClient.ConnectionCallbacks,
+public class DistanceTracker extends MainActivity implements SensorEventListener, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener{
 
 
@@ -76,6 +80,13 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
 
     // Current state
     private String currentActivity;
+    boolean activeAccelerometer = false;
+    private float accelerationX = 0;
+    private float accelerationY = 0;
+    private float accelerationZ = 0;
+    private boolean mInitialized;
+    private SensorManager mSensorManager;
+    private Sensor mAccelerometer;
 
     private final String LOG="DistanceTracking";
     private GoogleApiClient mGoogleApiClientLoc;
@@ -111,6 +122,7 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
                                             "\nLikelihood: " + activity.getConfidence() + "\n";
                                 }
                                 Log.i(TAG,stringBuffer);
+                            myDb.submitDesentData(activityContext);
                         }
                     });
 
@@ -158,8 +170,9 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
     }
 
 
-    public DistanceTracker(Activity activityContext, Context context){
-
+    public DistanceTracker(SensorManager mSensorManager, Sensor mAccelerometer, Activity activityContext, Context context){
+        this.mSensorManager = mSensorManager;
+        this.mAccelerometer = mAccelerometer;
         this.activityContext = activityContext;
         this.context = context;
         Log.i(LOG,"constructor");
@@ -173,6 +186,8 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
 
     protected void onCreate() {
 
+
+        // Distance tracking
         Log.i(LOG, "Distance is initiated");
         if(noFence){
             mGoogleApiClientLoc = new GoogleApiClient.Builder(context)
@@ -225,6 +240,7 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
         if (mGoogleApiClientLoc.isConnected()) {
             mGoogleApiClientLoc.disconnect();
             handler.removeCallbacks(runnable);
+
         }
     }
 
@@ -251,6 +267,14 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
 
     @Override
     public void onLocationChanged(Location location) {
+        // check if accelerometer is activated or activate
+        if(!activeAccelerometer){
+            // Acceleration sensor
+            //mInitialized = false;
+            mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+            activeAccelerometer = true;
+
+        }
         double distance;
         if(mLastLocation == null){
             mLastLocation = location;
@@ -266,17 +290,29 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
             activeGps = true;
             if(activity.equals("STILL")){
                 disableGPS();
+                //Turn off accelerometer if still and accelerometer is active
+                if(activeAccelerometer){
+                    mSensorManager.unregisterListener(this);
+                    activeAccelerometer = false;
+                }
                 Log.i(LOG, "You are still");
             }else{
                 if (!mGoogleApiClientLoc.isConnected()) {
                     Log.i(TAG, "Enable GPS");
                 }
                 boolean isInserted = myDb.insertDistance(activity, (float)distance);
+                // Start datalog for DESENT
+                long time = System.currentTimeMillis();
+                double longitude = location.getLongitude();
+                double latitude = location.getLatitude();
+                float speed = location.getSpeed();
 
+
+                boolean desentLog = myDb.insertDesentData(time, longitude, latitude, speed, accelerationX, accelerationY, accelerationZ, activity);
                 if(isInserted == true){
                     String distToast = "Walking: " + String.format("%.1f", myDb.getWalkingDistanceToday()) + " Cycling: " + String.format("%.1f", myDb.getCyclingDistanceToday()) + " Driving: " +  String.format("%.1f", myDb.getDrivingDistanceToday());
                     Log.i(TAG, "Data inserted. " + distToast);
-                    //Toast.makeText(context,"Data inserted. " + distToast,Toast.LENGTH_LONG).show();
+                    Toast.makeText(context,"Data inserted. " + distToast,Toast.LENGTH_LONG).show();
                 }
                 else{
                     Toast.makeText(context,"Data not inserted",Toast.LENGTH_LONG).show();
@@ -311,6 +347,7 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
         Log.i(LOG, "Textview should be changed");
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClientLoc, mLocationRequest, this);
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClientLoc);
+
 
     }
 
@@ -356,6 +393,7 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
     }
     protected void enableGPS(){
         if(!activeGps){
+            //mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
             activeGps = true;
             handler.removeCallbacks(runnable);
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClientLoc, mLocationRequest, this);
@@ -422,6 +460,7 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
 
         try{
             if(fenceReceiver!=null)
+                //mSensorManager.unregisterListener(this);
                 stop();
                 unregisterReceiver(fenceReceiver);
                 Log.i(TAG, "Everything is destroyed");
@@ -449,6 +488,44 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
                 Log.i(TAG, "Fence " + fenceKey + " could NOT be removed.");
             }
         });
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        accelerationX = sensorEvent.values[0];
+        accelerationY = sensorEvent.values[1];
+        accelerationZ = sensorEvent.values[2];
+
+        /*
+        float x = sensorEvent.values[0];
+        float y = sensorEvent.values[1];
+        float z = sensorEvent.values[2];
+
+        if (!mInitialized){
+            mLastX = x;
+            mLastY = y;
+            mLastZ = z;
+
+            mInitialized = true;
+        }else{
+            float deltaX = Math.abs(mLastX - x);
+            float deltaY = Math.abs(mLastY - y);
+            float deltaZ = Math.abs(mLastZ - z);
+
+            if (deltaX < NOISE) deltaX = (float)0.0;
+            if (deltaY < NOISE) deltaY = (float)0.0;
+            if (deltaZ < NOISE) deltaZ = (float)0.0;
+
+            mLastX = x;
+            mLastY = y;
+            mLastZ = z;
+        }
+        */
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
     }
 
 
@@ -522,6 +599,8 @@ public class DistanceTracker extends MainActivity implements GoogleApiClient.Con
                     Log.i(TAG, "stillFence initiated from default");
             }
         }
+
+
     }
 }
 

@@ -2,11 +2,14 @@ package com.example.desent.desent.activities;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
@@ -63,6 +66,10 @@ import static android.view.View.VISIBLE;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     Spinner timeSpinner;
+
+    //Accelerometer
+    private SensorManager mSensorManager;
+    private Sensor mAccelerometer;
 
     //Fragments
     CircleFragment carbonFootprintCircleFragment;
@@ -182,6 +189,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Accelerometer
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
         // Drawer "hamburger"
         navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -367,7 +378,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //DistanceTracker
         Activity activityContext = this;
-        distanceTracking = new DistanceTracker(activityContext, this);
+        distanceTracking = new DistanceTracker(mSensorManager, mAccelerometer, activityContext, this);
         distanceTracking.setActivity(activity);
 
     }
@@ -375,7 +386,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onStart() {
         super.onStart();
-        distanceTracking.start();
+        distanceTracking.start(); // and accelerometer
         registerReceiver(distanceTracking.getFenceReceiver(), new IntentFilter(FENCE_RECEIVER_ACTION));
         ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
