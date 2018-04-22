@@ -8,9 +8,11 @@
     tools:context="com.example.desent.desent.activities.SettingsActivity"
     tools:showIn="@layout/app_bar_settings">
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_width="368dp"
+        android:layout_height="495dp"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteY="8dp"
+        tools:layout_editor_absoluteX="8dp">
 
         <ImageView
             android:layout_margin="10dp"

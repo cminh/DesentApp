@@ -9,9 +9,11 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.example.desent.desent.utils.SendMailTask;
@@ -44,7 +46,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private String oldDate;
 
     // Submit data
-    int submitInterval = 10080; //minutes (1 week)
+    int submitInterval = 1; //10080; //minutes (1 week)
+    private SharedPreferences prefs;
 
     // Table names
     public static final String TABLE_NAME = "USERINPUT";
@@ -466,6 +469,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public boolean submitDesentData(Activity activityContext) {
         SQLiteDatabase db = this.getWritableDatabase();
+        prefs = PreferenceManager.getDefaultSharedPreferences(activityContext);
         boolean result;
 
         // First time
@@ -501,11 +505,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 // Send data
                 String fromEmail = "desent.data@gmail.com";
                 String fromPassword = "datasubmitter";
-                String emailSubject = "This is a test from DESENT";
-                String emailBody = "This could be an unique ID";
+                String emailSubject = prefs.getString("pref_key_personal_email", "Missing input");
+                String emailBody = "";
 
                 new SendMailTask(activityContext).execute(fromEmail,
-                        fromPassword, emailSubject, emailBody, getCSV());
+                        fromPassword, emailSubject, emailBody, getCSV(activityContext));
                 // Calculate and update new submit time
                 calendar.add(GregorianCalendar.MINUTE, submitInterval);
                 long nextSubmit = calendar.getTimeInMillis();
@@ -531,15 +535,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    public String getCSV() {
-        String csv = "Desent data collector\n";
-        String firstRowRow = "Time,Longitude,Latitude,Speed,AccelerationX,AccelerationY,AccelerationZ,activity\n";
-        csv = csv + firstRowRow;
+    public String getCSV(Activity activityContext) {
+        String idEmail = prefs.getString("pref_key_personal_email", "Missing email from user");
+        String csv = "Desent data collector\n\n";
+
+        String heatType = prefs.getString("pref_key_heat_type", "Missing input");
+        String heatEfficiency = prefs.getString("pref_key_heat_efficiency", "Missing input");
+        String heatFuelCost = prefs.getString("pref_key_heat_fuel_cost", "Missing input");
+        String heatLastYear = prefs.getString("pref_key_heat_prev_yr", "Missing input");
+
+        String idRow = "ID," + idEmail + "\n\n";
+        String heatHeader = "Heating system\nHeatType,Efficiency[%],FuelCost,ConsumptionLastYear\n";
+        String heat = heatHeader + heatType + "," + heatEfficiency + "," + heatFuelCost + "," + heatLastYear +"\n";
+
+        String firstRowRow = "\n\nData log:\nTime [ms],dd/MM/yyyy hh:mm:ss.SSS,Longitude,Latitude,Speed,AccelerationX,AccelerationY,AccelerationZ,activity\n";
+
         Cursor curCSV = getDesentData();
+
+        csv = idRow + csv + heat + firstRowRow;
+
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS");
+
+        // Create a calendar object that will convert the date and time value in milliseconds to date.
+        Calendar calendar = Calendar.getInstance();
+
 
         if(curCSV != null){
             while(curCSV.moveToNext()) {
                 long time = curCSV.getLong(0);
+                calendar.setTimeInMillis(time);
+                String formattedDate = formatter.format(calendar.getTime());
                 double longitude = curCSV.getDouble(1);
                 double latitude = curCSV.getDouble(2);
                 float speed = curCSV.getFloat(3);
@@ -548,7 +573,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 float accZ = curCSV.getFloat(6);
                 String activity = curCSV.getString(7);
 
-                String strRow = String.valueOf(time)+ "," +String.valueOf(longitude)+ "," +String.valueOf(latitude)+ ","
+                String strRow = String.valueOf(time)+ "," + formattedDate + "," +String.valueOf(longitude)+ "," +String.valueOf(latitude)+ ","
                         +String.valueOf(speed)+ "," +String.valueOf(accX)+","
                         +String.valueOf(accY)+ "," +String.valueOf(accZ)+ ","
                         + activity+"\n";
