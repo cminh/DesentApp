@@ -46,7 +46,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private String oldDate;
 
     // Submit data
-    int submitInterval = 1; //10080; //minutes (1 week)
+    int submitInterval = 10080; //minutes (1 week)
     private SharedPreferences prefs;
 
     // Table names
